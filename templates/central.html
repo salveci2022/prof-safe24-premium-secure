@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel Central – SPYNET SECURITY</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #020617 0, #020617 55%, #000 100%);
+            color: #e5e7eb;
+        }
+
+        .topbar {
+            background: #020617;
+            padding: 14px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(30, 64, 175, 0.7);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: #020617;
+        }
+
+        .brand-text-main {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            color: #a5f3fc;
+        }
+
+        .brand-text-sub {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.22em;
+        }
+
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-pill {
+            font-size: 11px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(21, 128, 61, 0.16);
+            border: 1px solid rgba(34, 197, 94, 0.7);
+            color: #bbf7d0;
+        }
+
+        .clock {
+            font-size: 14px;
+            color: #f97316;
+            font-weight: 600;
+        }
+
+        .page {
+            padding: 16px 32px 26px;
+        }
+
+        .title-block {
+            margin-bottom: 14px;
+        }
+
+        .title-main {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .title-sub {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+            gap: 16px;
+        }
+
+        .card {
+            background: #020617;
+            border-radius: 20px;
+            border: 1px solid rgba(30, 64, 175, 0.7);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.95);
+            padding: 16px 18px 14px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .card-subtitle {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+
+        .row span.label {
+            color: #9ca3af;
+        }
+
+        .badge-warning {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(248, 113, 113, 0.15);
+            color: #fecaca;
+            margin-top: 8px;
+        }
+
+        .badge-warning-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: #f97316;
+            box-shadow: 0 0 12px rgba(249, 115, 22, 1);
+        }
+
+        .btn {
+            border-radius: 999px;
+            border: none;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-right: 6px;
+            margin-top: 4px;
+        }
+
+        .btn-red {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: #fee2e2;
+        }
+
+        .btn-blue {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #e0f2fe;
+        }
+
+        .btn-slate {
+            background: #020617;
+            color: #e5e7eb;
+            border: 1px solid rgba(51, 65, 85, 0.9);
+        }
+
+        .status-line {
+            font-size: 11px;
+            margin-top: 8px;
+            color: #9ca3af;
+        }
+
+        .status-line span.value {
+            color: #22c55e;
+        }
+
+        .status-line span.value.off {
+            color: #f97316;
+        }
+
+        .sphere-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .sphere-ring {
+            width: 210px;
+            height: 210px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 0, rgba(45, 212, 191, 0.35), transparent 60%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sphere {
+            width: 150px;
+            height: 150px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            font-size: 14px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 7px rgba(15, 23, 42, 0.9);
+        }
+
+        .sphere-normal {
+            background: radial-gradient(circle at 30% 0, #22c55e, #16a34a);
+            color: #022c22;
+            box-shadow: 0 0 45px rgba(34, 197, 94, 0.9);
+        }
+
+        .sphere-alerta {
+            background: radial-gradient(circle at 30% 0, #f97316, #b91c1c);
+            color: #fef2f2;
+            box-shadow: 0 0 55px rgba(248, 113, 113, 0.95);
+        }
+
+        .sphere-caption {
+            margin-top: 8px;
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-top: 10px;
+        }
+
+        thead {
+            background: #020617;
+        }
+
+        th, td {
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        th {
+            color: #9ca3af;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(30, 64, 175, 0.7);
+        }
+
+        tbody tr:nth-child(odd) {
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        tbody tr:nth-child(even) {
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .empty-row {
+            text-align: center;
+            color: #6b7280;
+            padding: 16px 0;
+        }
+
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: minmax(0, 1fr); }
+            .topbar { padding: 10px 16px; }
+            .page { padding: 12px 16px 22px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="brand">
+        <div class="brand-icon">SN</div>
+        <div>
+            <div class="brand-text-main">SPYNET SECURITY</div>
+            <div class="brand-text-sub">Painel de Controle Central</div>
+        </div>
+    </div>
+    <div class="top-right">
+        <div class="status-pill" id="topStatusPill">Pronto</div>
+        <div class="clock" id="clockCentral"></div>
+    </div>
+</div>
+
+<div class="page">
+    <div class="title-block">
+        <div class="title-main">Painel Central</div>
+        <div class="title-sub">
+            Monitoramento em tempo real dos alertas. A esfera muda de cor conforme o status do sistema.
+        </div>
+    </div>
+
+    <div class="grid">
+        <!-- COLUNA ESQUERDA -->
+        <div class="card">
+            <div class="card-title">Dados da Escola</div>
+            <div class="card-subtitle">Configure os dados conforme a unidade escolar atendida.</div>
+
+            <!-- Esses dados você pode trocar direto no HTML -->
+            <div class="row">
+                <span class="label">Nome:</span>
+                <span>Colégio Estadual SpyNet</span>
+            </div>
+            <div class="row">
+                <span class="label">Endereço:</span>
+                <span>Av. Principal, 456 – Centro – Sua Cidade/UF</span>
+            </div>
+            <div class="row">
+                <span class="label">Telefone:</span>
+                <span>(99) 99999-9999</span>
+            </div>
+            <div class="row">
+                <span class="label">Diretor(a):</span>
+                <span>Nome do(a) Diretor(a)</span>
+            </div>
+
+            <div class="badge-warning">
+                <span class="badge-warning-dot"></span>
+                Uso exclusivo da equipe gestora em situações de risco.
+            </div>
+
+            <hr style="border: none; border-top: 1px solid rgba(30,64,175,0.7); margin: 12px 0 8px;">
+
+            <div class="card-title" style="font-size:13px;">Controle da Sirene</div>
+
+            <div>
+                <button class="btn btn-red" type="button" onclick="sireneManual()">SIRENE MANUAL</button>
+                <button class="btn btn-blue" type="button" onclick="testeSirene()">TESTE</button>
+                <button class="btn btn-blue" type="button" onclick="baixarPDF()">BAIXAR PDF</button>
+            </div>
+            <div>
+                <button class="btn btn-slate" type="button" onclick="pararSirene()">PARAR SIRENE</button>
+                <button class="btn btn-slate" type="button" onclick="resolverAlertas()">RESOLVER ALERTA</button>
+                <button class="btn btn-slate" type="button" onclick="limparFeed()">LIMPAR FEED</button>
+            </div>
+
+            <div class="status-line">
+                Status da sirene:
+                <span id="statusSirene" class="value off">Desligada</span>
+            </div>
+            <div class="status-line">
+                Última atualização:
+                <span id="ultimaAtualizacao" class="value off">–</span>
+            </div>
+
+            <audio id="sirenAudio" loop>
+                <source src="/static/siren.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+
+        <!-- COLUNA DIREITA -->
+        <div class="card">
+            <div class="card-title">Estado do Sistema</div>
+            <div class="card-subtitle">Resumo visual dos alertas ativos e histórico recente.</div>
+
+            <div class="sphere-wrapper">
+                <div class="sphere-ring">
+                    <div id="sphere" class="sphere sphere-normal">NORMAL</div>
+                </div>
+                <div class="sphere-caption" id="sphereCaption">
+                    Nenhum alerta ativo. Sistema em condições normais.
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Professor(a)</th>
+                    <th>Sala / Local</th>
+                    <th>Descrição</th>
+                    <th>Data / Hora</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody id="alertTableBody">
+                <tr>
+                    <td colspan="6" class="empty-row">Nenhum alerta recebido ainda…</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function atualizarRelogio() {
+    const el = document.getElementById('clockCentral');
+    const now = new Date();
+    el.textContent = now.toLocaleTimeString('pt-BR', {hour12: false});
+}
+setInterval(atualizarRelogio, 1000);
+atualizarRelogio();
+
+async function carregarStatus() {
+    try {
+        const resp = await fetch("/api/status");
+        const data = await resp.json();
+
+        atualizarSireneVisual(data.siren_on, data.last_alert_time);
+        preencherTabela(data.alertas || []);
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function atualizarSireneVisual(sirenOn, lastTime) {
+    const audio = document.getElementById("sirenAudio");
+    const statusSirene = document.getElementById("statusSirene");
+    const ultimaAtualizacao = document.getElementById("ultimaAtualizacao");
+    const sphere = document.getElementById("sphere");
+    const sphereCaption = document.getElementById("sphereCaption");
+    const topStatusPill = document.getElementById("topStatusPill");
+
+    if (sirenOn) {
+        if (audio.paused) {
+            audio.play().catch(()=>{});
+        }
+        statusSirene.textContent = "Ligada";
+        statusSirene.classList.remove("off");
+        sphere.classList.remove("sphere-normal");
+        sphere.classList.add("sphere-alerta");
+        sphere.textContent = "ALERTA";
+        sphereCaption.textContent = "Existe alerta ativo. Verifique a lista abaixo.";
+        topStatusPill.textContent = "Alerta Ativo";
+    } else {
+        audio.pause();
+        audio.currentTime = 0;
+        statusSirene.textContent = "Desligada";
+        statusSirene.classList.add("off");
+        sphere.classList.remove("sphere-alerta");
+        sphere.classList.add("sphere-normal");
+        sphere.textContent = "NORMAL";
+        sphereCaption.textContent = "Nenhum alerta ativo. Sistema em condições normais.";
+        topStatusPill.textContent = "Pronto";
+    }
+
+    ultimaAtualizacao.textContent = lastTime || "–";
+}
+
+function preencherTabela(alertas) {
+    const tbody = document.getElementById("alertTableBody");
+    tbody.innerHTML = "";
+
+    if (!alertas || alertas.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 6;
+        td.className = "empty-row";
+        td.textContent = "Nenhum alerta recebido ainda…";
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+        return;
+    }
+
+    alertas.forEach(a => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${a.id}</td>
+            <td>${a.teacher}</td>
+            <td>${a.room}</td>
+            <td>${a.description}</td>
+            <td>${a.time}</td>
+            <td>${a.status}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+async function sireneManual() {
+    await fetch("/api/siren", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({action: "on"})
+    });
+}
+
+async function testeSirene() {
+    await sireneManual();
+}
+
+async function pararSirene() {
+    await fetch("/api/siren", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({action: "off"})
+    });
+}
+
+async function resolverAlertas() {
+    await fetch("/api/resolve", {method: "POST"});
+}
+
+async function limparFeed() {
+    await fetch("/api/clear", {method: "POST"});
+}
+
+function baixarPDF() {
+    window.open("/report.pdf", "_blank");
+}
+
+setInterval(carregarStatus, 1500);
+carregarStatus();
+</script>
+</body>
+</html>
