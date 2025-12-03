@@ -2,88 +2,108 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>SPYNET – Acesso Central</title>
+    <title>PROF-SAFE24 – Acesso Central</title>
     <style>
         body {
+            margin: 0;
+            padding: 0;
             background: #020617;
-            color: #e5e7eb;
             font-family: Arial, sans-serif;
+            color: #e5e7eb;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
         }
+
         .card {
             background: #020617;
-            border-radius: 14px;
-            border: 1px solid #1f2937;
-            padding: 24px 26px;
-            width: 320px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+            border-radius: 18px;
+            padding: 32px 40px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.9);
             text-align: center;
+            min-width: 360px;
+            border: 1px solid #111827;
         }
+
         h1 {
-            font-size: 20px;
-            margin-bottom: 4px;
+            font-size: 24px;
+            margin-bottom: 6px;
         }
-        p {
+
+        .subtitle {
             font-size: 12px;
             color: #9ca3af;
-            margin-top: 0;
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
+
         input {
             width: 100%;
-            padding: 10px 11px;
-            border-radius: 10px;
+            padding: 12px 14px;
+            border-radius: 999px;
             border: 1px solid #1f2937;
             background: #020617;
             color: #e5e7eb;
-            margin-bottom: 10px;
+            font-size: 13px;
             box-sizing: border-box;
         }
+
+        input::placeholder {
+            color: #6b7280;
+        }
+
         .btn {
+            margin-top: 16px;
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 14px;
             border-radius: 999px;
             border: none;
-            background: linear-gradient(135deg, #fb923c, #ea580c);
-            color: #111827;
-            font-weight: bold;
             cursor: pointer;
-            margin-top: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            background: linear-gradient(90deg,#fb923c,#f97316);
+            color: #111827;
         }
-        .erro {
-            color: #f97316;
-            font-size: 12px;
-            margin-top: 8px;
-            min-height: 16px;
+
+        .btn:hover {
+            filter: brightness(1.05);
         }
+
         .footer {
-            font-size: 10px;
+            margin-top: 18px;
+            font-size: 11px;
             color: #6b7280;
+        }
+
+        .erro {
             margin-top: 10px;
+            font-size: 12px;
+            color: #f97316;
         }
     </style>
 </head>
 <body>
+
 <div class="card">
     <h1>PROF-SAFE24</h1>
-    <p>Acesso restrito ao Painel Central</p>
+    <div class="subtitle">Acesso restrito ao Painel Central</div>
 
     <form method="POST" action="/login_central">
-        <input type="password" name="password" placeholder="Senha do administrador">
-        <button class="btn" type="submit">Entrar na Central</button>
+        <input
+            type="password"
+            name="password"
+            placeholder="Senha do administrador">
+        <button type="submit" class="btn">Entrar na Central</button>
     </form>
 
-    <div class="erro">
-        {% if error %}{{ error }}{% endif %}
-    </div>
+    {% if error %}
+    <div class="erro">{{ error }}</div>
+    {% endif %}
 
     <div class="footer">
         SPYNET SECURITY – Botão de Pânico Escolar
     </div>
 </div>
+
 </body>
 </html>
