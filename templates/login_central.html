@@ -1,109 +1,351 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>PROF-SAFE24 – Acesso Central</title>
+    <title>SPYNET - Acesso Administrativo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body {
+        :root {
+            --premium-blue: #0066ff;
+            --electric-orange: #ff6a00;
+            --deep-purple: #7b42f6;
+            --vibrant-cyan: #00ffcc;
+            --premium-black: #0a0f1a;
+            --dark-card: #131a2a;
+        }
+        
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            background: #020617;
-            font-family: Arial, sans-serif;
-            color: #e5e7eb;
-            height: 100vh;
+        }
+
+        body {
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: radial-gradient(circle at top, #1f2937 0, #020617 45%, #000000 100%);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: white;
         }
 
-        .card {
-            background: #020617;
-            border-radius: 18px;
-            padding: 32px 40px;
-            box-shadow: 0 24px 60px rgba(0,0,0,0.9);
+        .login-shell {
+            width: 100%;
+            max-width: 420px;
+            padding: 25px 20px;
+        }
+
+        .login-card {
+            position: relative;
+            background: radial-gradient(circle at top, rgba(0,102,255,0.15), rgba(15,23,42,0.95));
+            border-radius: 24px;
+            padding: 30px 25px;
+            box-shadow:
+                0 20px 50px rgba(15, 23, 42, 0.9),
+                0 0 80px rgba(0, 102, 255, 0.4);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 0% 0%, rgba(0, 255, 204, 0.25), transparent 55%),
+                        radial-gradient(circle at 100% 0%, rgba(123, 66, 246, 0.2), transparent 55%);
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .login-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-premium {
+            display:flex;
+            align-items:center;
+            gap:15px;
+            margin-bottom:30px;
+            justify-content: center;
+        }
+
+        .brand-icon-premium {
+            width:50px;
+            height:50px;
+            border-radius:12px;
+            background: linear-gradient(135deg, var(--premium-blue), var(--deep-purple));
+            box-shadow: 0 0 30px rgba(0, 102, 255, 0.6);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:18px;
+            font-weight:bold;
+            color:white;
+        }
+
+        .brand-text-premium {
+            font-size:32px;
+            font-weight:800;
+            background: linear-gradient(135deg, var(--premium-blue), var(--vibrant-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing:2px;
+        }
+
+        .login-title {
+            font-size:24px;
+            font-weight:700;
+            color:white;
+            margin-bottom:8px;
             text-align: center;
-            min-width: 360px;
-            border: 1px solid #111827;
+            letter-spacing:0.5px;
         }
 
-        h1 {
-            font-size: 24px;
-            margin-bottom: 6px;
+        .login-subtitle {
+            font-size:14px;
+            color:#94a3b8;
+            margin-bottom:30px;
+            text-align: center;
+            line-height:1.5;
         }
 
-        .subtitle {
-            font-size: 12px;
-            color: #9ca3af;
-            margin-bottom: 20px;
+        .form-group {
+            margin-bottom:18px;
+        }
+
+        label {
+            display:block;
+            font-size:13px;
+            color:#cbd5f5;
+            margin-bottom:6px;
+        }
+
+        .input-wrapper {
+            position: relative;
         }
 
         input {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 999px;
-            border: 1px solid #1f2937;
-            background: #020617;
-            color: #e5e7eb;
-            font-size: 13px;
-            box-sizing: border-box;
+            width:100%;
+            padding:12px 14px;
+            padding-left:40px;
+            border-radius:14px;
+            border:1px solid rgba(148, 163, 184, 0.5);
+            background: rgba(15, 23, 42, 0.9);
+            color:white;
+            font-size:14px;
+            outline:none;
+            transition: all 0.25s ease;
         }
 
         input::placeholder {
-            color: #6b7280;
+            color:#6b7280;
+        }
+
+        input:focus {
+            border-color: var(--premium-blue);
+            box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.7);
+        }
+
+        .input-icon {
+            position:absolute;
+            left:12px;
+            top:50%;
+            transform: translateY(-50%);
+            font-size:16px;
+            color:#64748b;
+        }
+
+        .btn-row {
+            margin-top:10px;
+            display:flex;
+            gap:10px;
         }
 
         .btn {
-            margin-top: 16px;
+            flex:1;
+            border-radius:999px;
+            padding:12px 16px;
+            border:none;
+            cursor:pointer;
+            font-size:14px;
+            font-weight:600;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
+            transition: all 0.25s ease;
+            position:relative;
+            overflow: hidden;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, var(--premium-blue), var(--deep-purple));
+            color:white;
+            box-shadow:
+                0 10px 25px rgba(0, 102, 255, 0.5),
+                0 0 25px rgba(37, 99, 235, 0.7);
+        }
+
+        .btn-login::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
             width: 100%;
-            padding: 12px 14px;
-            border-radius: 999px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            background: linear-gradient(90deg,#fb923c,#f97316);
-            color: #111827;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
         }
 
-        .btn:hover {
-            filter: brightness(1.05);
+        .btn-login:hover::before {
+            left: 100%;
         }
 
-        .footer {
-            margin-top: 18px;
-            font-size: 11px;
-            color: #6b7280;
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 15px 35px rgba(0, 102, 255, 0.6),
+                0 0 30px rgba(123, 66, 246, 0.5);
         }
 
-        .erro {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #f97316;
+        .btn-secondary {
+            background: linear-gradient(135deg, #475569, #64748b);
+            margin-left:12px;
+            padding:12px 24px;
+            font-size:14px;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #64748b, #9ca3af);
+            transform: translateY(-1px);
+        }
+
+        .clock-premium {
+            font-size:14px;
+            color: var(--electric-orange);
+            font-weight:600;
+        }
+
+        .error-premium {
+            font-size:14px;
+            color: #ff6b6b;
+            margin-top:12px;
+            padding:12px;
+            border-radius:10px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            text-align: center;
+            font-weight:500;
+        }
+
+        .helper-premium {
+            margin-top:25px;
+            font-size:12px;
+            color:#94a3b8;
+            text-align: center;
+            line-height:1.6;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 102, 255, 0.2);
+        }
+
+        .helper-premium b {
+            color: var(--vibrant-cyan);
+        }
+
+        @media (max-width: 480px) {
+            .login-shell {
+                padding:20px 15px;
+            }
+            .login-card {
+                padding:30px 25px;
+            }
+            .brand-text-premium {
+                font-size: 26px;
+            }
+            .btn-row {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .btn-secondary {
+                margin-left: 0;
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="login-shell">
+        <div class="login-card">
+            <div class="login-inner">
+                <div class="brand-premium">
+                    <div class="brand-icon-premium">SN</div>
+                    <div class="brand-text-premium">SPYNET</div>
+                </div>
 
-<div class="card">
-    <h1>PROF-SAFE24</h1>
-    <div class="subtitle">Acesso restrito ao Painel Central</div>
+                <div class="login-title">Acesso Administrativo</div>
+                <div class="login-subtitle">
+                    Acesso restrito à equipe de gestão e segurança da escola.<br>
+                    Informe suas credenciais para entrar no Painel Central.
+                </div>
 
-    <form method="POST" action="/login_central">
-        <input
-            type="password"
-            name="password"
-            placeholder="Senha do administrador">
-        <button type="submit" class="btn">Entrar na Central</button>
-    </form>
+                <form method="post">
+                    <div class="form-group">
+                        <label for="usuario">Usuário</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input id="usuario" name="usuario" autocomplete="username" required placeholder="Digite seu usuário">
+                        </div>
+                    </div>
 
-    {% if error %}
-    <div class="erro">{{ error }}</div>
-    {% endif %}
+                    <div class="form-group">
+                        <label for="senha">Senha</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input id="senha" name="senha" type="password" autocomplete="current-password" required placeholder="Digite sua senha">
+                        </div>
+                    </div>
 
-    <div class="footer">
-        SPYNET SECURITY – Botão de Pânico Escolar
+                    <div class="btn-row">
+                        <button type="submit" class="btn btn-login">
+                            🔐 Entrar no Sistema
+                        </button>
+                        <a href="/" class="btn btn-secondary" style="text-decoration:none; text-align:center;">
+                            ⬅ Voltar
+                        </a>
+                    </div>
+
+                    <div style="margin-top:15px; text-align:center;">
+                        <span class="clock-premium" id="clock"></span>
+                    </div>
+
+                    {% if error %}
+                    <div class="error-premium">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+                </form>
+
+                <div class="helper-premium">
+                    Acesso liberado apenas para <b>direção</b> e <b>coordenação</b>.<br>
+                    Credenciais configuradas no painel administrativo SPYNET SECURITY.
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
+    <script>
+    function updateClock(){
+        const el = document.getElementById('clock');
+        const now = new Date();
+        el.textContent = now.toLocaleTimeString('pt-BR',{hour12:false});
+    }
+    setInterval(updateClock,1000);
+    updateClock();
+    </script>
 </body>
 </html>
