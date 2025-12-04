@@ -1,250 +1,232 @@
-from flask import Flask, render_template, jsonify, request, send_file, redirect, url_for, session
-import os
+from flask import (
+    Flask, render_template, request,
+    jsonify, send_file, redirect, url_for, session
+)
 from datetime import datetime
-from io import BytesIO
+import os
+import io
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 
 app = Flask(__name__)
 
-# ---------- Configuração segura ----------
-app.secret_key = os.environ.get("SECRET_KEY", "prof_safe24_dev_secret")
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "ProfSafe24@VIP")
+# ========= SEGURANÇA / CONFIG =========
+app.secret_key = os.getenv("SECRET_KEY", "chave_dev_insegura")
 
-SCHOOL_NAME = os.environ.get("SCHOOL_NAME", "Escola Modelo SPYNET")
-SCHOOL_ADDRESS = os.environ.get("SCHOOL_ADDRESS", "Av. Principal, 456 - Centro")
-SCHOOL_CITY = os.environ.get("SCHOOL_CITY", "Brasília - DF")
-SCHOOL_PHONE = os.environ.get("SCHOOL_PHONE", "(61) 99999-0000")
-SCHOOL_DIRECTOR = os.environ.get("SCHOOL_DIRECTOR", "Maria Silva Oliveira")
+ADMIN_USER = os.getenv("ADMIN_USER", "diretor")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "ProfSafe24@VIP")
 
-# ---------- Estado em memória ----------
+# Dados da escola (pode mudar no Render depois)
+SCHOOL_NAME = os.getenv("SCHOOL_NAME", "Escola Modelo PROF-SAFE24")
+SCHOOL_CITY = os.getenv("SCHOOL_CITY", "Cidade / UF")
+SCHOOL_CONTACT = os.getenv("SCHOOL_CONTACT", "Telefone / WhatsApp da escola")
+
+# ========= MEMÓRIA SIMPLES =========
 alertas = []
-sistema_status = {
-    "sirene_ativa": False,
-    "mutado": False,
-    "ultima_atualizacao": None,
-}
+siren_on = False
+siren_muted = False
+last_alert_time = None
 
 
-def _now_str():
-    return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+# ========= DECORATOR LOGIN =========
+from functools import wraps
+
+def login_required(view_func):
+    @wraps(view_func)
+    def wrapper(*args, **kwargs):
+        if not session.get("logged_in"):
+            return redirect(url_for("login_central"))
+        return view_func(*args, **kwargs)
+    return wrapper
 
 
-# ---------- Rotas de páginas ----------
-
+# ========= PÁGINAS =========
 @app.route("/")
 def home():
     return render_template("home.html")
-
 
 @app.route("/professor")
 def professor():
     return render_template("professor.html")
 
-
-@app.route("/painel_publico")
-def painel_publico():
-    return render_template("painel_publico.html")
-
-
-@app.route("/admin")
-def admin():
-    return render_template("admin.html")
-
-
-# ----------- Login da Central -----------
-
 @app.route("/login_central", methods=["GET", "POST"])
 def login_central():
-    error = None
+    erro = None
     if request.method == "POST":
-        # pega do form (HTML) ou de JSON
-        password = None
-        if request.is_json:
-            data = request.get_json(silent=True) or {}
-            password = data.get("password") or data.get("senha")
-        else:
-            password = request.form.get("password") or request.form.get("senha")
+        user = request.form.get("username", "").strip()
+        password = request.form.get("password", "").strip()
 
-        if password == ADMIN_PASSWORD:
-            session["admin_logged"] = True
+        if user == ADMIN_USER and password == ADMIN_PASSWORD:
+            session["logged_in"] = True
+            session["admin_user"] = user
             return redirect(url_for("central"))
         else:
-            error = "Senha inválida. Tente novamente."
+            erro = "Usuário ou senha inválidos."
 
-    return render_template("login_central.html", error=error)
+    return render_template("login_central.html", error=erro)
 
-
-@app.route("/logout_central")
-def logout_central():
-    session.pop("admin_logged", None)
+@app.route("/logout")
+def logout():
+    session.clear()
     return redirect(url_for("login_central"))
 
-
 @app.route("/central")
+@login_required
 def central():
-    if not session.get("admin_logged"):
-        return redirect(url_for("login_central"))
-    return render_template("central.html")
+    return render_template(
+        "central.html",
+        alertas=alertas,
+        school_name=SCHOOL_NAME,
+        school_city=SCHOOL_CITY,
+        school_contact=SCHOOL_CONTACT,
+        last_alert_time=last_alert_time,
+        siren_on=siren_on
+    )
 
 
-# ---------- APIs de alerta e status ----------
-
+# ========= API – ALERTAS / SIRENE =========
 @app.route("/api/alert", methods=["POST"])
 def api_alert():
-    data = request.get_json(force=True, silent=True) or {}
-    teacher = data.get("teacher") or "Professor"
-    room = data.get("room") or "Sala não informada"
-    description = data.get("description") or "Sem descrição"
+    global siren_on, last_alert_time, siren_muted
+
+    data = request.get_json()
+    teacher = data.get("teacher", "Professor")
+    room = data.get("room", "Sala")
+    desc = data.get("description", "")
+
+    if not room or not desc:
+        return jsonify({"ok": False, "error": "Dados incompletos"}), 400
 
     alerta = {
         "teacher": teacher,
         "room": room,
-        "description": description,
-        "ts": _now_str(),
-        "resolved": False,
+        "description": desc,
+        "time": datetime.now().strftime("%H:%M:%S")
     }
-    alertas.append(alerta)
 
-    sistema_status["sirene_ativa"] = True
-    sistema_status["ultima_atualizacao"] = _now_str()
+    alertas.insert(0, alerta)
+    last_alert_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
-    return jsonify({"ok": True, "alert": alerta})
+    if not siren_muted:
+        siren_on = True
+
+    return jsonify({"ok": True, "alerta": alerta})
 
 
 @app.route("/api/status")
+@login_required
 def api_status():
-    active_alerts = [a for a in alertas if not a["resolved"]]
-    return jsonify(
-        {
-            "siren": sistema_status["sirene_ativa"],
-            "muted": sistema_status["mutado"],
-            "alerts": alertas,
-            "active_alerts": len(active_alerts),
-            "last_update": sistema_status["ultima_atualizacao"],
-        }
-    )
+    return jsonify({
+        "alertas": alertas,
+        "siren_on": siren_on,
+        "siren_muted": siren_muted,
+        "last_alert_time": last_alert_time
+    })
 
 
 @app.route("/api/siren", methods=["POST"])
+@login_required
 def api_siren():
-    data = request.get_json(force=True, silent=True) or {}
+    global siren_on, siren_muted
+
+    data = request.get_json()
     action = data.get("action")
 
     if action == "on":
-        sistema_status["sirene_ativa"] = True
+        if not siren_muted:
+            siren_on = True
     elif action == "off":
-        sistema_status["sirene_ativa"] = False
+        siren_on = False
     elif action == "mute":
-        sistema_status["mutado"] = True
+        siren_muted = True
+        siren_on = False
     elif action == "unmute":
-        sistema_status["mutado"] = False
-    elif action == "clear":
-        for a in alertas:
-            a["resolved"] = True
+        siren_muted = False
     else:
         return jsonify({"ok": False, "error": "Ação inválida"}), 400
 
-    sistema_status["ultima_atualizacao"] = _now_str()
-    return jsonify(
-        {
-            "ok": True,
-            "siren": sistema_status["sirene_ativa"],
-            "muted": sistema_status["mutado"],
-        }
-    )
+    return jsonify({"ok": True, "siren_on": siren_on, "siren_muted": siren_muted})
 
 
-@app.route("/api/resolve", methods=["POST"])
-def api_resolve():
-    # Marca o primeiro alerta não resolvido como resolvido
-    for a in alertas:
-        if not a["resolved"]:
-            a["resolved"] = True
-            sistema_status["ultima_atualizacao"] = _now_str()
-            break
-    # Se não houver mais alertas abertos, desliga a sirene
-    if not any(not a["resolved"] for a in alertas):
-        sistema_status["sirene_ativa"] = False
+@app.route("/api/clear", methods=["POST"])
+@login_required
+def api_clear():
+    global alertas, siren_on, last_alert_time
+    alertas = []
+    siren_on = False
+    last_alert_time = None
     return jsonify({"ok": True})
 
 
-# ---------- Áudio da sirene ----------
-
+# ========= SIRENE (ÁUDIO) =========
 @app.route("/tocar_sirene")
 def tocar_sirene():
-    siren_path = os.path.join(app.static_folder, "siren.mp3")
-    if not os.path.exists(siren_path):
-        return "Arquivo de áudio não encontrado", 404
-    return send_file(siren_path, mimetype="audio/mpeg")
+    caminho = os.path.join("static", "siren.mp3")
+    if os.path.exists(caminho):
+        return send_file(caminho)
+    return "Arquivo de áudio não encontrado", 404
 
 
-# ---------- Relatório em PDF ----------
-
+# ========= RELATÓRIO PDF =========
 @app.route("/report.pdf")
+@login_required
 def report_pdf():
-    try:
-        from reportlab.lib.pagesizes import A4
-        from reportlab.pdfgen import canvas
-    except Exception as e:
-        return f"Biblioteca reportlab não encontrada: {e}", 500
+    """
+    Gera relatório simples com:
+    - Dados da escola
+    - Últimos alertas
+    """
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, pagesize=A4)
 
-    buffer = BytesIO()
-    c = canvas.Canvas(buffer, pagesize=A4)
-    width, height = A4
+    largura, altura = A4
+    y = altura - 50
 
-    y = height - 50
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(50, y, "Relatório de Alertas - PROF-SAFE24")
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(50, y, "PROF-SAFE24 – Relatório de Ocorrências")
     y -= 30
 
-    c.setFont("Helvetica", 11)
-    c.drawString(50, y, f"Escola: {SCHOOL_NAME}")
-    y -= 15
-    c.drawString(50, y, f"Endereço: {SCHOOL_ADDRESS} - {SCHOOL_CITY}")
-    y -= 15
-    c.drawString(50, y, f"Telefone: {SCHOOL_PHONE}")
-    y -= 15
-    c.drawString(50, y, f"Diretor(a): {SCHOOL_DIRECTOR}")
-    y -= 25
+    p.setFont("Helvetica", 12)
+    p.drawString(50, y, f"Escola: {SCHOOL_NAME}")
+    y -= 18
+    p.drawString(50, y, f"Cidade/UF: {SCHOOL_CITY}")
+    y -= 18
+    p.drawString(50, y, f"Contato: {SCHOOL_CONTACT}")
+    y -= 18
+    p.drawString(50, y, f"Gerado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+    y -= 30
 
-    c.drawString(50, y, f"Data de emissão: {_now_str()}")
-    y -= 25
-
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y, "Alertas registrados:")
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "Ocorrências registradas:")
     y -= 20
 
-    c.setFont("Helvetica", 10)
+    p.setFont("Helvetica", 11)
+
     if not alertas:
-        c.drawString(50, y, "Nenhum alerta registrado até o momento.")
+        p.drawString(50, y, "Nenhum alerta registrado até o momento.")
     else:
-        for idx, a in enumerate(alertas, start=1):
+        for alerta in alertas:
             if y < 80:
-                c.showPage()
-                y = height - 50
-                c.setFont("Helvetica", 10)
-            status = "Resolvido" if a.get("resolved") else "Pendente"
-            linha = f"{idx}. {a.get('ts')} | Prof: {a.get('teacher')} | Sala: {a.get('room')} | {status}"
-            c.drawString(50, y, linha)
+                p.showPage()
+                y = altura - 50
+                p.setFont("Helvetica", 11)
+
+            linha = f"[{alerta['time']}] Prof.: {alerta['teacher']} | Sala: {alerta['room']} | Detalhes: {alerta['description']}"
+            p.drawString(50, y, linha)
             y -= 15
 
-    c.showPage()
-    c.save()
+    p.showPage()
+    p.save()
+
     buffer.seek(0)
     return send_file(
         buffer,
-        as_attachment=True,
+        as_attachment=False,
         download_name="relatorio_prof_safe24.pdf",
         mimetype="application/pdf",
     )
 
 
-# ---------- Healthcheck ----------
-
-@app.route("/health")
-def health():
-    return jsonify({"status": "ok"})
-
-
+# ========= RUN LOCAL =========
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=5000, debug=True)
