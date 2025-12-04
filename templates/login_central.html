@@ -1,49 +1,127 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPYNET – Acesso Administrativo</title>
-    <link rel="stylesheet" href="/static/style_login.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0f24, #1b2a44);
+            color: white;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 35px 45px;
+            border-radius: 12px;
+            width: 420px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+            letter-spacing: 2px;
+            font-size: 28px;
+            color: #f7a531;
+            font-weight: 700;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 17px;
+            color: #ffffffb9;
+            letter-spacing: 1px;
+        }
+
+        label {
+            font-size: 14px;
+            margin-top: 8px;
+            display: block;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .btn-login {
+            margin-top: 20px;
+            width: 100%;
+            padding: 11px;
+            border: none;
+            font-size: 16px;
+            border-radius: 6px;
+            background: #f7a531;
+            color: #000;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-login:hover {
+            background: #ffbb55;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+            font-size: 14px;
+            color: #ffffffa8;
+        }
+
+        .back:hover {
+            color: white;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 15px;
+            opacity: 0.7;
+        }
+    </style>
+
 </head>
-
 <body>
+
     <div class="container">
-        <div class="login-card">
-            <div class="logo-area">
-                <div class="logo-icon">SN</div>
-                <h1>SPYNET</h1>
-                <p class="sub">SISTEMA DE SEGURANÇA</p>
-            </div>
+        <h1>SPYNET</h1>
+        <h2>SISTEMA DE SEGURANÇA</h2>
 
-            <h2>Acesso Administrativo</h2>
-            <p class="desc">Acesso restrito à direção, coordenação e equipe de segurança.</p>
+        <form method="POST">
+            <label>Usuário</label>
+            <input type="text" name="usuario" placeholder="Digite seu usuário">
 
-            <form method="POST" action="/login_central">
-                <label>Usuário</label>
-                <input type="text" name="usuario" placeholder="Digite seu usuário">
+            <label>Senha</label>
+            <input type="password" name="senha" placeholder="Digite sua senha">
 
-                <label>Senha</label>
-                <input type="password" name="senha" placeholder="Digite sua senha">
+            <button class="btn-login">Entrar no Sistema</button>
+        </form>
 
-                <div class="clock" id="clock">00:00:00</div>
+        <a class="back" href="/">⟵ Voltar</a>
 
-                <button type="submit" class="btn-enter">🔐 Entrar no Sistema</button>
-                <a href="/" class="btn-back">⟲ Voltar</a>
-            </form>
-
-            <p class="footer">Acesso liberado apenas para direção / coordenação.<br>Credenciais configuradas no sistema administrativo.</p>
+        <div class="footer">
+            Acesso restrito à direção, coordenação e equipe autorizada.
         </div>
     </div>
-
-<script>
-function clock(){
-    const t = new Date();
-    document.getElementById("clock").innerHTML =
-        t.toLocaleTimeString('pt-BR', { hour12:false });
-}
-setInterval(clock, 1000);
-</script>
 
 </body>
 </html>
