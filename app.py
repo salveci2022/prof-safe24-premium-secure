@@ -1,5 +1,5 @@
 import os
-from io import BytesIO
+import io
 from datetime import datetime
 
 from flask import (
@@ -10,41 +10,38 @@ from flask import (
     send_file,
     redirect,
     url_for,
+    session,
 )
 
-from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
 
 app = Flask(__name__)
 
-# =========================
-# CONFIGURAÇÕES DE SEGURANÇA
-# =========================
+# =====================================================
+# SEGURANÇA BÁSICA
+# =====================================================
+app.secret_key = os.environ.get("SECRET_KEY", "prof_safe24_dev_secret")
 
-app.secret_key = os.environ.get("SECRET_KEY", "dev_inseguro_ProfSafe24")
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "ProfSafe24@2025")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "ProfSafe24@VIP")
 
-# =========================
-# DADOS DA ESCOLA
-# >>> EDITE ESTES 3 CAMPOS PARA CADA CLIENTE
-# =========================
-SCHOOL_NAME = "Escola Municipal Modelo PROF-SAFE24"
-SCHOOL_ADDRESS = "Rua Exemplo, 123 – Bairro, Cidade/UF"
-SCHOOL_RESPONSAVEL = "Diretor(a): Nome do Responsável"
+# Dados da escola (MUDE AQUI para cada cliente)
+SCHOOL_DATA = {
+    "nome": "Escola Modelo PROF-SAFE24",
+    "cidade": "Cidade/UF",
+    "telefone": "(00) 0000-0000",
+}
 
-
-# =========================
-# BANCO SIMPLES EM MEMÓRIA
-# =========================
+# Banco simples em memória
 alertas = []
 siren_on = False
 siren_muted = False
 last_alert_time = None
 
 
-# =========================
+# =====================================================
 # ROTAS DE PÁGINAS
-# =========================
+# =====================================================
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -57,19 +54,24 @@ def professor():
 
 @app.route("/central")
 def central():
+    # se quiser travar o acesso, descomente estas 3 linhas:
+    # if not session.get("logado"):
+    #     return redirect(url_for("login_central"))
     return render_template("central.html")
 
 
-# LOGIN – usa senha do ADMIN_PASSWORD (Render)
+# LOGIN NO ESTILO SPYNET (GET + POST)
 @app.route("/login_central", methods=["GET", "POST"])
 def login_central():
     error = None
     if request.method == "POST":
-        senha_digitada = request.form.get("password", "")
-        if senha_digitada == ADMIN_PASSWORD:
+        password = request.form.get("password", "")
+        if password == ADMIN_PASSWORD:
+            session["logado"] = True
             return redirect(url_for("central"))
         else:
             error = "Senha incorreta. Tente novamente."
+
     return render_template("login_central.html", error=error)
 
 
@@ -78,14 +80,20 @@ def admin():
     return render_template("admin.html")
 
 
-@app.route("/painel_publico")
-def painel_publico():
+@app.route("/publico")
+def publico():
     return render_template("painel_publico.html")
 
 
-# =========================
+# Alias para não dar 404 quando acessar /painel_publico
+@app.route("/painel_publico")
+def painel_publico_alias():
+    return render_template("painel_publico.html")
+
+
+# =====================================================
 # API – ENVIAR ALERTA
-# =========================
+# =====================================================
 @app.route("/api/alert", methods=["POST"])
 def api_alert():
     global siren_on, last_alert_time, siren_muted
@@ -114,9 +122,9 @@ def api_alert():
     return jsonify({"ok": True, "alerta": alerta})
 
 
-# =========================
+# =====================================================
 # API – STATUS
-# =========================
+# =====================================================
 @app.route("/api/status")
 def api_status():
     return jsonify(
@@ -125,13 +133,14 @@ def api_status():
             "siren_on": siren_on,
             "siren_muted": siren_muted,
             "last_alert_time": last_alert_time,
+            "school": SCHOOL_DATA,
         }
     )
 
 
-# =========================
-# API – CONTROLE DA SIRENE
-# =========================
+# =====================================================
+# API – SIRENE
+# =====================================================
 @app.route("/api/siren", methods=["POST"])
 def api_siren():
     global siren_on, siren_muted
@@ -160,9 +169,9 @@ def api_siren():
     return jsonify({"ok": False, "error": "Ação inválida"}), 400
 
 
-# =========================
+# =====================================================
 # API – LIMPAR ALERTAS
-# =========================
+# =====================================================
 @app.route("/api/clear", methods=["POST"])
 def api_clear():
     global alertas, siren_on, last_alert_time
@@ -172,9 +181,17 @@ def api_clear():
     return jsonify({"ok": True})
 
 
-# =========================
-# SIRENE (ÁUDIO MP3)
-# =========================
+# =====================================================
+# SIRENE (MP3)
+# =====================================================
+@app.route("/play-alarm")
+def play_alarm():
+    caminho = os.path.join("static", "siren.mp3")
+    if os.path.exists(caminho):
+        return send_file(caminho)
+    return "Arquivo de áudio não encontrado", 404
+
+
 @app.route("/tocar_sirene")
 def tocar_sirene():
     caminho = os.path.join("static", "siren.mp3")
@@ -183,58 +200,55 @@ def tocar_sirene():
     return "Erro ao carregar sirene", 500
 
 
-# =========================
-# RELATÓRIO PDF EM /report.pdf
-# =========================
+# =====================================================
+# RELATÓRIO EM PDF – /report.pdf
+# =====================================================
 @app.route("/report.pdf")
-def gerar_relatorio_pdf():
+def report_pdf():
     """
-    Gera um PDF simples com:
-    - Dados da escola
-    - Lista de alertas
+    Gera um relatório simples dos alertas em PDF.
+    URL: /report.pdf
     """
-    buffer = BytesIO()
+
+    buffer = io.BytesIO()
     p = canvas.Canvas(buffer, pagesize=A4)
-    largura, altura = A4
-    y = altura - 50
+    width, height = A4
 
     # Cabeçalho
     p.setFont("Helvetica-Bold", 16)
-    p.drawString(50, y, f"Relatório de Alertas – {SCHOOL_NAME}")
-    y -= 30
+    p.drawString(50, height - 50, "Relatório de Alertas – PROF-SAFE24")
 
     p.setFont("Helvetica", 11)
-    p.drawString(50, y, f"Escola: {SCHOOL_NAME}")
-    y -= 15
-    p.drawString(50, y, f"Endereço: {SCHOOL_ADDRESS}")
-    y -= 15
-    p.drawString(50, y, f"{SCHOOL_RESPONSAVEL}")
-    y -= 25
+    p.drawString(50, height - 70, f"Escola: {SCHOOL_DATA['nome']}")
+    p.drawString(50, height - 85, f"Cidade/UF: {SCHOOL_DATA['cidade']}")
+    p.drawString(50, height - 100, f"Telefone: {SCHOOL_DATA['telefone']}")
+    p.drawString(
+        50,
+        height - 120,
+        "Gerado em: " + datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+    )
 
-    p.setFont("Helvetica-Bold", 13)
-    p.drawString(50, y, "Alertas Registrados")
+    # Lista de alertas
+    y = height - 150
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "Alertas registradados:")
     y -= 20
-    p.setFont("Helvetica", 11)
+    p.setFont("Helvetica", 10)
 
     if not alertas:
         p.drawString(50, y, "Nenhum alerta registrado até o momento.")
     else:
         for alerta in alertas:
-            if y < 80:
-                p.showPage()
-                y = altura - 50
-                p.setFont("Helvetica-Bold", 13)
-                p.drawString(50, y, "Alertas (continuação)")
-                y -= 20
-                p.setFont("Helvetica", 11)
-
-            linha1 = f"Hora: {alerta['time']}  |  Sala: {alerta['room']}  |  Professor: {alerta['teacher']}"
-            p.drawString(50, y, linha1)
+            linha = (
+                f"{alerta['time']} | Sala: {alerta['room']} | "
+                f"Prof: {alerta['teacher']} | {alerta['description']}"
+            )
+            p.drawString(50, y, linha)
             y -= 15
-
-            linha2 = f"Descrição: {alerta['description']}"
-            p.drawString(50, y, linha2)
-            y -= 25
+            if y < 60:
+                p.showPage()
+                y = height - 50
+                p.setFont("Helvetica", 10)
 
     p.showPage()
     p.save()
@@ -243,13 +257,13 @@ def gerar_relatorio_pdf():
     return send_file(
         buffer,
         as_attachment=True,
-        download_name="relatorio_prof_safe24.pdf",
+        download_name="report.pdf",
         mimetype="application/pdf",
     )
 
 
-# =========================
-# MAIN
-# =========================
+# =====================================================
+# EXECUTAR LOCAL
+# =====================================================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
