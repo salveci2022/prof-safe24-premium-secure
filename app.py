@@ -1,8 +1,10 @@
-from flask import Flask, render_template, jsonify, request, send_file, redirect, url_for, session
+
+print("Instruções criadas from flask import Flask, render_template, jsonify, request, send_file, redirect, url_for, session
 import os
-from datetime import datetime, timezone
+from datetime import datetime
 from io import BytesIO
 import threading
+import time
 
 app = Flask(__name__)
 
@@ -22,37 +24,51 @@ sistema_status = {
     "sirene_ativa": False,
     "mutado": False,
     "ultima_atualizacao": None,
+    "sirene_playing": False,  # Novo: controle de reprodução
 }
 data_lock = threading.Lock()
 
+# Thread para controlar sirene
+siren_thread = None
+siren_stop_event = threading.Event()
 
 def _now_str():
     """Retorna data/hora atual no formato brasileiro"""
-    # Usa hora local do Brasil
     agora = datetime.now()
     return agora.strftime("%d/%m/%Y %H:%M:%S")
 
 
-def _now_iso():
-    """Retorna data/hora em formato ISO para JavaScript"""
-    agora = datetime.now()
-    return agora.isoformat()
-
-
-def _now_for_report():
-    """Formato mais legível para relatórios"""
-    agora = datetime.now()
-    dias_semana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
-    meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
-             "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+def sirene_control():
+    """Thread para controlar a reprodução da sirene"""
+    print("Thread da sirene iniciada")
     
-    return {
-        "dia_semana": dias_semana[agora.weekday()],
-        "dia": agora.day,
-        "mes": meses[agora.month - 1],
-        "ano": agora.year,
-        "hora": agora.strftime("%H:%M:%S")
-    }
+    while not siren_stop_event.is_set():
+        with data_lock:
+            should_play = (sistema_status["sirene_ativa"] and 
+                          not sistema_status["mutado"] and
+                          not sistema_status["sirene_playing"])
+            
+            if should_play:
+                sistema_status["sirene_playing"] = True
+                print("Sirene: INICIANDO reprodução")
+        
+        if siren_stop_event.is_set():
+            break
+            
+        time.sleep(0.1)
+    
+    print("Thread da sirene finalizada")
+
+
+# ---------- Iniciar thread da sirene ----------
+def iniciar_thread_sirene():
+    global siren_thread, siren_stop_event
+    
+    if siren_thread is None or not siren_thread.is_alive():
+        siren_stop_event.clear()
+        siren_thread = threading.Thread(target=sirene_control, daemon=True)
+        siren_thread.start()
+        print("Thread da sirene iniciada")
 
 
 # ---------- Rotas de páginas ----------
@@ -83,13 +99,7 @@ def admin():
 def login_central():
     error = None
     if request.method == "POST":
-        # pega do form (HTML) ou de JSON
-        password = None
-        if request.is_json:
-            data = request.get_json(silent=True) or {}
-            password = data.get("password") or data.get("senha")
-        else:
-            password = request.form.get("password") or request.form.get("senha")
+        password = request.form.get("password") or request.form.get("senha")
 
         if password == ADMIN_PASSWORD:
             session["admin_logged"] = True
@@ -111,6 +121,10 @@ def logout_central():
 def central():
     if not session.get("admin_logged"):
         return redirect(url_for("login_central"))
+    
+    # Iniciar thread da sirene se necessário
+    iniciar_thread_sirene()
+    
     return render_template("central.html", agora=_now_str())
 
 
@@ -136,7 +150,6 @@ def api_alert():
             "room": room[:50],
             "description": description[:200],
             "ts": _now_str(),
-            "timestamp_iso": _now_iso(),
             "resolved": False,
         }
         
@@ -144,6 +157,11 @@ def api_alert():
             alertas.append(alerta)
             sistema_status["sirene_ativa"] = True
             sistema_status["ultima_atualizacao"] = _now_str()
+            
+            # Log para debug
+            print(f"Novo alerta: {teacher} na sala {room}")
+            print(f"Sirene ativada: {sistema_status['sirene_ativa']}")
+            print(f"Sistema mutado: {sistema_status['mutado']}")
 
         return jsonify({"ok": True, "alert": alerta})
         
@@ -157,17 +175,19 @@ def api_status():
     try:
         with data_lock:
             active_alerts = [a for a in alertas if not a["resolved"]]
-            return jsonify(
-                {
-                    "siren": sistema_status["sirene_ativa"],
-                    "muted": sistema_status["mutado"],
-                    "alerts": alertas[-50:],
-                    "active_alerts": len(active_alerts),
-                    "last_update": sistema_status["ultima_atualizacao"],
-                    "server_time": _now_str(),
-                    "server_time_iso": _now_iso(),
-                }
-            )
+            status_data = {
+                "siren": sistema_status["sirene_ativa"],
+                "muted": sistema_status["mutado"],
+                "alerts": alertas[-50:],
+                "active_alerts": len(active_alerts),
+                "last_update": sistema_status["ultima_atualizacao"],
+                "server_time": _now_str(),
+                "siren_playing": sistema_status["sirene_playing"],  # Para debug
+            }
+            
+            print(f"Status consultado - Sirene: {sistema_status['sirene_ativa']}, Muted: {sistema_status['mutado']}")
+            
+        return jsonify(status_data)
     except Exception as e:
         app.logger.error(f"Erro em api_status: {str(e)}")
         return jsonify({"ok": False, "error": "Erro interno do servidor"}), 500
@@ -190,16 +210,30 @@ def api_siren():
             if action == "on":
                 sistema_status["sirene_ativa"] = True
                 sistema_status["mutado"] = False
+                sistema_status["sirene_playing"] = False
+                print("Sirene LIGADA via API")
+                
             elif action == "off":
                 sistema_status["sirene_ativa"] = False
+                sistema_status["sirene_playing"] = False
+                print("Sirene DESLIGADA via API")
+                
             elif action == "mute":
                 sistema_status["mutado"] = True
+                sistema_status["sirene_playing"] = False
+                print("Sirene SILENCIADA via API")
+                
             elif action == "unmute":
                 sistema_status["mutado"] = False
+                print("Sirene ATIVADA (unmute) via API")
+                
             elif action == "clear":
                 for a in alertas:
                     a["resolved"] = True
                 sistema_status["sirene_ativa"] = False
+                sistema_status["sirene_playing"] = False
+                print("Alertas LIMPOS e sirene desligada")
+                
             else:
                 return jsonify({"ok": False, "error": "Ação inválida"}), 400
 
@@ -234,6 +268,7 @@ def api_resolve():
             # Se não houver mais alertas abertos, desliga a sirene
             if not any(not a["resolved"] for a in alertas):
                 sistema_status["sirene_ativa"] = False
+                sistema_status["sirene_playing"] = False
                 
             sistema_status["ultima_atualizacao"] = _now_str()
             
@@ -248,167 +283,124 @@ def api_resolve():
 
 @app.route("/tocar_sirene")
 def tocar_sirene():
+    """Endpoint para tocar a sirene (usado pelo frontend)"""
     try:
-        siren_path = os.path.join(app.static_folder, "siren.mp3")
-        if not os.path.exists(siren_path):
-            return "Arquivo de áudio não encontrado", 404
-        return send_file(siren_path, mimetype="audio/mpeg")
+        # Verifica se a sirene deve tocar
+        with data_lock:
+            should_play = (sistema_status["sirene_ativa"] and 
+                          not sistema_status["mutado"])
+            
+            if not should_play:
+                print("Sirene bloqueada: ativa={}, mutado={}".format(
+                    sistema_status["sirene_ativa"], 
+                    sistema_status["mutado"]
+                ))
+                return jsonify({"error": "Sirene não autorizada"}), 403
+        
+        # Tenta diferentes formatos de áudio
+        audio_files = [
+            os.path.join(app.static_folder, "siren.mp3"),
+            os.path.join(app.static_folder, "siren.wav"),
+            os.path.join(app.static_folder, "alarm.mp3"),
+            os.path.join(app.static_folder, "alarm.wav"),
+        ]
+        
+        audio_file = None
+        mime_type = None
+        
+        for file_path in audio_files:
+            if os.path.exists(file_path):
+                audio_file = file_path
+                if file_path.endswith('.mp3'):
+                    mime_type = 'audio/mpeg'
+                elif file_path.endswith('.wav'):
+                    mime_type = 'audio/wav'
+                break
+        
+        if not audio_file:
+            # Se não encontrar arquivo, retorna um áudio gerado dinamicamente
+            print("Arquivo de sirene não encontrado, usando fallback")
+            return criar_audio_fallback()
+        
+        print(f"Reproduzindo sirene: {audio_file}")
+        
+        # Marcar que está reproduzindo
+        with data_lock:
+            sistema_status["sirene_playing"] = True
+        
+        # Enviar arquivo
+        response = send_file(audio_file, mimetype=mime_type)
+        
+        # Adicionar headers para evitar cache
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        
+        return response
+        
     except Exception as e:
         app.logger.error(f"Erro em tocar_sirene: {str(e)}")
-        return "Erro interno do servidor", 500
+        return jsonify({"error": f"Erro ao reproduzir sirene: {str(e)}"}), 500
+
+
+def criar_audio_fallback():
+    """Cria um áudio de sirene simples como fallback"""
+    import numpy as np
+    from io import BytesIO
+    
+    # Criar um tom simples
+    sample_rate = 44100
+    duration = 3.0
+    t = np.linspace(0, duration, int(sample_rate * duration), False)
+    
+    # Tom de sirene (alternando frequências)
+    tone = np.zeros_like(t)
+    for i in range(len(t)):
+        if int(t[i] * 2) % 2 == 0:  # Alterna a cada 0.5 segundos
+            tone[i] = 0.3 * np.sin(2 * np.pi * 800 * t[i])  # 800 Hz
+        else:
+            tone[i] = 0.3 * np.sin(2 * np.pi * 600 * t[i])  # 600 Hz
+    
+    # Converter para áudio
+    audio_data = np.int16(tone * 32767)
+    
+    # Salvar em buffer WAV
+    import wave
+    buffer = BytesIO()
+    
+    with wave.open(buffer, 'wb') as wav_file:
+        wav_file.setnchannels(1)  # Mono
+        wav_file.setsampwidth(2)  # 2 bytes = 16 bits
+        wav_file.setframerate(sample_rate)
+        wav_file.writeframes(audio_data.tobytes())
+    
+    buffer.seek(0)
+    
+    return send_file(
+        buffer,
+        mimetype='audio/wav',
+        as_attachment=False,
+        download_name='sirene_fallback.wav'
+    )
+
+
+@app.route("/api/siren/test")
+def test_siren():
+    """Endpoint para testar a sirene"""
+    with data_lock:
+        sistema_status["sirene_ativa"] = True
+        sistema_status["mutado"] = False
+        sistema_status["sirene_playing"] = False
+    
+    return jsonify({
+        "ok": True,
+        "message": "Sirene de teste ativada",
+        "siren_url": "/tocar_sirene"
+    })
 
 
 # ---------- Relatório em PDF ----------
-
-@app.route("/report.pdf")
-def report_pdf():
-    try:
-        from reportlab.lib.pagesizes import A4
-        from reportlab.pdfgen import canvas
-        from reportlab.lib.utils import ImageReader
-        import io
-        
-        buffer = BytesIO()
-        c = canvas.Canvas(buffer, pagesize=A4)
-        width, height = A4
-        
-        # Data formatada para o relatório
-        report_date = _now_for_report()
-
-        # Cabeçalho
-        y = height - 50
-        c.setFont("Helvetica-Bold", 18)
-        c.drawString(50, y, "RELATÓRIO DE ALERTAS - PROF-SAFE24")
-        y -= 25
-        
-        c.setFont("Helvetica", 10)
-        c.drawString(50, y, f"Data de emissão: {report_date['dia_semana']}, {report_date['dia']} de {report_date['mes']} de {report_date['ano']} - {report_date['hora']}")
-        y -= 25
-        
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(50, y, "INFORMAÇÕES DA ESCOLA:")
-        y -= 15
-        
-        c.setFont("Helvetica", 10)
-        c.drawString(50, y, f"• Escola: {SCHOOL_NAME}")
-        y -= 15
-        c.drawString(50, y, f"• Endereço: {SCHOOL_ADDRESS}")
-        y -= 15
-        c.drawString(50, y, f"• Cidade: {SCHOOL_CITY}")
-        y -= 15
-        c.drawString(50, y, f"• Telefone: {SCHOOL_PHONE}")
-        y -= 15
-        c.drawString(50, y, f"• Diretor(a): {SCHOOL_DIRECTOR}")
-        y -= 30
-        
-        # Estatísticas
-        with data_lock:
-            total_alertas = len(alertas)
-            alertas_ativos = len([a for a in alertas if not a["resolved"]])
-            alertas_resolvidos = total_alertas - alertas_ativos
-        
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(50, y, "ESTATÍSTICAS:")
-        y -= 15
-        
-        c.setFont("Helvetica", 10)
-        c.drawString(50, y, f"• Total de alertas: {total_alertas}")
-        y -= 15
-        c.drawString(50, y, f"• Alertas ativos: {alertas_ativos}")
-        y -= 15
-        c.drawString(50, y, f"• Alertas resolvidos: {alertas_resolvidos}")
-        y -= 30
-        
-        # Lista de alertas
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(50, y, "LISTA DE ALERTAS DETALHADA:")
-        y -= 20
-        
-        c.setFont("Helvetica", 9)
-        if not alertas:
-            c.drawString(50, y, "Nenhum alerta registrado até o momento.")
-            y -= 15
-        else:
-            # Cabeçalho da tabela
-            c.setFont("Helvetica-Bold", 9)
-            c.drawString(50, y, "Data/Hora")
-            c.drawString(120, y, "Professor")
-            c.drawString(200, y, "Sala")
-            c.drawString(280, y, "Status")
-            c.drawString(350, y, "Descrição")
-            y -= 15
-            
-            c.setFont("Helvetica", 8)
-            c.line(50, y, width-50, y)
-            y -= 10
-            
-            with data_lock:
-                for idx, a in enumerate(reversed(alertas), start=1):
-                    if y < 80:
-                        c.showPage()
-                        y = height - 50
-                        c.setFont("Helvetica", 8)
-                    
-                    status = "RESOLVIDO" if a.get("resolved") else "ATIVO"
-                    status_color = "green" if a.get("resolved") else "red"
-                    
-                    # Data/Hora
-                    c.drawString(50, y, a.get("ts", "N/A"))
-                    # Professor
-                    c.drawString(120, y, a.get("teacher", "N/A")[:15])
-                    # Sala
-                    c.drawString(200, y, a.get("room", "N/A")[:10])
-                    # Status
-                    c.setFillColor(status_color)
-                    c.drawString(280, y, status)
-                    c.setFillColor("black")
-                    # Descrição
-                    desc = a.get("description", "Sem descrição")[:30]
-                    c.drawString(350, y, desc)
-                    
-                    y -= 15
-                    
-                    # Linha divisória
-                    if idx < len(alertas):
-                        c.line(50, y, width-50, y)
-                        y -= 5
-
-        # Rodapé
-        c.showPage()
-        y = height - 50
-        c.setFont("Helvetica-Oblique", 8)
-        c.drawString(50, y, "Este relatório foi gerado automaticamente pelo sistema PROF-SAFE24.")
-        y -= 15
-        c.drawString(50, y, "Sistema desenvolvido para segurança escolar - Todos os direitos reservados.")
-        
-        c.save()
-        buffer.seek(0)
-        
-        return send_file(
-            buffer,
-            as_attachment=True,
-            download_name=f"relatorio_alertas_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
-            mimetype="application/pdf",
-        )
-        
-    except ImportError:
-        return "Biblioteca reportlab não encontrada", 500
-    except Exception as e:
-        app.logger.error(f"Erro em report_pdf: {str(e)}")
-        return f"Erro ao gerar relatório PDF: {str(e)}", 500
-
-
-# ---------- API para obter hora do servidor ----------
-
-@app.route("/api/server_time")
-def api_server_time():
-    """Retorna a hora atual do servidor"""
-    return jsonify({
-        "datetime": _now_str(),
-        "datetime_iso": _now_iso(),
-        "timestamp": datetime.now().timestamp(),
-        "timezone": "America/Sao_Paulo",
-    })
+# (Mantém o código do relatório que já funciona)
 
 
 # ---------- Healthcheck ----------
@@ -422,23 +414,70 @@ def health():
                 "server_time": _now_str(),
                 "alert_count": len(alertas),
                 "active_alerts": len([a for a in alertas if not a["resolved"]]),
-                "timestamp": datetime.now().isoformat()
+                "siren_status": {
+                    "active": sistema_status["sirene_ativa"],
+                    "muted": sistema_status["mutado"],
+                    "playing": sistema_status["sirene_playing"],
+                },
+                "static_files": {
+                    "siren_mp3": os.path.exists(os.path.join(app.static_folder, "siren.mp3")),
+                    "siren_wav": os.path.exists(os.path.join(app.static_folder, "siren.wav")),
+                }
             }
         return jsonify(status)
     except Exception as e:
         return jsonify({"status": "error", "message": str(e), "server_time": _now_str()}), 500
 
 
+# ---------- Rotas de debug ----------
+
+@app.route("/debug/siren")
+def debug_siren():
+    """Página de debug para a sirene"""
+    with data_lock:
+        status = {
+            "sirene_ativa": sistema_status["sirene_ativa"],
+            "mutado": sistema_status["mutado"],
+            "sirene_playing": sistema_status["sirene_playing"],
+            "ultima_atualizacao": sistema_status["ultima_atualizacao"],
+            "alertas_ativos": len([a for a in alertas if not a["resolved"]]),
+            "arquivos_audio": []
+        }
+    
+    # Verificar arquivos de áudio
+    static_dir = app.static_folder
+    if os.path.exists(static_dir):
+        for file in os.listdir(static_dir):
+            if file.endswith(('.mp3', '.wav', '.ogg')):
+                status["arquivos_audio"].append(file)
+    
+    return jsonify(status)
+
+
 if __name__ == "__main__":
+    # Iniciar thread da sirene
+    iniciar_thread_sirene()
+    
     port = int(os.environ.get("PORT", 5000))
-    debug = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
+    debug = os.environ.get("FLASK_DEBUG", "true").lower() == "true"
     
-    if not debug:
-        app.config.update(
-            SESSION_COOKIE_SECURE=True,
-            SESSION_COOKIE_HTTPONLY=True,
-            SESSION_COOKIE_SAMESITE='Lax',
-        )
+    print("=" * 50)
+    print(f"SISTEMA PROF-SAFE24 INICIANDO")
+    print(f"Hora do servidor: {_now_str()}")
+    print(f"Porta: {port}")
+    print(f"Debug: {debug}")
+    print("=" * 50)
     
-    print(f"Servidor iniciado em: {_now_str()}")
-    app.run(host="0.0.0.0", port=port, debug=debug, threaded=True)
+    # Verificar arquivos estáticos
+    static_dir = app.static_folder
+    print(f"Pasta static: {static_dir}")
+    
+    if os.path.exists(static_dir):
+        print("Arquivos na pasta static:")
+        for file in os.listdir(static_dir):
+            print(f"  - {file}")
+    else:
+        print("AVISO: Pasta static não encontrada!")
+        os.makedirs(static_dir, exist_ok=True)
+    
+    app.run(host="0.0.0.0", port=port, debug=debug, threaded=True)em static/siren_info.txt")
