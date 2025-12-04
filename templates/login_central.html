@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <title>SPYNET – Acesso Administrativo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    
+    <!-- Otimização: CSS externo ou simplificado -->
     <style>
+        /* CSS simplificado e otimizado */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -14,7 +16,7 @@
 
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: radial-gradient(circle at top, #0f172a 0, #020617 45%, #000 100%);
+            background: #020617;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -23,36 +25,18 @@
         }
 
         .card {
-            width: 100%;
+            width: 90%;
             max-width: 420px;
-            padding: 26px 24px 28px;
-            background: radial-gradient(circle at top left, rgba(56,189,248,0.2), transparent 55%),
-                        radial-gradient(circle at top right, rgba(249,115,22,0.18), transparent 55%),
-                        #020617;
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(15,23,42,0.9);
-            border: 1px solid rgba(148,163,184,0.35);
-            position: relative;
-        }
-
-        .card::before {
-            content: "";
-            position: absolute;
-            inset: -1px;
-            border-radius: inherit;
-            padding: 1px;
-            background: linear-gradient(90deg, #38bdf8, #6366f1, #f97316);
-            -webkit-mask:
-                linear-gradient(#000 0 0) content-box,
-                linear-gradient(#000 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0.7;
+            padding: 2rem 1.5rem;
+            background: #0f172a;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.3);
         }
 
         .header {
             text-align: center;
-            margin-bottom: 18px;
+            margin-bottom: 1.5rem;
         }
 
         .logo-circle {
@@ -63,14 +47,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 10px;
-            box-shadow: 0 12px 28px rgba(37,99,235,0.7);
+            margin: 0 auto 1rem;
         }
 
         .logo-circle span {
             font-size: 30px;
             font-weight: 700;
-            color: #e5e7eb;
+            color: white;
         }
 
         .brand {
@@ -90,81 +73,101 @@
 
         h1 {
             font-size: 22px;
-            margin-top: 18px;
-            margin-bottom: 4px;
+            margin: 1.5rem 0 0.5rem;
         }
 
         .desc {
             font-size: 13px;
             color: #9ca3af;
-            margin-bottom: 18px;
+            margin-bottom: 1.5rem;
         }
 
         label {
             display: block;
             font-size: 13px;
             color: #cbd5f5;
-            margin-bottom: 4px;
+            margin-bottom: 0.25rem;
         }
 
         input {
             width: 100%;
-            padding: 10px 12px;
-            border-radius: 999px;
-            border: 1px solid rgba(51,65,85,0.9);
-            background: rgba(15,23,42,0.95);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: rgba(15, 23, 42, 0.8);
             color: #e5e7eb;
             font-size: 14px;
             outline: none;
-            margin-bottom: 10px;
+            margin-bottom: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: #38bdf8;
         }
 
         input::placeholder {
             color: #6b7280;
         }
 
-        .time {
+        .time-container {
             text-align: center;
+            margin: 1rem 0;
+        }
+
+        .time {
             font-size: 14px;
             color: #f97316;
-            margin: 6px 0 14px;
             font-variant-numeric: tabular-nums;
+            background: rgba(249, 115, 22, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            display: inline-block;
+            min-width: 100px;
         }
 
         .buttons {
             display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 0.75rem;
+            margin: 1.5rem 0 1rem;
         }
 
         .btn {
             flex: 1;
-            border-radius: 999px;
+            border-radius: 8px;
             border: none;
-            padding: 11px 14px;
+            padding: 0.75rem 1rem;
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 0.5rem;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #4f46e5, #6366f1, #f97316);
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
             color: #f9fafb;
-            box-shadow: 0 12px 28px rgba(56,189,248,0.65);
         }
 
         .btn-secondary {
-            background: rgba(15,23,42,0.9);
+            background: rgba(15, 23, 42, 0.9);
             color: #e5e7eb;
-            border: 1px solid rgba(75,85,99,0.9);
+            border: 1px solid #4b5563;
         }
 
         .footer {
-            margin-top: 10px;
+            margin-top: 1rem;
             font-size: 11px;
             text-align: center;
             color: #9ca3af;
@@ -174,17 +177,36 @@
         .error {
             font-size: 12px;
             color: #fecaca;
-            background: rgba(127,29,29,0.8);
+            background: rgba(127, 29, 29, 0.8);
             border-radius: 8px;
-            padding: 6px 10px;
-            margin-bottom: 8px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
             text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
         }
 
         @media (max-width: 480px) {
             .card {
-                margin: 16px;
-                padding: 22px 18px 24px;
+                padding: 1.5rem 1rem;
+                width: 95%;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
             }
         }
     </style>
@@ -207,18 +229,25 @@
         <div class="error">{{ error }}</div>
     {% endif %}
 
-    <form action="/login_central" method="POST">
+    <form id="loginForm" action="/login_central" method="POST">
         <label for="user">Usuário</label>
-        <input id="user" name="username" placeholder="Digite seu usuário (ex.: diretor)" autocomplete="off">
+        <input id="user" name="username" placeholder="Digite seu usuário" autocomplete="off">
 
         <label for="pass">Senha</label>
         <input id="pass" name="password" type="password" placeholder="Digite sua senha de acesso" required>
 
-        <div class="time" id="clock">--:--:--</div>
+        <div class="time-container">
+            <div class="time" id="clock">--:--:--</div>
+        </div>
 
         <div class="buttons">
-            <button class="btn btn-primary" type="submit">🔐 Entrar no Sistema</button>
-            <button class="btn btn-secondary" type="button" onclick="window.location.href='/'">↩ Voltar</button>
+            <button class="btn btn-primary" type="submit" id="submitBtn">
+                <span id="btnText">🔐 Entrar no Sistema</span>
+                <span id="btnLoading" style="display:none;">⏳ Processando...</span>
+            </button>
+            <button class="btn btn-secondary" type="button" onclick="window.location.href='/'">
+                ↩ Voltar
+            </button>
         </div>
     </form>
 
@@ -229,16 +258,90 @@
 </div>
 
 <script>
-function updateClock() {
-    const el = document.getElementById('clock');
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2, '0');
-    const m = String(now.getMinutes()).padStart(2, '0');
-    const s = String(now.getSeconds()).padStart(2, '0');
-    el.textContent = `${h}:${m}:${s}`;
-}
-setInterval(updateClock, 1000);
-updateClock();
+    // JavaScript otimizado e não-bloqueante
+    document.addEventListener('DOMContentLoaded', function() {
+        // Relógio otimizado (atualiza apenas os segundos)
+        let lastSecond = -1;
+        function updateClock() {
+            const now = new Date();
+            const currentSecond = now.getSeconds();
+            
+            // Só atualiza se o segundo mudou
+            if (currentSecond !== lastSecond) {
+                const h = String(now.getHours()).padStart(2, '0');
+                const m = String(now.getMinutes()).padStart(2, '0');
+                const s = String(currentSecond).padStart(2, '0');
+                document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+                lastSecond = currentSecond;
+            }
+        }
+        
+        // Usa requestAnimationFrame para atualizações mais eficientes
+        function clockLoop() {
+            updateClock();
+            setTimeout(clockLoop, 200); // Verifica a cada 200ms em vez de 1000ms
+        }
+        clockLoop();
+        
+        // Prevenir múltiplos envios do formulário
+        const loginForm = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnLoading = document.getElementById('btnLoading');
+        let isSubmitting = false;
+        
+        loginForm.addEventListener('submit', function(e) {
+            if (isSubmitting) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Validação básica
+            const password = document.getElementById('pass').value;
+            if (!password || password.trim() === '') {
+                e.preventDefault();
+                alert('Por favor, digite a senha');
+                return false;
+            }
+            
+            // Mostrar estado de carregamento
+            isSubmitting = true;
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+            submitBtn.classList.add('loading');
+            
+            // Timeout de segurança
+            setTimeout(() => {
+                if (isSubmitting) {
+                    isSubmitting = false;
+                    btnText.style.display = 'inline';
+                    btnLoading.style.display = 'none';
+                    submitBtn.classList.remove('loading');
+                    alert('A requisição está demorando muito. Tente novamente.');
+                }
+            }, 10000); // 10 segundos timeout
+            
+            return true;
+        });
+        
+        // Foco automático no campo de usuário
+        const userField = document.getElementById('user');
+        if (userField && !userField.value) {
+            userField.focus();
+        }
+    });
+    
+    // Prevenir comportamento padrão do formulário ao pressionar Enter em campos errados
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const active = document.activeElement;
+            if (active && active.form && active.type !== 'submit' && active.type !== 'textarea') {
+                e.preventDefault();
+                const submitBtn = active.form.querySelector('button[type="submit"]');
+                if (submitBtn) submitBtn.click();
+            }
+        }
+    });
 </script>
 
 </body>
