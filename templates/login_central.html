@@ -1,331 +1,48 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPYNET – Acesso Administrativo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: #0a0a0a;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            padding: 20px;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 400px;
-            padding: 30px;
-            background: #111;
-            border-radius: 10px;
-            border: 1px solid #333;
-            box-shadow: 0 0 20px rgba(0, 100, 255, 0.2);
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(45deg, #0066ff, #00ccff);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
-            font-size: 32px;
-            font-weight: bold;
-            color: white;
-        }
-
-        .brand {
-            font-size: 28px;
-            color: #00ccff;
-            font-weight: bold;
-            letter-spacing: 3px;
-            margin-bottom: 5px;
-        }
-
-        .subtitle {
-            font-size: 12px;
-            color: #888;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        h1 {
-            font-size: 20px;
-            margin: 20px 0 10px;
-            color: #fff;
-        }
-
-        .desc {
-            font-size: 14px;
-            color: #aaa;
-            margin-bottom: 25px;
-            line-height: 1.4;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-size: 14px;
-            color: #00ccff;
-            margin-bottom: 8px;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 6px;
-            border: 1px solid #333;
-            background: #222;
-            color: #fff;
-            font-size: 16px;
-            outline: none;
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            border-color: #0066ff;
-            box-shadow: 0 0 5px rgba(0, 102, 255, 0.5);
-        }
-
-        input::placeholder {
-            color: #666;
-        }
-
-        .time-display {
-            text-align: center;
-            margin: 20px 0;
-            font-size: 16px;
-            color: #ff9900;
-            font-family: 'Courier New', monospace;
-            background: rgba(255, 153, 0, 0.1);
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 153, 0, 0.3);
-        }
-
-        .time-main {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .time-date {
-            font-size: 14px;
-            color: #ccc;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 10px;
-            margin: 25px 0;
-        }
-
-        button {
-            flex: 1;
-            padding: 12px;
-            border-radius: 6px;
-            border: none;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, #0066ff, #00ccff);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(45deg, #0055dd, #00bbee);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: #333;
-            color: #fff;
-            border: 1px solid #555;
-        }
-
-        .btn-secondary:hover {
-            background: #444;
-        }
-
-        .footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #888;
-            text-align: center;
-            line-height: 1.5;
-            border-top: 1px solid #333;
-            padding-top: 15px;
-        }
-
-        .error {
-            background: rgba(255, 50, 50, 0.1);
-            color: #ff6666;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            text-align: center;
-            border: 1px solid rgba(255, 50, 50, 0.3);
-        }
-    </style>
+    <link rel="stylesheet" href="/static/style_login.css">
 </head>
+
 <body>
+    <div class="container">
+        <div class="login-card">
+            <div class="logo-area">
+                <div class="logo-icon">SN</div>
+                <h1>SPYNET</h1>
+                <p class="sub">SISTEMA DE SEGURANÇA</p>
+            </div>
 
-<div class="card">
-    <div class="header">
-        <div class="logo">SN</div>
-        <div class="brand">SPYNET</div>
-        <div class="subtitle">SISTEMA DE SEGURANÇA</div>
+            <h2>Acesso Administrativo</h2>
+            <p class="desc">Acesso restrito à direção, coordenação e equipe de segurança.</p>
 
-        <h1>Acesso Administrativo</h1>
-        <p class="desc">Acesso restrito à direção, coordenação e equipe de segurança.</p>
+            <form method="POST" action="/login_central">
+                <label>Usuário</label>
+                <input type="text" name="usuario" placeholder="Digite seu usuário">
+
+                <label>Senha</label>
+                <input type="password" name="senha" placeholder="Digite sua senha">
+
+                <div class="clock" id="clock">00:00:00</div>
+
+                <button type="submit" class="btn-enter">🔐 Entrar no Sistema</button>
+                <a href="/" class="btn-back">⟲ Voltar</a>
+            </form>
+
+            <p class="footer">Acesso liberado apenas para direção / coordenação.<br>Credenciais configuradas no sistema administrativo.</p>
+        </div>
     </div>
-
-    {% if error %}
-        <div class="error">{{ error }}</div>
-    {% endif %}
-
-    <form method="POST" action="/login_central" id="loginForm">
-        <div class="form-group">
-            <label for="username">Usuário</label>
-            <input type="text" id="username" name="username" placeholder="Digite seu usuário (ex.: diretor)" autocomplete="off" autofocus>
-        </div>
-
-        <div class="form-group">
-            <label for="password">Senha</label>
-            <input type="password" id="password" name="password" placeholder="Digite sua senha de acesso" required>
-        </div>
-
-        <div class="time-display">
-            <div class="time-main" id="clockTime">--:--:--</div>
-            <div class="time-date" id="clockDate">---/---/----</div>
-        </div>
-
-        <div class="buttons">
-            <button type="submit" class="btn-primary">🔐 Entrar no Sistema</button>
-            <button type="button" class="btn-secondary" onclick="window.location.href='/'">↩ Voltar</button>
-        </div>
-    </form>
-
-    <div class="footer">
-        Acesso liberado apenas para direção / coordenação.<br>
-        Credenciais configuradas no sistema administrativo PROF-SAFE24.<br>
-        <small>Horário do servidor: {% if agora %}{{ agora }}{% endif %}</small>
-    </div>
-</div>
 
 <script>
-    // Função para formatar data/hora no formato brasileiro
-    function formatarDataHora(data) {
-        const dia = String(data.getDate()).padStart(2, '0');
-        const mes = String(data.getMonth() + 1).padStart(2, '0');
-        const ano = data.getFullYear();
-        const horas = String(data.getHours()).padStart(2, '0');
-        const minutos = String(data.getMinutes()).padStart(2, '0');
-        const segundos = String(data.getSeconds()).padStart(2, '0');
-        
-        return {
-            data: `${dia}/${mes}/${ano}`,
-            hora: `${horas}:${minutos}:${segundos}`
-        };
-    }
-    
-    // Atualizar relógio local
-    function updateClock() {
-        const now = new Date();
-        const formatado = formatarDataHora(now);
-        
-        document.getElementById('clockTime').textContent = formatado.hora;
-        document.getElementById('clockDate').textContent = formatado.data;
-    }
-    
-    // Sincronizar com servidor periodicamente
-    function syncWithServer() {
-        fetch('/api/server_time')
-            .then(response => response.json())
-            .then(data => {
-                console.log('Hora do servidor:', data.datetime);
-                // Você pode usar esta informação para ajustar o relógio se necessário
-            })
-            .catch(err => console.log('Não foi possível sincronizar com servidor:', err));
-    }
-    
-    // Inicializar
-    updateClock();
-    setInterval(updateClock, 1000);
-    syncWithServer();
-    setInterval(syncWithServer, 30000); // Sincronizar a cada 30 segundos
-    
-    // Foco no campo de usuário
-    document.getElementById('username').focus();
-    
-    // Prevenir envio múltiplo
-    const form = document.getElementById('loginForm');
-    let isSubmitting = false;
-    
-    form.addEventListener('submit', function(e) {
-        if (isSubmitting) {
-            e.preventDefault();
-            return;
-        }
-        
-        const password = document.getElementById('password').value;
-        if (!password || password.trim() === '') {
-            e.preventDefault();
-            alert('Por favor, digite a senha');
-            document.getElementById('password').focus();
-            return;
-        }
-        
-        isSubmitting = true;
-        const submitBtn = form.querySelector('.btn-primary');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '⏳ Processando...';
-        
-        // Timeout de segurança
-        setTimeout(() => {
-            if (isSubmitting) {
-                isSubmitting = false;
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
-                alert('A requisição está demorando muito. Verifique sua conexão e tente novamente.');
-            }
-        }, 10000);
-        
-        // Resetar estado após envio (mesmo se falhar)
-        setTimeout(() => {
-            isSubmitting = false;
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-        }, 15000);
-    });
+function clock(){
+    const t = new Date();
+    document.getElementById("clock").innerHTML =
+        t.toLocaleTimeString('pt-BR', { hour12:false });
+}
+setInterval(clock, 1000);
 </script>
 
 </body>
