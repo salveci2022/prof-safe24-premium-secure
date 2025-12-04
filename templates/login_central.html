@@ -2,126 +2,267 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPYNET – Acesso Administrativo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             padding: 0;
             font-family: "Segoe UI", Arial, sans-serif;
-            background: linear-gradient(135deg, #0a0f24, #1b2a44);
-            color: white;
-            height: 100vh;
+            background: radial-gradient(circle at top left, #1c2540, #050814);
+            color: #ffffff;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .container {
-            background: rgba(255, 255, 255, 0.08);
-            padding: 35px 45px;
-            border-radius: 12px;
-            width: 420px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(6px);
+        .login-wrapper {
+            width: 100%;
+            max-width: 520px;
+            padding: 20px;
         }
 
-        h1 {
+        .card {
+            position: relative;
+            background: linear-gradient(160deg, #050814, #050816);
+            border-radius: 24px;
+            padding: 32px 32px 26px 32px;
+            box-shadow: 0 0 35px rgba(0,0,0,0.75);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        /* Borda neon superior */
+        .card::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: 12%;
+            right: 12%;
+            height: 4px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #ff8a3d, #ffdf6f, #00e0ff, #4f46e5);
+        }
+
+        .logo-circle {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #00e0ff, #4f46e5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            color: #ffffff;
+            margin: 0 auto 8px auto;
+        }
+
+        .title-main {
             text-align: center;
-            margin-top: 0;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: #00e0ff;
+            margin: 0;
+        }
+
+        .subtitle-system {
+            text-align: center;
+            font-size: 11px;
             letter-spacing: 2px;
-            font-size: 28px;
-            color: #f7a531;
+            text-transform: uppercase;
+            margin-top: 2px;
+            color: #e5e7ebaa;
+        }
+
+        .access-title {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 20px;
             font-weight: 700;
         }
 
-        h2 {
+        .access-desc {
+            margin-top: 4px;
             text-align: center;
-            margin-bottom: 25px;
-            font-size: 17px;
-            color: #ffffffb9;
-            letter-spacing: 1px;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .form-group {
+            margin-top: 16px;
         }
 
         label {
-            font-size: 14px;
-            margin-top: 8px;
             display: block;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: #e5e7eb;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #111827;
+            font-size: 14px;
+            outline: none;
+            background: radial-gradient(circle at top left, #020617, #020617);
+            color: #f9fafb;
+        }
+
+        input::placeholder {
+            color: #6b7280;
+        }
+
+        input:focus {
+            border-color: #00e0ff;
+            box-shadow: 0 0 0 1px rgba(0, 224, 255, 0.35);
+        }
+
+        .error-box {
+            margin-top: 14px;
+            border-radius: 8px;
+            background: rgba(239, 68, 68, 0.18);
+            border: 1px solid rgba(239, 68, 68, 0.6);
+            padding: 8px 10px;
+            font-size: 13px;
+            color: #fecaca;
+        }
+
+        .buttons-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            align-items: center;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 11px 0;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff8a3d, #ffd166);
+            color: #111827;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.05);
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 11px 0;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            background: radial-gradient(circle at top left, #020617, #020617);
+            color: #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            border-color: #00e0ff;
+        }
+
+        .clock {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #f97316;
             font-weight: 600;
         }
 
-        input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            border: none;
-            margin-top: 5px;
-            font-size: 14px;
-        }
-
-        .btn-login {
-            margin-top: 20px;
-            width: 100%;
-            padding: 11px;
-            border: none;
-            font-size: 16px;
-            border-radius: 6px;
-            background: #f7a531;
-            color: #000;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-login:hover {
-            background: #ffbb55;
-        }
-
-        .back {
-            display: block;
+        .footer-text {
+            margin-top: 14px;
+            font-size: 11px;
+            color: #9ca3af;
             text-align: center;
-            margin-top: 15px;
-            text-decoration: none;
-            font-size: 14px;
-            color: #ffffffa8;
         }
 
-        .back:hover {
-            color: white;
-        }
-
-        .footer {
-            text-align: center;
-            font-size: 12px;
-            margin-top: 15px;
-            opacity: 0.7;
+        @media (max-width: 480px) {
+            .card {
+                padding: 24px 20px 20px 20px;
+                border-radius: 20px;
+            }
         }
     </style>
-
 </head>
 <body>
 
-    <div class="container">
-        <h1>SPYNET</h1>
-        <h2>SISTEMA DE SEGURANÇA</h2>
+<div class="login-wrapper">
+    <div class="card">
+        <div class="logo-circle">SN</div>
+        <h1 class="title-main">SPYNET</h1>
+        <div class="subtitle-system">SISTEMA DE SEGURANÇA</div>
+
+        <h2 class="access-title">Acesso Administrativo</h2>
+        <div class="access-desc">
+            Acesso restrito à direção, coordenação e equipe de segurança.
+        </div>
 
         <form method="POST">
-            <label>Usuário</label>
-            <input type="text" name="usuario" placeholder="Digite seu usuário">
+            <div class="form-group">
+                <label for="usuario">Usuário</label>
+                <input id="usuario" name="usuario" type="text" placeholder="Digite seu usuário">
+            </div>
 
-            <label>Senha</label>
-            <input type="password" name="senha" placeholder="Digite sua senha">
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input id="senha" name="senha" type="password" placeholder="Digite sua senha">
+            </div>
 
-            <button class="btn-login">Entrar no Sistema</button>
+            {% if error %}
+            <div class="error-box">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <div class="buttons-row">
+                <button type="submit" class="btn-primary">
+                    🔒 Entrar no Sistema
+                </button>
+                <button type="button" class="btn-secondary" onclick="window.location.href='/'">
+                    ⟵ Voltar
+                </button>
+            </div>
+
+            <div class="clock" id="clock"></div>
+
+            <div class="footer-text">
+                Acesso liberado apenas para direção / coordenação.<br>
+                Credenciais configuradas no sistema administrativo.
+            </div>
         </form>
-
-        <a class="back" href="/">⟵ Voltar</a>
-
-        <div class="footer">
-            Acesso restrito à direção, coordenação e equipe autorizada.
-        </div>
     </div>
+</div>
+
+<script>
+    function atualizarRelogio() {
+        const el = document.getElementById("clock");
+        const agora = new Date();
+        const h = String(agora.getHours()).padStart(2, "0");
+        const m = String(agora.getMinutes()).padStart(2, "0");
+        const s = String(agora.getSeconds()).padStart(2, "0");
+        el.textContent = h + ":" + m + ":" + s;
+    }
+    atualizarRelogio();
+    setInterval(atualizarRelogio, 1000);
+</script>
 
 </body>
 </html>
