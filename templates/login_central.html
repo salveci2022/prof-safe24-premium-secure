@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <style>
-        /* CSS simplificado e funcional */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -118,12 +117,24 @@
         .time-display {
             text-align: center;
             margin: 20px 0;
-            font-size: 18px;
+            font-size: 16px;
             color: #ff9900;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             background: rgba(255, 153, 0, 0.1);
-            padding: 10px;
+            padding: 12px;
             border-radius: 6px;
+            border: 1px solid rgba(255, 153, 0, 0.3);
+        }
+
+        .time-main {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .time-date {
+            font-size: 14px;
+            color: #ccc;
         }
 
         .buttons {
@@ -211,7 +222,10 @@
             <input type="password" id="password" name="password" placeholder="Digite sua senha de acesso" required>
         </div>
 
-        <div class="time-display" id="clock">--:--:--</div>
+        <div class="time-display">
+            <div class="time-main" id="clockTime">--:--:--</div>
+            <div class="time-date" id="clockDate">---/---/----</div>
+        </div>
 
         <div class="buttons">
             <button type="submit" class="btn-primary">🔐 Entrar no Sistema</button>
@@ -221,28 +235,52 @@
 
     <div class="footer">
         Acesso liberado apenas para direção / coordenação.<br>
-        Credenciais configuradas no sistema administrativo PROF-SAFE24.
+        Credenciais configuradas no sistema administrativo PROF-SAFE24.<br>
+        <small>Horário do servidor: {% if agora %}{{ agora }}{% endif %}</small>
     </div>
 </div>
 
 <script>
-    // Função para atualizar o relógio
-    function updateClock() {
-        const now = new Date();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const seconds = String(now.getSeconds()).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const year = String(now.getFullYear()).slice(-2);
+    // Função para formatar data/hora no formato brasileiro
+    function formatarDataHora(data) {
+        const dia = String(data.getDate()).padStart(2, '0');
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const ano = data.getFullYear();
+        const horas = String(data.getHours()).padStart(2, '0');
+        const minutos = String(data.getMinutes()).padStart(2, '0');
+        const segundos = String(data.getSeconds()).padStart(2, '0');
         
-        document.getElementById('clock').textContent = 
-            `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+        return {
+            data: `${dia}/${mes}/${ano}`,
+            hora: `${horas}:${minutos}:${segundos}`
+        };
     }
     
-    // Atualizar imediatamente e a cada segundo
+    // Atualizar relógio local
+    function updateClock() {
+        const now = new Date();
+        const formatado = formatarDataHora(now);
+        
+        document.getElementById('clockTime').textContent = formatado.hora;
+        document.getElementById('clockDate').textContent = formatado.data;
+    }
+    
+    // Sincronizar com servidor periodicamente
+    function syncWithServer() {
+        fetch('/api/server_time')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Hora do servidor:', data.datetime);
+                // Você pode usar esta informação para ajustar o relógio se necessário
+            })
+            .catch(err => console.log('Não foi possível sincronizar com servidor:', err));
+    }
+    
+    // Inicializar
     updateClock();
     setInterval(updateClock, 1000);
+    syncWithServer();
+    setInterval(syncWithServer, 30000); // Sincronizar a cada 30 segundos
     
     // Foco no campo de usuário
     document.getElementById('username').focus();
@@ -267,6 +305,7 @@
         
         isSubmitting = true;
         const submitBtn = form.querySelector('.btn-primary');
+        const originalText = submitBtn.innerHTML;
         submitBtn.disabled = true;
         submitBtn.innerHTML = '⏳ Processando...';
         
@@ -275,10 +314,17 @@
             if (isSubmitting) {
                 isSubmitting = false;
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '🔐 Entrar no Sistema';
+                submitBtn.innerHTML = originalText;
                 alert('A requisição está demorando muito. Verifique sua conexão e tente novamente.');
             }
         }, 10000);
+        
+        // Resetar estado após envio (mesmo se falhar)
+        setTimeout(() => {
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }, 15000);
     });
 </script>
 
