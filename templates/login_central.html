@@ -2,12 +2,12 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>SPYNET – Acesso Administrativo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <!-- Otimização: CSS externo ou simplificado -->
     <style>
-        /* CSS simplificado e otimizado */
+        /* CSS simplificado e funcional */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -15,199 +15,172 @@
         }
 
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #020617;
+            font-family: Arial, sans-serif;
+            background: #0a0a0a;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #e5e7eb;
+            color: #fff;
+            padding: 20px;
         }
 
         .card {
-            width: 90%;
-            max-width: 420px;
-            padding: 2rem 1.5rem;
-            background: #0f172a;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(148, 163, 184, 0.3);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            background: #111;
+            border-radius: 10px;
+            border: 1px solid #333;
+            box-shadow: 0 0 20px rgba(0, 100, 255, 0.2);
         }
 
         .header {
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 25px;
         }
 
-        .logo-circle {
-            width: 70px;
-            height: 70px;
-            border-radius: 20px;
-            background: linear-gradient(145deg, #1d4ed8, #38bdf8);
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #0066ff, #00ccff);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1rem;
-        }
-
-        .logo-circle span {
-            font-size: 30px;
-            font-weight: 700;
+            margin: 0 auto 15px;
+            font-size: 32px;
+            font-weight: bold;
             color: white;
         }
 
         .brand {
-            font-size: 26px;
-            letter-spacing: 0.22em;
-            color: #22d3ee;
-            font-weight: 600;
+            font-size: 28px;
+            color: #00ccff;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
         }
 
         .subtitle {
             font-size: 12px;
-            letter-spacing: .18em;
+            color: #888;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            color: #9ca3af;
-            margin-top: 4px;
         }
 
         h1 {
-            font-size: 22px;
-            margin: 1.5rem 0 0.5rem;
+            font-size: 20px;
+            margin: 20px 0 10px;
+            color: #fff;
         }
 
         .desc {
-            font-size: 13px;
-            color: #9ca3af;
-            margin-bottom: 1.5rem;
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
         }
 
         label {
             display: block;
-            font-size: 13px;
-            color: #cbd5f5;
-            margin-bottom: 0.25rem;
-        }
-
-        input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            border: 1px solid #334155;
-            background: rgba(15, 23, 42, 0.8);
-            color: #e5e7eb;
             font-size: 14px;
-            outline: none;
-            margin-bottom: 1rem;
-            transition: border-color 0.2s;
+            color: #00ccff;
+            margin-bottom: 8px;
         }
 
-        input:focus {
-            border-color: #38bdf8;
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 6px;
+            border: 1px solid #333;
+            background: #222;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #0066ff;
+            box-shadow: 0 0 5px rgba(0, 102, 255, 0.5);
         }
 
         input::placeholder {
-            color: #6b7280;
+            color: #666;
         }
 
-        .time-container {
+        .time-display {
             text-align: center;
-            margin: 1rem 0;
-        }
-
-        .time {
-            font-size: 14px;
-            color: #f97316;
-            font-variant-numeric: tabular-nums;
-            background: rgba(249, 115, 22, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            display: inline-block;
-            min-width: 100px;
+            margin: 20px 0;
+            font-size: 18px;
+            color: #ff9900;
+            font-family: monospace;
+            background: rgba(255, 153, 0, 0.1);
+            padding: 10px;
+            border-radius: 6px;
         }
 
         .buttons {
             display: flex;
-            gap: 0.75rem;
-            margin: 1.5rem 0 1rem;
+            gap: 10px;
+            margin: 25px 0;
         }
 
-        .btn {
+        button {
             flex: 1;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 6px;
             border: none;
-            padding: 0.75rem 1rem;
-            font-weight: 600;
             font-size: 14px;
+            font-weight: bold;
             cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: transform 0.2s, opacity 0.2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn:active {
-            transform: translateY(0);
+            transition: all 0.3s;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #4f46e5, #6366f1);
-            color: #f9fafb;
+            background: linear-gradient(45deg, #0066ff, #00ccff);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #0055dd, #00bbee);
+            transform: translateY(-2px);
         }
 
         .btn-secondary {
-            background: rgba(15, 23, 42, 0.9);
-            color: #e5e7eb;
-            border: 1px solid #4b5563;
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+        }
+
+        .btn-secondary:hover {
+            background: #444;
         }
 
         .footer {
-            margin-top: 1rem;
-            font-size: 11px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
             text-align: center;
-            color: #9ca3af;
-            line-height: 1.4;
+            line-height: 1.5;
+            border-top: 1px solid #333;
+            padding-top: 15px;
         }
 
         .error {
-            font-size: 12px;
-            color: #fecaca;
-            background: rgba(127, 29, 29, 0.8);
-            border-radius: 8px;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
+            background: rgba(255, 50, 50, 0.1);
+            color: #ff6666;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
             text-align: center;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        @media (max-width: 480px) {
-            .card {
-                padding: 1.5rem 1rem;
-                width: 95%;
-            }
-            
-            .buttons {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-            }
+            border: 1px solid rgba(255, 50, 50, 0.3);
         }
     </style>
 </head>
@@ -215,9 +188,7 @@
 
 <div class="card">
     <div class="header">
-        <div class="logo-circle">
-            <span>SN</span>
-        </div>
+        <div class="logo">SN</div>
         <div class="brand">SPYNET</div>
         <div class="subtitle">SISTEMA DE SEGURANÇA</div>
 
@@ -229,25 +200,22 @@
         <div class="error">{{ error }}</div>
     {% endif %}
 
-    <form id="loginForm" action="/login_central" method="POST">
-        <label for="user">Usuário</label>
-        <input id="user" name="username" placeholder="Digite seu usuário" autocomplete="off">
-
-        <label for="pass">Senha</label>
-        <input id="pass" name="password" type="password" placeholder="Digite sua senha de acesso" required>
-
-        <div class="time-container">
-            <div class="time" id="clock">--:--:--</div>
+    <form method="POST" action="/login_central" id="loginForm">
+        <div class="form-group">
+            <label for="username">Usuário</label>
+            <input type="text" id="username" name="username" placeholder="Digite seu usuário (ex.: diretor)" autocomplete="off" autofocus>
         </div>
 
+        <div class="form-group">
+            <label for="password">Senha</label>
+            <input type="password" id="password" name="password" placeholder="Digite sua senha de acesso" required>
+        </div>
+
+        <div class="time-display" id="clock">--:--:--</div>
+
         <div class="buttons">
-            <button class="btn btn-primary" type="submit" id="submitBtn">
-                <span id="btnText">🔐 Entrar no Sistema</span>
-                <span id="btnLoading" style="display:none;">⏳ Processando...</span>
-            </button>
-            <button class="btn btn-secondary" type="button" onclick="window.location.href='/'">
-                ↩ Voltar
-            </button>
+            <button type="submit" class="btn-primary">🔐 Entrar no Sistema</button>
+            <button type="button" class="btn-secondary" onclick="window.location.href='/'">↩ Voltar</button>
         </div>
     </form>
 
@@ -258,89 +226,59 @@
 </div>
 
 <script>
-    // JavaScript otimizado e não-bloqueante
-    document.addEventListener('DOMContentLoaded', function() {
-        // Relógio otimizado (atualiza apenas os segundos)
-        let lastSecond = -1;
-        function updateClock() {
-            const now = new Date();
-            const currentSecond = now.getSeconds();
-            
-            // Só atualiza se o segundo mudou
-            if (currentSecond !== lastSecond) {
-                const h = String(now.getHours()).padStart(2, '0');
-                const m = String(now.getMinutes()).padStart(2, '0');
-                const s = String(currentSecond).padStart(2, '0');
-                document.getElementById('clock').textContent = `${h}:${m}:${s}`;
-                lastSecond = currentSecond;
-            }
-        }
+    // Função para atualizar o relógio
+    function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = String(now.getFullYear()).slice(-2);
         
-        // Usa requestAnimationFrame para atualizações mais eficientes
-        function clockLoop() {
-            updateClock();
-            setTimeout(clockLoop, 200); // Verifica a cada 200ms em vez de 1000ms
-        }
-        clockLoop();
-        
-        // Prevenir múltiplos envios do formulário
-        const loginForm = document.getElementById('loginForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const btnText = document.getElementById('btnText');
-        const btnLoading = document.getElementById('btnLoading');
-        let isSubmitting = false;
-        
-        loginForm.addEventListener('submit', function(e) {
-            if (isSubmitting) {
-                e.preventDefault();
-                return false;
-            }
-            
-            // Validação básica
-            const password = document.getElementById('pass').value;
-            if (!password || password.trim() === '') {
-                e.preventDefault();
-                alert('Por favor, digite a senha');
-                return false;
-            }
-            
-            // Mostrar estado de carregamento
-            isSubmitting = true;
-            btnText.style.display = 'none';
-            btnLoading.style.display = 'inline';
-            submitBtn.classList.add('loading');
-            
-            // Timeout de segurança
-            setTimeout(() => {
-                if (isSubmitting) {
-                    isSubmitting = false;
-                    btnText.style.display = 'inline';
-                    btnLoading.style.display = 'none';
-                    submitBtn.classList.remove('loading');
-                    alert('A requisição está demorando muito. Tente novamente.');
-                }
-            }, 10000); // 10 segundos timeout
-            
-            return true;
-        });
-        
-        // Foco automático no campo de usuário
-        const userField = document.getElementById('user');
-        if (userField && !userField.value) {
-            userField.focus();
-        }
-    });
+        document.getElementById('clock').textContent = 
+            `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+    }
     
-    // Prevenir comportamento padrão do formulário ao pressionar Enter em campos errados
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            const active = document.activeElement;
-            if (active && active.form && active.type !== 'submit' && active.type !== 'textarea') {
-                e.preventDefault();
-                const submitBtn = active.form.querySelector('button[type="submit"]');
-                if (submitBtn) submitBtn.click();
-            }
+    // Atualizar imediatamente e a cada segundo
+    updateClock();
+    setInterval(updateClock, 1000);
+    
+    // Foco no campo de usuário
+    document.getElementById('username').focus();
+    
+    // Prevenir envio múltiplo
+    const form = document.getElementById('loginForm');
+    let isSubmitting = false;
+    
+    form.addEventListener('submit', function(e) {
+        if (isSubmitting) {
+            e.preventDefault();
+            return;
         }
+        
+        const password = document.getElementById('password').value;
+        if (!password || password.trim() === '') {
+            e.preventDefault();
+            alert('Por favor, digite a senha');
+            document.getElementById('password').focus();
+            return;
+        }
+        
+        isSubmitting = true;
+        const submitBtn = form.querySelector('.btn-primary');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '⏳ Processando...';
+        
+        // Timeout de segurança
+        setTimeout(() => {
+            if (isSubmitting) {
+                isSubmitting = false;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '🔐 Entrar no Sistema';
+                alert('A requisição está demorando muito. Verifique sua conexão e tente novamente.');
+            }
+        }, 10000);
     });
 </script>
 
