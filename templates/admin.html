@@ -2,7 +2,16 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+
     <title>SPYNET - Área Administrativa</title>
+
+    <!-- ÍCONE DA TELA INICIAL / ATALHO -->
+    <link rel="icon" type="image/png" href="/static/icon.png">
+    <link rel="apple-touch-icon" href="/static/icon.png">
+    <meta name="theme-color" content="#000000">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
         :root {
             --premium-blue: #0066ff;
@@ -81,7 +90,6 @@
             background: linear-gradient(135deg, var(--premium-blue), var(--electric-orange), var(--vibrant-cyan));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
             text-shadow: 
                 0 0 30px rgba(0, 102, 255, 0.5),
                 0 0 60px rgba(255, 106, 0, 0.3);
@@ -115,7 +123,6 @@
             font-weight: 700;
             color: white;
             margin-bottom: 15px;
-            letter-spacing: 0.5px;
         }
 
         .admin-subtitle {
@@ -137,78 +144,30 @@
             padding: 15px;
             border-radius: 12px;
             border: 1px solid rgba(0, 102, 255, 0.2);
-            text-align: center;
-        }
-
-        .feature-icon {
-            font-size: 20px;
-            margin-bottom: 8px;
-        }
-
-        .feature-text {
-            font-size: 12px;
-            color: #e2e8f0;
-            font-weight: 500;
         }
 
         .btn-admin {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
             padding: 14px 28px;
             border-radius: 15px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 15px;
             color: white;
             background: linear-gradient(135deg, var(--premium-blue), var(--deep-purple));
-            box-shadow: 
-                0 10px 25px rgba(0, 102, 255, 0.4),
-                0 0 20px rgba(123, 66, 246, 0.3);
-            transition: all 0.3s ease;
             text-decoration: none;
             margin-top: 20px;
-        }
-
-        .btn-admin:hover {
-            transform: translateY(-2px);
-            box-shadow: 
-                0 15px 35px rgba(0, 102, 255, 0.6),
-                0 0 30px rgba(123, 66, 246, 0.5);
         }
 
         .admin-footer {
             margin-top: 40px;
             font-size: 12px;
             color: #64748b;
-            border-top: 1px solid rgba(0, 102, 255, 0.2);
             padding-top: 20px;
-        }
-
-        .developer-premium {
-            color: var(--vibrant-cyan);
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        @media (max-width: 480px) {
-            .admin-shell {
-                padding: 20px;
-            }
-            .admin-card {
-                padding: 40px 25px;
-            }
-            .spynet-admin {
-                font-size: 2.8rem;
-            }
-            .admin-features {
-                grid-template-columns: 1fr;
-            }
+            border-top: 1px solid rgba(0, 102, 255, 0.2);
         }
     </style>
 </head>
+
 <body>
     <div class="admin-shell">
         <div class="admin-card">
@@ -225,31 +184,10 @@
                 gestão de usuários e parametrizações avançadas.
             </div>
 
-            <div class="admin-features">
-                <div class="feature-item">
-                    <div class="feature-icon">🔧</div>
-                    <div class="feature-text">Configurações</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">👥</div>
-                    <div class="feature-text">Usuários</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">📊</div>
-                    <div class="feature-text">Relatórios</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🔒</div>
-                    <div class="feature-text">Segurança</div>
-                </div>
-            </div>
-
-            <a href="/" class="btn-admin">
-                🏠 Voltar ao Início
-            </a>
+            <a href="/" class="btn-admin">🏠 Voltar ao Início</a>
 
             <div class="admin-footer">
-                SPYNET Security System &mdash; Desenvolvido por <span class="developer-premium">SpyNet</span> &copy; 2024
+                SPYNET Security System — Desenvolvido por <strong>SpyNet</strong> © 2024
             </div>
         </div>
     </div>
