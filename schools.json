@@ -1,0 +1,16 @@
+{
+  "colegio_spynet": {
+    "nome": "Colégio Estadual SpyNet",
+    "endereco": "Av. Principal, 456 - Centro",
+    "telefone": "(99) 99999-9999",
+    "diretor": "Nome do(a) Diretor(a)",
+    "logo": "/static/logos/spynet.png"
+  },
+  "escola_404": {
+    "nome": "Escola 404",
+    "endereco": "Santa Maria - DF",
+    "telefone": "(61) 9xxxx-xxxx",
+    "diretor": "Diretora Fulana",
+    "logo": "/static/logos/404.png"
+  }
+}
