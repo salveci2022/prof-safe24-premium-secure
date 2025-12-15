@@ -50,6 +50,13 @@ def painel_publico():
     return render_template("painel_publico.html")
 
 
+# ✅ NOVA ROTA (SEM MEXER EM NADA DO SISTEMA)
+# Serve apenas para abrir o seu admin.html
+@app.route("/admin")
+def admin():
+    return render_template("admin.html")
+
+
 # ================================
 # API – ENVIAR ALERTA (PAINEL DO PROFESSOR)
 # ================================
