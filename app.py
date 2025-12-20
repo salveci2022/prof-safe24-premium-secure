@@ -4,7 +4,6 @@ from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 import os
-import json  # ✅ ADICIONADO
 
 app = Flask(__name__)
 
@@ -15,46 +14,6 @@ alertas = []
 siren_on = False
 siren_muted = False
 last_alert_time = None
-
-
-# ================================
-# ESCOLAS (schools.json) ✅ ADICIONADO
-# ================================
-def carregar_escola():
-    """
-    Lê schools.json com segurança e retorna os dados da escola.
-    Uso: /central?school=colegio_spynet
-    Se não existir, retorna um padrão (não quebra o sistema).
-    """
-    school_key = (request.args.get("school") or "").strip()
-
-    # padrão seguro
-    padrao = {
-        "nome": "SPYNET SECURITY",
-        "endereco": "—",
-        "telefone": "—",
-        "diretor": "—",
-        "logo": ""
-    }
-
-    caminho = os.path.join(app.root_path, "schools.json")
-
-    if not os.path.exists(caminho):
-        return padrao
-
-    try:
-        with open(caminho, "r", encoding="utf-8") as f:
-            schools = json.load(f)
-
-        # se não passar ?school=, usa padrão
-        if not school_key:
-            return padrao
-
-        # se a chave existir, usa, senão padrão
-        return schools.get(school_key, padrao)
-
-    except Exception:
-        return padrao
 
 
 # ================================
@@ -73,9 +32,7 @@ def professor():
 
 @app.route("/central")
 def central():
-    # ✅ agora envia os dados da escola para o central.html
-    school_data = carregar_escola()
-    return render_template("central.html", school=school_data)
+    return render_template("central.html")
 
 
 @app.route("/login_central", methods=["GET", "POST"])
@@ -91,13 +48,6 @@ def login_central():
 def painel_publico():
     # Painel público para TV / comunidade
     return render_template("painel_publico.html")
-
-
-# ✅ NOVA ROTA (SEM MEXER EM NADA DO SISTEMA)
-# Serve apenas para abrir o seu admin.html
-@app.route("/admin")
-def admin():
-    return render_template("admin.html")
 
 
 # ================================
@@ -244,10 +194,10 @@ def gerar_relatorio():
     pdf = canvas.Canvas(buffer, pagesize=A4)
     largura, altura = A4
 
-    pdf.setTitle("Relatório de Alertas - SpyNet Security")
+    pdf.setTitle("Relatório de Alertas - PROF-SAFE24 PREMIUM")
 
     pdf.setFont("Helvetica-Bold", 16)
-    pdf.drawString(50, altura - 50, "SPYNET SECURITY - Relatório de Alertas")
+    pdf.drawString(50, altura - 50, "PROF-SAFE24 PREMIUM - Relatório de Alertas")
     pdf.setFont("Helvetica", 10)
     pdf.drawString(
         50,
@@ -285,7 +235,7 @@ def gerar_relatorio():
     return send_file(
         buffer,
         as_attachment=True,
-        download_name="relatorio_alertas_spynet.pdf",
+        download_name="relatorio_alertas_prof-safe24-premium.pdf",
         mimetype="application/pdf",
     )
 

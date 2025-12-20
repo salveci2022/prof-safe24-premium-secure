@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Painel Central – SPYNET SECURITY</title>
+    <title>Painel Central – PROF-SAFE24 PREMIUM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
@@ -125,12 +125,10 @@
             justify-content: space-between;
             font-size: 12px;
             margin-bottom: 2px;
-            gap: 10px;
         }
 
         .row span.label {
             color: #9ca3af;
-            min-width: 86px;
         }
 
         .badge-warning {
@@ -283,33 +281,6 @@
             padding: 16px 0;
         }
 
-        /* ✅ bloco de identidade da escola (logo + nome) */
-        .school-head {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-        .school-logo {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
-            object-fit: cover;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(30, 64, 175, 0.7);
-        }
-        .school-name {
-            font-weight: 800;
-            font-size: 14px;
-            color: #e0f2fe;
-            line-height: 1.2;
-        }
-        .school-meta {
-            font-size: 11px;
-            color: #9ca3af;
-            line-height: 1.35;
-        }
-
         @media (max-width: 900px) {
             .grid { grid-template-columns: minmax(0, 1fr); }
             .topbar { padding: 10px 16px; }
@@ -323,7 +294,7 @@
     <div class="brand">
         <div class="brand-icon">SN</div>
         <div>
-            <div class="brand-text-main">SPYNET SECURITY</div>
+            <div class="brand-text-main">PROF-SAFE24 PREMIUM</div>
             <div class="brand-text-sub">Painel de Controle Central</div>
         </div>
     </div>
@@ -347,33 +318,22 @@
             <div class="card-title">Dados da Escola</div>
             <div class="card-subtitle">Configure os dados conforme a unidade escolar atendida.</div>
 
-            <!-- ✅ DINÂMICO VIA FLASK (school.*) -->
-            <div class="school-head">
-                <img class="school-logo" src="{{ school.logo if school and school.logo else '/static/icon.png' }}" alt="Logo">
-                <div>
-                    <div class="school-name">{{ school.nome if school and school.nome else 'SPYNET SECURITY' }}</div>
-                    <div class="school-meta">
-                        {% if school and school.endereco %}{{ school.endereco }}{% endif %}
-                        {% if school and school.telefone %} • {{ school.telefone }}{% endif %}
-                    </div>
-                </div>
-            </div>
-
+            <!-- Esses dados você pode trocar direto no HTML -->
             <div class="row">
                 <span class="label">Nome:</span>
-                <span>{{ school.nome if school and school.nome else 'SPYNET SECURITY' }}</span>
+                <span>Colégio Estadual PROF-SAFE24 PREMIUM</span>
             </div>
             <div class="row">
                 <span class="label">Endereço:</span>
-                <span>{{ school.endereco if school and school.endereco else '—' }}</span>
+                <span>Av. Principal, 456 – Centro – Sua Cidade/UF</span>
             </div>
             <div class="row">
                 <span class="label">Telefone:</span>
-                <span>{{ school.telefone if school and school.telefone else '—' }}</span>
+                <span>(99) 99999-9999</span>
             </div>
             <div class="row">
                 <span class="label">Diretor(a):</span>
-                <span>{{ school.diretor if school and school.diretor else '—' }}</span>
+                <span>Nome do(a) Diretor(a)</span>
             </div>
 
             <div class="badge-warning">

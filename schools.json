@@ -1,23 +1,16 @@
 {
-  "default": {
-    "nome": "SPYNET SECURITY",
-    "endereco": "—",
-    "telefone": "—",
-    "diretor": "—",
-    "logo": "/static/icon.png"
-  },
   "colegio_spynet": {
-    "nome": "Colégio Santa Maria",
-    "endereco": "CL 218 Lote D - Santa Maria, Brasília - DF, 72548-224",
-    "telefone": "(61) 3394-2174",
-    "diretor": "Ilma Soares",
-    "logo": "/static/icon.png"
+    "nome": "Colégio Estadual SpyNet",
+    "endereco": "Av. Principal, 456 - Centro",
+    "telefone": "(99) 99999-9999",
+    "diretor": "Nome do(a) Diretor(a)",
+    "logo": "/static/logos/spynet.png"
   },
   "escola_404": {
     "nome": "Escola 404",
-    "endereco": "Santa Maria – DF",
-    "telefone": "(61) 00000-0000",
-    "diretor": "Direção Escolar",
-    "logo": "/static/icon.png"
+    "endereco": "Santa Maria - DF",
+    "telefone": "(61) 9xxxx-xxxx",
+    "diretor": "Diretora Fulana",
+    "logo": "/static/logos/404.png"
   }
 }
