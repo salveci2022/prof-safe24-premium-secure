@@ -5,6 +5,20 @@
     <title>Painel do Professor – PROF-SAFE24 PREMIUM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- Ícone do app / atalho (seguro, local, não quebra o sistema) -->
+    <link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icon.png') }}">
+    <meta name="msapplication-TileImage" content="{{ url_for('static', filename='icon.png') }}">
+
+    <!-- Nome exibido no atalho -->
+    <meta name="application-name" content="PROF-SAFE24">
+    <meta name="apple-mobile-web-app-title" content="PROF-SAFE24">
+
+    <!-- Abrir como app -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+
     <style>
         body {
             margin: 0;
