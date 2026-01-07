@@ -1,0 +1,130 @@
+/* Driver-Shield 360 - Modern UI */
+:root{
+  --bg1:#0a0014; --bg2:#18002f;
+  --text:#f6eaff; --muted:#cdb7e6;
+  --hot:#ff4fc8; --hot2:#a45cff; --ok:#41ffb0;
+  --card: rgba(255,255,255,.06);
+  --card2: rgba(255,255,255,.04);
+  --stroke: rgba(255,255,255,.10);
+  --shadow: 0 18px 60px rgba(0,0,0,.55);
+  --radius: 22px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(1100px 700px at 12% 10%, rgba(255,79,200,.28), transparent 55%),
+    radial-gradient(1000px 700px at 80% 30%, rgba(164,92,255,.22), transparent 55%),
+    radial-gradient(900px 700px at 60% 95%, rgba(65,255,176,.14), transparent 55%),
+    linear-gradient(145deg, var(--bg1), var(--bg2));
+}
+a{color:inherit}
+.container{max-width:1180px;margin:0 auto;padding:26px}
+.topbar{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  margin-bottom:18px;
+}
+.brand{
+  display:flex; align-items:center; gap:12px;
+  font-weight:800; letter-spacing:.2px;
+}
+.badge{
+  padding:6px 10px; border:1px solid var(--stroke); border-radius:999px;
+  background: rgba(0,0,0,.20);
+  color: var(--muted);
+  font-size:12px;
+}
+.actions{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+.btn{
+  appearance:none; border:1px solid var(--stroke);
+  background: rgba(0,0,0,.25);
+  color:var(--text);
+  padding:10px 14px;
+  border-radius: 14px;
+  cursor:pointer;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  transition: transform .08s ease, border-color .15s ease, background .15s ease;
+  font-weight:700;
+}
+.btn:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.18)}
+.btn.danger{background: rgba(255,0,80,.12); border-color: rgba(255,0,80,.25)}
+.btn.ghost{background: rgba(255,255,255,.06)}
+.btn.ok{background: rgba(65,255,176,.10); border-color: rgba(65,255,176,.25)}
+.grid{
+  display:grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap:16px;
+}
+@media (max-width: 960px){
+  .grid{grid-template-columns:1fr}
+  .container{padding:18px}
+}
+.card{
+  background: linear-gradient(180deg, var(--card), var(--card2));
+  border:1px solid var(--stroke);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding:18px;
+}
+.card h2{margin:0 0 12px 0; font-size:18px}
+.label{font-size:13px;color:var(--muted);margin:12px 0 6px}
+.input, select{
+  width:100%;
+  padding:12px 14px;
+  border-radius: 14px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.25);
+  color: var(--text);
+  outline:none;
+}
+select option{background:#12001f; color: var(--text);}
+.small{font-size:12px;color:var(--muted)}
+.list{margin:10px 0 0 0; padding-left:18px}
+.list li{margin:6px 0}
+.pill{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.25);
+  color: var(--text);
+  font-weight:700;
+}
+.sos-wrap{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px}
+.sos-btn{
+  width: 220px; height: 220px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: radial-gradient(circle at 30% 30%, rgba(255,79,200,.85), rgba(164,92,255,.85));
+  color: white;
+  font-size: 46px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  cursor:pointer;
+  box-shadow: 0 25px 80px rgba(255,79,200,.20);
+  transition: transform .08s ease, filter .15s ease;
+}
+.sos-btn:active{transform: scale(.98)}
+.hr{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
+.kv{display:flex;flex-wrap:wrap;gap:10px}
+.kv .pill{opacity:.95}
+.toast{
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.55);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  padding: 10px 14px;
+  color: var(--text);
+  box-shadow: var(--shadow);
+  max-width: 92vw;
+  display:none;
+}
+.toast.show{display:block}
+.fullscreen .container{max-width:none}
+.fullscreen body{overflow:hidden}
