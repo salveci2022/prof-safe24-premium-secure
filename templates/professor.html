@@ -443,28 +443,27 @@ function limparCampos() {
 }
 
 async function resetarSistema() {
-  if (!confirm('Deseja reiniciar e limpar o sistema?')) return;
-  const statusEl = document.getElementById('status');
   try {
-    const resp = await fetch('/api/clear', { method: 'POST' });
-    const data = await resp.json();
-    if (data.ok) {
-      statusEl.textContent = '✅ Sistema reiniciado. Voltando ao painel...';
-      statusEl.style.color = '#22c55e';
-      setTimeout(() => { window.location.href = '/professor'; }, 600);
-    } else {
-      statusEl.textContent = '❌ Erro ao reiniciar.';
-      statusEl.style.color = '#f97316';
-    }
-  } catch (e) {
-    statusEl.textContent = '❌ Erro de rede ao reiniciar.';
-    statusEl.style.color = '#f97316';
+    await fetch('/api/clear', { method: 'POST' });
+    const statusEl = document.getElementById('status');
+    statusEl.textContent = '✅ Sistema reiniciado. Voltando ao painel do professor...';
+    statusEl.style.color = '#22c55e';
+    setTimeout(() => { window.location.href = '/professor'; }, 600);
+  } catch(e) {
+    alert('Erro ao reiniciar o sistema.');
   }
-
+});
+        const statusEl = document.getElementById("status");
+        statusEl.textContent = "Sistema reiniciado. Nenhum alerta ativo.";
+        statusEl.style.color = "#38bdf8";
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 function sair() {
-  window.location.reload();
+  // sair do professor volta apenas para o próprio painel
+  window.location.href = '/professor';
 }
 </script>
 </body>

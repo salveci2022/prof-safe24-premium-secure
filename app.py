@@ -21,8 +21,10 @@ last_alert_time = None
 # ================================
 @app.route("/")
 def home():
-    # Entrada padrão: vai direto para o Painel do Professor
-    return redirect(url_for("professor"))
+    # entrada padrão redirecionada
+    return redirect(url_for('professor'))
+
+
 @app.route("/professor")
 def professor():
     return render_template("professor.html")
