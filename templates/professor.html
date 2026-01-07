@@ -5,20 +5,6 @@
     <title>Painel do Professor – PROF-SAFE24 PREMIUM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Ícone do app / atalho (seguro, local, não quebra o sistema) -->
-    <link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icon.png') }}">
-    <meta name="msapplication-TileImage" content="{{ url_for('static', filename='icon.png') }}">
-
-    <!-- Nome exibido no atalho -->
-    <meta name="application-name" content="PROF-SAFE24">
-    <meta name="apple-mobile-web-app-title" content="PROF-SAFE24">
-
-    <!-- Abrir como app -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-
-
     <style>
         body {
             margin: 0;
@@ -443,22 +429,14 @@ function limparCampos() {
 }
 
 async function resetarSistema() {
-  const statusEl = document.getElementById('status');
-  if (!confirm('Deseja reiniciar e limpar o sistema?')) return;
   try {
-    const resp = await fetch('/api/clear', { method: 'POST' });
-    const data = await resp.json();
-    if (data.ok) {
-      statusEl.textContent = '✅ Sistema reiniciado. Voltando ao painel do professor...';
-      statusEl.style.color = '#22c55e';
-      setTimeout(() => { window.location.href = '/professor'; }, 600);
-    } else {
-      statusEl.textContent = '❌ Erro ao reiniciar.';
-      statusEl.style.color = '#f97316';
-    }
-  } catch(e) {
-    statusEl.textContent = '❌ Erro de rede ao reiniciar.';
-    statusEl.style.color = '#f97316';
+    await fetch('/api/clear', { method: 'POST' });
+    const statusEl = document.getElementById('status');
+    statusEl.textContent = '✅ Sistema reiniciado. Voltando ao painel do professor...';
+    statusEl.style.color = '#22c55e';
+    setTimeout(() => { window.location.href = '/professor'; }, 600);
+  } catch (e) {
+    alert('Erro ao reiniciar o sistema.');
   }
 });
         const statusEl = document.getElementById("status");
@@ -470,20 +448,21 @@ async function resetarSistema() {
 }
 
 function sair() {
-  // Volta apenas para o próprio painel do professor
+  // Professor: não sai para outras telas
   window.location.href = '/professor';
 }
 
-// TRAVA NAVEGAÇÃO: professor não sai do próprio painel
+// 🔒 TRAVA: botão VOLTAR não sai do painel do professor
 (function lockProfessor() {
   try {
-    history.replaceState(null, '', '/professor');
-    history.pushState(null, '', '/professor');
-    window.addEventListener('popstate', function () {
-      window.location.href = '/professor';
+    history.replaceState(null, "", "/professor");
+    history.pushState(null, "", "/professor");
+    window.addEventListener("popstate", function () {
+      window.location.href = "/professor";
     });
-  } catch(e) {}
+  } catch (e) {}
 })();
+
 </script>
 </body>
 </html>

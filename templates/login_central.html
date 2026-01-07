@@ -1,190 +1,267 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <title>PROF-SAFE24 PREMIUM – Painel do Professor</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <title>PROF-SAFE24 PREMIUM – Acesso Administrativo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: radial-gradient(circle at top left, #1c2540, #050814);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 520px;
+            padding: 20px;
+        }
+
+        .card {
+            position: relative;
+            background: linear-gradient(160deg, #050814, #050816);
+            border-radius: 24px;
+            padding: 32px 32px 26px 32px;
+            box-shadow: 0 0 35px rgba(0,0,0,0.75);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        /* Borda neon superior */
+        .card::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: 12%;
+            right: 12%;
+            height: 4px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #ff8a3d, #ffdf6f, #00e0ff, #4f46e5);
+        }
+
+        .logo-circle {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #00e0ff, #4f46e5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            color: #ffffff;
+            margin: 0 auto 8px auto;
+        }
+
+        .title-main {
+            text-align: center;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: #00e0ff;
+            margin: 0;
+        }
+
+        .subtitle-system {
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 2px;
+            color: #e5e7ebaa;
+        }
+
+        .access-title {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .access-desc {
+            margin-top: 4px;
+            text-align: center;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .form-group {
+            margin-top: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: #e5e7eb;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #111827;
+            font-size: 14px;
+            outline: none;
+            background: radial-gradient(circle at top left, #020617, #020617);
+            color: #f9fafb;
+        }
+
+        input::placeholder {
+            color: #6b7280;
+        }
+
+        input:focus {
+            border-color: #00e0ff;
+            box-shadow: 0 0 0 1px rgba(0, 224, 255, 0.35);
+        }
+
+        .error-box {
+            margin-top: 14px;
+            border-radius: 8px;
+            background: rgba(239, 68, 68, 0.18);
+            border: 1px solid rgba(239, 68, 68, 0.6);
+            padding: 8px 10px;
+            font-size: 13px;
+            color: #fecaca;
+        }
+
+        .buttons-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            align-items: center;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 11px 0;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff8a3d, #ffd166);
+            color: #111827;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.05);
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 11px 0;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            background: radial-gradient(circle at top left, #020617, #020617);
+            color: #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            border-color: #00e0ff;
+        }
+
+        .clock {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #f97316;
+            font-weight: 600;
+        }
+
+        .footer-text {
+            margin-top: 14px;
+            font-size: 11px;
+            color: #9ca3af;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 24px 20px 20px 20px;
+                border-radius: 20px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-<div class="container">
-  <div class="card">
-    <div class="header">
-      <div class="title">👩‍🏫 PROF-SAFE24 PREMIUM</div>
-      <div class="subtitle">Painel do Professor</div>
+
+<div class="login-wrapper">
+    <div class="card">
+        <div class="logo-circle">SN</div>
+        <h1 class="title-main">PROF-SAFE24 PREMIUM</h1>
+        <div class="subtitle-system">SISTEMA DE SEGURANÇA</div>
+
+        <h2 class="access-title">Acesso Administrativo</h2>
+        <div class="access-desc">
+            Acesso restrito à direção, coordenação e equipe de segurança.
+        </div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="usuario">Usuário</label>
+                <input id="usuario" name="usuario" type="text" placeholder="Digite seu usuário">
+            </div>
+
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input id="senha" name="senha" type="password" placeholder="Digite sua senha">
+            </div>
+
+            {% if error %}
+            <div class="error-box">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <div class="buttons-row">
+                <button type="submit" class="btn-primary">
+                    🔒 Entrar no Sistema
+                </button>
+                <button type="button" class="btn-secondary" onclick="window.location.href='/'">
+                    ⟵ Voltar
+                </button>
+            </div>
+
+            <div class="clock" id="clock"></div>
+
+            <div class="footer-text">
+                Acesso liberado apenas para direção / coordenação.<br>
+                Credenciais configuradas no sistema administrativo.
+            </div>
+        </form>
     </div>
-
-    <div class="center">
-      <!-- Botão SOS clicável -->
-      <button class="sos-wrap" id="btnSOS" aria-label="Acionar SOS">
-        <img src="{{ url_for('static', filename='sos.png') }}" class="sos-btn" alt="SOS">
-      </button>
-      <div class="hint">Toque apenas em emergência</div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">Identificação e tipo de ocorrência</div>
-
-      <label class="lbl">Nome do professor(a) (opcional)</label>
-      <input class="input" id="professorNome" placeholder="Ex.: Prof. Ana Paula">
-
-      <label class="lbl">Sala / Local</label>
-      <input class="input" id="salaLocal" placeholder="Ex.: 7º Ano B - Sala 12">
-
-      <div class="chips-title">Problemas rápidos (1 clique):</div>
-      <div class="chips" id="chips">
-        <button class="chip" data-tipo="Aluno passou mal">😷 Aluno passou mal</button>
-        <button class="chip" data-tipo="Briga na sala/corredor">⚠️ Briga na sala/corredor</button>
-        <button class="chip" data-tipo="Invasão/pessoa estranha">🚨 Invasão / pessoa estranha</button>
-        <button class="chip" data-tipo="Agressão ao professor">⛔ Agressão ao professor</button>
-        <button class="chip" data-tipo="Objeto suspeito/arma">🗡️ Objeto suspeito / arma</button>
-        <button class="chip" data-tipo="Tentativa de arrombamento">🔴 Tentativa de arrombamento</button>
-        <button class="chip" data-tipo="Risco no portão">🚪 Risco no portão</button>
-        <button class="chip" data-tipo="Suspeito no entorno">👤 Suspeito no entorno</button>
-      </div>
-
-      <label class="lbl">Descrição (se quiser)</label>
-      <textarea class="textarea" id="descricao" rows="3"
-        placeholder="Você pode complementar a descrição do que está acontecendo..."></textarea>
-    </div>
-
-    <div class="actions">
-      <button class="btn primary" id="btnEnviar">🚨 Enviar alerta</button>
-      <button class="btn" id="btnLimpar">🧹 Limpar</button>
-      <button class="btn danger2" id="btnReiniciar">🔄 Reiniciar</button>
-    </div>
-
-    <button class="btn danger full" onclick="sair()">Sair</button>
-
-    <div id="status" class="status">Pronto para uso.</div>
-  </div>
 </div>
 
 <script>
-  // ===============================
-  // Estado
-  // ===============================
-  let tipoSelecionado = "";
-
-  // ===============================
-  // Helpers UI
-  // ===============================
-  function setStatus(msg, ok=true){
-    const el = document.getElementById("status");
-    el.textContent = msg;
-    el.style.color = ok ? "#22c55e" : "#f97316";
-  }
-
-  function limparCampos(){
-    document.getElementById("professorNome").value = "";
-    document.getElementById("salaLocal").value = "";
-    document.getElementById("descricao").value = "";
-    tipoSelecionado = "";
-    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
-    setStatus("Pronto para uso.", true);
-  }
-
-  // ===============================
-  // Seleção de ocorrência (chips)
-  // ===============================
-  document.getElementById("chips").addEventListener("click", (e)=>{
-    const btn = e.target.closest(".chip");
-    if(!btn) return;
-
-    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
-    btn.classList.add("active");
-    tipoSelecionado = btn.dataset.tipo || "";
-    setStatus("Ocorrência selecionada: " + tipoSelecionado, true);
-  });
-
-  // ===============================
-  // Enviar alerta
-  // ===============================
-  async function enviarAlerta(forcarSOS=false){
-    const nome = document.getElementById("professorNome").value.trim();
-    const sala = document.getElementById("salaLocal").value.trim();
-    const desc = document.getElementById("descricao").value.trim();
-
-    const tipo = forcarSOS ? "SOS (Pânico)" : (tipoSelecionado || "SOS (Pânico)");
-
-    if(!sala){
-      setStatus("⚠️ Informe a Sala/Local.", false);
-      document.getElementById("salaLocal").focus();
-      return;
+    function atualizarRelogio() {
+        const el = document.getElementById("clock");
+        const agora = new Date();
+        const h = String(agora.getHours()).padStart(2, "0");
+        const m = String(agora.getMinutes()).padStart(2, "0");
+        const s = String(agora.getSeconds()).padStart(2, "0");
+        el.textContent = h + ":" + m + ":" + s;
     }
-
-    const payload = {
-      origem: "professor",
-      professor: nome || "Professor(a)",
-      sala_local: sala,
-      tipo: tipo,
-      descricao: desc
-    };
-
-    try{
-      setStatus("Enviando alerta...", true);
-      const resp = await fetch("/api/alert", {
-        method:"POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify(payload)
-      });
-      const data = await resp.json();
-
-      if(data && data.ok){
-        setStatus("✅ Alerta enviado com sucesso!", true);
-        // volta ao normal em 5s (sem mudar de tela)
-        setTimeout(()=>setStatus("Pronto para uso.", true), 5000);
-      }else{
-        setStatus("❌ Erro ao enviar alerta.", false);
-      }
-    }catch(err){
-      setStatus("❌ Erro de rede ao enviar alerta.", false);
-    }
-  }
-
-  document.getElementById("btnEnviar").addEventListener("click", ()=>enviarAlerta(false));
-  document.getElementById("btnSOS").addEventListener("click", ()=>enviarAlerta(true));
-
-  // ===============================
-  // Limpar / Reiniciar
-  // ===============================
-  document.getElementById("btnLimpar").addEventListener("click", limparCampos);
-
-  document.getElementById("btnReiniciar").addEventListener("click", async ()=>{
-    if(!confirm("Deseja reiniciar e limpar o sistema?")) return;
-
-    try{
-      const resp = await fetch("/api/clear", { method:"POST" });
-      const data = await resp.json();
-      if(data && data.ok){
-        limparCampos();
-        setStatus("✅ Sistema reiniciado. Pronto para uso.", true);
-      }else{
-        setStatus("❌ Erro ao reiniciar.", false);
-      }
-    }catch(e){
-      setStatus("❌ Erro de rede ao reiniciar.", false);
-    }
-  });
-
-  // ===============================
-  // Sair (professor isolado)
-  // ===============================
-  function sair(){
-    window.location.href = "/professor";
-  }
-
-  // TRAVA NAVEGAÇÃO: professor não sai do próprio painel
-  (function lockProfessor(){
-    try{
-      history.replaceState(null, "", "/professor");
-      history.pushState(null, "", "/professor");
-      window.addEventListener("popstate", function(){
-        window.location.href="/professor";
-      });
-    }catch(e){}
-  })();
+    atualizarRelogio();
+    setInterval(atualizarRelogio, 1000);
 </script>
 
 </body>

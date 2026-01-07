@@ -6,11 +6,21 @@ from reportlab.pdfgen import canvas
 import os
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'prof-safe24-premium-123')
 
-# Sessão / segurança básica
-app.secret_key = os.environ.get('SECRET_KEY', 'prof-safe24-premium-SECRET')
-# Chave secreta para abrir o login da Central (somente direção)
-ADMIN_SECRET = os.environ.get('ADMIN_SECRET', 'PROFSAFE24-ADMIN-2026')
+# ================================
+# CONTROLE DE ACESSO (ISOLAR PROFESSOR)
+# ================================
+def admin_logado():
+    return session.get('admin_ok') is True
+
+@app.before_request
+def bloquear_rotas_para_professor():
+    rota = request.path
+    # Se a sessão estiver marcada como professor, bloqueia telas administrativas
+    if session.get('role') == 'prof':
+        if rota in ['/', '/admin', '/central', '/login_central']:
+            return redirect('/professor')
 
 
 # ================================
@@ -23,68 +33,37 @@ last_alert_time = None
 
 
 # ================================
-# AUTH
-# ================================
-def admin_logado():
-    return session.get('admin_ok') is True
-
-# ================================
 # PÁGINAS
 # ================================
 @app.route("/")
 def home():
-    # Entrada padrão: professor (isolado)
-    return redirect(url_for('professor'))
-
+    # Entrada padrão: professor isolado
+    return redirect("/professor")
 
 @app.route("/professor")
 def professor():
+    session["role"] = "prof"
     return render_template("professor.html")
-
-@app.before_request
-def bloquear_rotas_para_professor():
-    rota = request.path
-
-    # Tela de login da Central só abre com chave secreta
-    if rota == '/login_central' and not admin_logado():
-        chave = request.args.get('chave')
-        if chave == ADMIN_SECRET:
-            session['admin_gate'] = True
-        if not session.get('admin_gate'):
-            return redirect(url_for('professor'))
-
-    # Central/Admin só abre se estiver logado
-    if rota in {'/admin','/central'} and not admin_logado():
-        return redirect(url_for('professor'))
-
-
-
 @app.route("/central")
 def central():
     if not admin_logado():
-        return redirect(url_for('professor'))
+        return redirect(url_for("login_central"))
     return render_template("central.html")
-
 @app.route("/admin")
 def admin():
     if not admin_logado():
-        return redirect(url_for("professor"))
+        return redirect(url_for("login_central"))
     return render_template("admin.html")
 
 
 @app.route("/login_central", methods=["GET", "POST"])
 def login_central():
-    # Login simples (liberado somente via chave secreta na URL)
-    if not admin_logado() and not session.get('admin_gate'):
-        return redirect(url_for('professor'))
-
-    if request.method == 'POST':
-        session['admin_ok'] = True
-        return redirect(url_for('central'))
-
-    return render_template('login_central.html')
-
-
+    # Login simples (troque por validação real depois)
+    if request.method == "POST":
+        session["admin_ok"] = True
+        session["role"] = "admin"
+        return redirect("/central")
+    return render_template("login_central.html")
 @app.route("/painel_publico")
 def painel_publico():
     # Painel público para TV / comunidade
@@ -292,4 +271,4 @@ if __name__ == "__main__":
 @app.route("/logout_admin")
 def logout_admin():
     session.clear()
-    return redirect(url_for('professor'))
+    return redirect("/login_central")
