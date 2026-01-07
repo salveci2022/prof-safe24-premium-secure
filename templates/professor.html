@@ -1,366 +1,232 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Painel do Professor – PROF-SAFE24 PREMIUM</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Painel do Professor – PROF-SAFE24 PREMIUM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            margin: 0;
-            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: radial-gradient(circle at top, #1f2937 0, #020617 50%, #000 100%);
-            color: #e5e7eb;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-        }
+  <style>
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 50%, #000 100%);
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
 
-        .shell {
-            width: 100%;
-            max-width: 480px;
-            padding: 18px;
-        }
+    .shell { width: 100%; max-width: 480px; padding: 18px; }
 
-        .card {
-            background: rgba(15, 23, 42, 0.96);
-            border-radius: 24px;
-            border: 1px solid rgba(148, 163, 184, 0.4);
-            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.95);
-            padding: 18px 18px 16px;
-            position: relative;
-            overflow: hidden;
-        }
+    .card {
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.95);
+      padding: 18px 18px 16px;
+      position: relative;
+      overflow: hidden;
+    }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-icon {
+      width: 40px; height: 40px; border-radius: 16px;
+      background: radial-gradient(circle at 0 0, #facc15, #ea580c);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; color: #020617; font-size: 14px;
+      box-shadow: 0 0 25px rgba(234, 88, 12, 0.8);
+    }
+    .brand-title {
+      font-size: 18px; font-weight: 800; letter-spacing: 0.04em;
+      background: linear-gradient(120deg, #facc15, #f97316, #facc15);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-sub { font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.16em; }
+    .clock { text-align: right; font-size: 14px; color: #f97316; font-weight: 600; }
 
-        .brand-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 16px;
-            background: radial-gradient(circle at 0 0, #facc15, #ea580c);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            color: #020617;
-            font-size: 14px;
-            box-shadow: 0 0 25px rgba(234, 88, 12, 0.8);
-        }
+    .title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .subtitle { font-size: 12px; color: #9ca3af; margin-bottom: 14px; }
 
-        .brand-title {
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: 0.04em;
-            background: linear-gradient(120deg, #facc15, #f97316, #facc15);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    .panic-zone { display: flex; flex-direction: column; align-items: center; margin-bottom: 16px; }
+    .panic-ring {
+      width: 210px; height: 210px; border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, rgba(248, 113, 113, 0.35), transparent 60%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .panic-button {
+      width: 170px; height: 170px; border-radius: 999px;
+      border: none; cursor: pointer;
+      background: radial-gradient(circle at 30% 0, #ef4444, #b91c1c);
+      box-shadow: 0 0 40px rgba(248, 113, 113, 0.85), 0 18px 40px rgba(15, 23, 42, 0.95);
+      color: #fee2e2;
+      font-size: 18px; font-weight: 900; letter-spacing: 0.15em;
+      text-align: center; text-shadow: 0 2px 8px rgba(0,0,0,.7);
+    }
+    .panic-button span.small { display:block; font-size: 11px; letter-spacing: .08em; margin-top: 4px; }
+    .panic-caption { font-size: 11px; color: #e5e7eb; margin-top: 8px; text-align: center; }
 
-        .brand-sub {
-            font-size: 11px;
-            color: #9ca3af;
-            text-transform: uppercase;
-            letter-spacing: 0.16em;
-        }
+    .section {
+      background: rgba(15, 23, 42, 0.98);
+      border-radius: 16px;
+      border: 1px solid rgba(30, 64, 175, 0.7);
+      padding: 12px 12px 10px;
+      margin-bottom: 10px;
+    }
+    .section-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .label { font-size: 11px; color: #9ca3af; margin-bottom: 3px; display: block; }
 
-        .clock {
-            text-align: right;
-            font-size: 14px;
-            color: #f97316;
-            font-weight: 600;
-        }
+    input, textarea {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 12px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      box-sizing: border-box;
+    }
+    input::placeholder, textarea::placeholder { color: #6b7280; }
+    textarea { resize: vertical; min-height: 48px; max-height: 110px; }
 
-        .title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
+    .quick-grid { display:flex; flex-wrap:wrap; gap: 6px; margin-bottom: 6px; }
+    .btn-quick {
+      flex: 1 1 48%;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: #020617;
+      font-size: 11px;
+      color: #e5e7eb;
+      padding: 7px 8px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn-quick:hover { border-color: #f97316; }
 
-        .subtitle {
-            font-size: 12px;
-            color: #9ca3af;
-            margin-bottom: 14px;
-        }
+    .btn-row { display:flex; flex-wrap:wrap; gap: 8px; margin-top: 6px; }
+    .btn {
+      flex: 1; min-width: 120px;
+      border-radius: 999px;
+      border: none;
+      padding: 9px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-main { background: linear-gradient(135deg, #fb923c, #ea580c); color: #111827; }
+    .btn-blue { background: #1e3a8a; color: #e5e7eb; }
+    .btn-red  { background: #b91c1c; color: #fee2e2; }
 
-        /* Botão SOS */
-        .panic-zone {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 16px;
-        }
+    #status {
+      margin-top: 8px;
+      font-size: 11px;
+      padding: 8px 9px;
+      border-radius: 10px;
+      background: #020617;
+      border: 1px solid rgba(30, 64, 175, 0.7);
+      color: #38bdf8;
+    }
 
-        .panic-ring {
-            width: 210px;
-            height: 210px;
-            border-radius: 999px;
-            background: radial-gradient(circle at 30% 0, rgba(248, 113, 113, 0.35), transparent 60%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .panic-button {
-            width: 170px;
-            height: 170px;
-            border-radius: 999px;
-            border: none;
-            cursor: pointer;
-            background: radial-gradient(circle at 30% 0, #ef4444, #b91c1c);
-            box-shadow:
-                0 0 40px rgba(248, 113, 113, 0.85),
-                0 18px 40px rgba(15, 23, 42, 0.95);
-            color: #fee2e2;
-            font-size: 18px;
-            font-weight: 900;
-            letter-spacing: 0.15em;
-            text-align: center;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-        }
-
-        .panic-button span.small {
-            display: block;
-            font-size: 11px;
-            letter-spacing: 0.08em;
-            margin-top: 4px;
-        }
-
-        .panic-caption {
-            font-size: 11px;
-            color: #e5e7eb;
-            margin-top: 8px;
-            text-align: center;
-        }
-
-        /* Form + problemas rápidos */
-
-        .section {
-            background: rgba(15, 23, 42, 0.98);
-            border-radius: 16px;
-            border: 1px solid rgba(30, 64, 175, 0.7);
-            padding: 12px 12px 10px;
-            margin-bottom: 10px;
-        }
-
-        .section-title {
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        .label {
-            font-size: 11px;
-            color: #9ca3af;
-            margin-bottom: 3px;
-            display: block;
-        }
-
-        input, textarea {
-            width: 100%;
-            border-radius: 10px;
-            border: 1px solid rgba(55, 65, 81, 0.9);
-            background: #020617;
-            color: #e5e7eb;
-            font-size: 12px;
-            padding: 8px 10px;
-            margin-bottom: 8px;
-            box-sizing: border-box;
-        }
-
-        input::placeholder,
-        textarea::placeholder {
-            color: #6b7280;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 48px;
-            max-height: 110px;
-        }
-
-        .quick-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 6px;
-        }
-
-        .btn-quick {
-            flex: 1 1 48%;
-            border-radius: 999px;
-            border: 1px solid rgba(55, 65, 81, 0.9);
-            background: #020617;
-            font-size: 11px;
-            color: #e5e7eb;
-            padding: 7px 8px;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .btn-quick:hover {
-            border-color: #f97316;
-        }
-
-        .btn-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 6px;
-        }
-
-        .btn {
-            flex: 1;
-            min-width: 120px;
-            border-radius: 999px;
-            border: none;
-            padding: 9px 10px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .btn-main {
-            background: linear-gradient(135deg, #fb923c, #ea580c);
-            color: #111827;
-        }
-
-        .btn-blue {
-            background: #1e3a8a;
-            color: #e5e7eb;
-        }
-
-        .btn-red {
-            background: #b91c1c;
-            color: #fee2e2;
-        }
-
-        #status {
-            margin-top: 8px;
-            font-size: 11px;
-            padding: 8px 9px;
-            border-radius: 10px;
-            background: #020617;
-            border: 1px solid rgba(30, 64, 175, 0.7);
-            color: #38bdf8;
-        }
-
-        @media (max-width: 480px) {
-            .card { padding: 16px 14px 14px; }
-            .panic-ring { width: 190px; height: 190px; }
-            .panic-button { width: 150px; height: 150px; font-size: 16px; }
-        }
-    </style>
+    @media (max-width: 480px) {
+      .card { padding: 16px 14px 14px; }
+      .panic-ring { width: 190px; height: 190px; }
+      .panic-button { width: 150px; height: 150px; font-size: 16px; }
+    }
+  </style>
 </head>
+
 <body>
 <div class="shell">
-    <div class="card">
-        <div class="header">
-            <div class="brand">
-                <div class="brand-icon">SN</div>
-                <div>
-                    <div class="brand-title">PROF-SAFE24 PREMIUM</div>
-                    <div class="brand-sub">PAINEL DO PROFESSOR</div>
-                </div>
-            </div>
-            <div class="clock" id="clockProf"></div>
+  <div class="card">
+    <div class="header">
+      <div class="brand">
+        <div class="brand-icon">SN</div>
+        <div>
+          <div class="brand-title">PROF-SAFE24 PREMIUM</div>
+          <div class="brand-sub">PAINEL DO PROFESSOR</div>
         </div>
-
-        <div class="title">Botão de Pânico do Professor</div>
-        <div class="subtitle">
-            Use o botão <b>SOS</b> ou selecione um problema rápido. A Central será acionada em tempo real.
-        </div>
-
-        <!-- Botão SOS -->
-        <div class="panic-zone">
-            <div class="panic-ring">
-                <button class="panic-button" type="button" onclick="enviarSOS()">
-                    SOS
-                    <span class="small">TOQUE APENAS EM EMERGÊNCIA</span>
-                </button>
-            </div>
-            <div class="panic-caption">
-                🔴 O botão SOS envia um alerta imediato com prioridade máxima para a Central.
-            </div>
-        </div>
-
-        <!-- Identificação + problemas rápidos -->
-        <div class="section">
-            <div class="section-title">Identificação e tipo de ocorrência</div>
-
-            <label class="label" for="teacher">Nome do professor(a) (opcional)</label>
-            <input id="teacher" placeholder="Ex.: Prof. Ana Paula">
-
-            <label class="label" for="room">Sala / Local</label>
-            <input id="room" placeholder="Ex.: 7º Ano B - Sala 12">
-
-            <span class="label">Problemas rápidos (1 clique):</span>
-            <div class="quick-grid">
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Aluno passou mal em sala de aula')">🤒 Aluno passou mal</button>
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Briga entre alunos em sala ou corredor')">⚠️ Briga na sala/corredor</button>
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Possível invasão ou pessoa estranha na escola')">🚨 Invasão / pessoa estranha</button>
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Agressão verbal ou física contra professor(a)')">🚫 Agressão ao professor</button>
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Aluno portando objeto suspeito ou arma branca')">🔪 Objeto suspeito / arma</button>
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Tentativa de arrombamento ou dano ao patrimônio')">🛑 Tentativa de arrombamento</button>
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Risco próximo ao portão ou saída de alunos')">🚧 Risco no portão</button>
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Pessoa suspeita rondando o entorno da escola')">👤 Suspeito no entorno</button>
-            </div>
-
-            <label class="label" for="description">Descrição (edite se quiser)</label>
-            <textarea id="description"
-                      placeholder="Você pode ajustar ou complementar a descrição do que está acontecendo."></textarea>
-
-            <div class="btn-row">
-                <button class="btn btn-main" type="button" onclick="enviarAlertaDetalhado()">🚨 Enviar alerta</button>
-                <button class="btn btn-blue" type="button" onclick="limparCampos()">🧹 Limpar</button>
-                <button class="btn btn-red" type="button" onclick="resetarSistema()">⟳ Reiniciar</button>
-                <button class="btn btn-red" type="button" onclick="sair()">⏻ Sair</button>
-            </div>
-
-            <div id="status">Pronto para uso.</div>
-        </div>
+      </div>
+      <div class="clock" id="clockProf"></div>
     </div>
+
+    <div class="title">Botão de Pânico do Professor</div>
+    <div class="subtitle">
+      Use o botão <b>SOS</b> ou selecione um problema rápido. A Central será acionada em tempo real.
+    </div>
+
+    <div class="panic-zone">
+      <div class="panic-ring">
+        <button class="panic-button" type="button" onclick="enviarSOS()">
+          SOS
+          <span class="small">TOQUE APENAS EM EMERGÊNCIA</span>
+        </button>
+      </div>
+      <div class="panic-caption">🔴 O botão SOS envia um alerta imediato com prioridade máxima para a Central.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Identificação e tipo de ocorrência</div>
+
+      <label class="label" for="teacher">Nome do professor(a) (opcional)</label>
+      <input id="teacher" placeholder="Ex.: Prof. Ana Paula">
+
+      <label class="label" for="room">Sala / Local</label>
+      <input id="room" placeholder="Ex.: 7º Ano B - Sala 12">
+
+      <span class="label">Problemas rápidos (1 clique):</span>
+      <div class="quick-grid">
+        <button class="btn-quick" type="button" onclick="setDesc('Aluno passou mal em sala de aula')">🤒 Aluno passou mal</button>
+        <button class="btn-quick" type="button" onclick="setDesc('Briga entre alunos em sala ou corredor')">⚠️ Briga na sala/corredor</button>
+        <button class="btn-quick" type="button" onclick="setDesc('Possível invasão ou pessoa estranha na escola')">🚨 Invasão / pessoa estranha</button>
+        <button class="btn-quick" type="button" onclick="setDesc('Agressão verbal ou física contra professor(a)')">🚫 Agressão ao professor</button>
+        <button class="btn-quick" type="button" onclick="setDesc('Aluno portando objeto suspeito ou arma branca')">🔪 Objeto suspeito / arma</button>
+        <button class="btn-quick" type="button" onclick="setDesc('Tentativa de arrombamento ou dano ao patrimônio')">🛑 Tentativa de arrombamento</button>
+        <button class="btn-quick" type="button" onclick="setDesc('Risco próximo ao portão ou saída de alunos')">🚧 Risco no portão</button>
+        <button class="btn-quick" type="button" onclick="setDesc('Pessoa suspeita rondando o entorno da escola')">👤 Suspeito no entorno</button>
+      </div>
+
+      <label class="label" for="description">Descrição (edite se quiser)</label>
+      <textarea id="description" placeholder="Você pode ajustar ou complementar a descrição do que está acontecendo."></textarea>
+
+      <div class="btn-row">
+        <button class="btn btn-main" type="button" onclick="enviarAlertaDetalhado()">🚨 Enviar alerta</button>
+        <button class="btn btn-blue" type="button" onclick="limparCampos()">🧹 Limpar</button>
+        <button class="btn btn-red"  type="button" onclick="resetarSistema()">⟳ Reiniciar</button>
+        <button class="btn btn-red"  type="button" onclick="sair()">⏻ Sair</button>
+      </div>
+
+      <div id="status">Pronto para uso.</div>
+    </div>
+  </div>
 </div>
 
 <script>
-function atualizarRelogio() {
+  // Relógio
+  function atualizarRelogio() {
     const el = document.getElementById('clockProf');
     const now = new Date();
-    el.textContent = now.toLocaleTimeString('pt-BR', {hour12: false});
-}
-setInterval(atualizarRelogio, 1000);
-atualizarRelogio();
+    el.textContent = now.toLocaleTimeString('pt-BR', { hour12: false });
+  }
+  setInterval(atualizarRelogio, 1000);
+  atualizarRelogio();
 
-function setDesc(texto) {
+  function setDesc(texto) {
     document.getElementById("description").value = texto;
-    document.getElementById("status").textContent = "Problema selecionado: " + texto;
-}
+    const statusEl = document.getElementById("status");
+    statusEl.textContent = "Problema selecionado: " + texto;
+    statusEl.style.color = "#38bdf8";
+  }
 
-async function enviarSOS() {
+  async function enviarSOS() {
     const teacher = document.getElementById('teacher').value.trim();
     const room = document.getElementById('room').value.trim();
     const statusEl = document.getElementById('status');
@@ -369,100 +235,106 @@ async function enviarSOS() {
     statusEl.style.color = "#38bdf8";
 
     await enviarAlerta({
-        teacher: teacher || "Professor(a)",
-        room: room || "Local não informado",
-        description: "Alerta de pânico acionado (SOS rápido)."
-    }, statusEl, "SOS enviado com sucesso! Central acionada.");
-}
+      teacher: teacher || "Professor(a)",
+      room: room || "Local não informado",
+      description: "Alerta de pânico acionado (SOS rápido)."
+    }, statusEl, "✅ SOS enviado com sucesso! Central acionada.");
+  }
 
-async function enviarAlertaDetalhado() {
+  async function enviarAlertaDetalhado() {
     const teacher = document.getElementById('teacher').value.trim();
     const room = document.getElementById('room').value.trim();
     const desc = document.getElementById('description').value.trim();
     const statusEl = document.getElementById('status');
 
     if (!room || !desc) {
-        statusEl.textContent = "Preencha Sala/Local e selecione ou descreva o problema.";
-        statusEl.style.color = "#f97316";
-        return;
+      statusEl.textContent = "⚠️ Preencha Sala/Local e selecione ou descreva o problema.";
+      statusEl.style.color = "#f97316";
+      return;
     }
 
     statusEl.textContent = "Enviando alerta...";
     statusEl.style.color = "#38bdf8";
 
     await enviarAlerta({
-        teacher: teacher || "Professor(a)",
-        room: room,
-        description: desc
-    }, statusEl, "Alerta enviado com sucesso! Central notificada.");
-}
+      teacher: teacher || "Professor(a)",
+      room: room,
+      description: desc
+    }, statusEl, "✅ Alerta enviado com sucesso! Central notificada.");
+  }
 
-async function enviarAlerta(payload, statusEl, mensagemOk) {
+  async function enviarAlerta(payload, statusEl, mensagemOk) {
     try {
-        const resp = await fetch("/api/alert", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(payload)
-        });
-        const data = await resp.json();
-        if (data.ok) {
-            statusEl.textContent = mensagemOk;
-            statusEl.style.color = "#22c55e";
-        } else {
-            statusEl.textContent = "Erro ao enviar alerta.";
-            statusEl.style.color = "#f97316";
-        }
-    } catch (e) {
-        console.error(e);
-        statusEl.textContent = "Falha de comunicação com o servidor.";
+      const resp = await fetch("/api/alert", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await resp.json();
+      if (data && data.ok) {
+        statusEl.textContent = mensagemOk;
+        statusEl.style.color = "#22c55e";
+        setTimeout(() => { statusEl.textContent = "Pronto para uso."; statusEl.style.color = "#38bdf8"; }, 5000);
+      } else {
+        statusEl.textContent = "❌ Erro ao enviar alerta.";
         statusEl.style.color = "#f97316";
+      }
+    } catch (e) {
+      console.error(e);
+      statusEl.textContent = "❌ Falha de comunicação com o servidor.";
+      statusEl.style.color = "#f97316";
     }
-}
+  }
 
-function limparCampos() {
+  function limparCampos() {
     document.getElementById("teacher").value = "";
     document.getElementById("room").value = "";
     document.getElementById("description").value = "";
     const statusEl = document.getElementById("status");
     statusEl.textContent = "Campos limpos. Sistema pronto.";
     statusEl.style.color = "#38bdf8";
-}
-
-async function resetarSistema() {
-  try {
-    await fetch('/api/clear', { method: 'POST' });
-    const statusEl = document.getElementById('status');
-    statusEl.textContent = '✅ Sistema reiniciado. Voltando ao painel do professor...';
-    statusEl.style.color = '#22c55e';
-    setTimeout(() => { window.location.href = '/professor'; }, 600);
-  } catch (e) {
-    alert('Erro ao reiniciar o sistema.');
   }
-});
-        const statusEl = document.getElementById("status");
-        statusEl.textContent = "Sistema reiniciado. Nenhum alerta ativo.";
-        statusEl.style.color = "#38bdf8";
+
+  // ✅ CORRIGIDO (sem travar): reinicia, limpa e volta pro /professor
+  async function resetarSistema() {
+    const statusEl = document.getElementById('status');
+    statusEl.textContent = "Reiniciando sistema...";
+    statusEl.style.color = "#38bdf8";
+
+    try {
+      const resp = await fetch('/api/clear', { method: 'POST' });
+      const data = await resp.json().catch(() => ({}));
+
+      if (data && data.ok) {
+        statusEl.textContent = '✅ Sistema reiniciado. Voltando ao painel do professor...';
+        statusEl.style.color = '#22c55e';
+        setTimeout(() => { window.location.href = '/professor'; }, 600);
+      } else {
+        statusEl.textContent = '❌ Erro ao reiniciar (API /api/clear).';
+        statusEl.style.color = '#f97316';
+      }
     } catch (e) {
-        console.error(e);
+      console.error(e);
+      statusEl.textContent = '❌ Erro de rede ao reiniciar.';
+      statusEl.style.color = '#f97316';
     }
-}
+  }
 
-function sair() {
-  // Professor: não sai para outras telas
-  window.location.href = '/professor';
-}
+  function sair() {
+    window.location.href = '/professor';
+  }
 
-// 🔒 TRAVA: botão VOLTAR não sai do painel do professor
-(function lockProfessor() {
-  try {
-    history.replaceState(null, "", "/professor");
-    history.pushState(null, "", "/professor");
-    window.addEventListener("popstate", function () {
-      window.location.href = "/professor";
-    });
-  } catch (e) {}
-})();
-
+  // 🔒 trava o voltar
+  (function lockProfessor() {
+    try {
+      history.replaceState(null, "", "/professor");
+      history.pushState(null, "", "/professor");
+      window.addEventListener("popstate", function () {
+        window.location.href = "/professor";
+      });
+    } catch (e) {}
+  })();
 </script>
+
 </body>
 </html>
