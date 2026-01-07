@@ -443,18 +443,28 @@ function limparCampos() {
 }
 
 async function resetarSistema() {
-    try {
-        await fetch("/api/clear", {method: "POST"});
-        const statusEl = document.getElementById("status");
-        statusEl.textContent = "Sistema reiniciado. Nenhum alerta ativo.";
-        statusEl.style.color = "#38bdf8";
-    } catch (e) {
-        console.error(e);
+  if (!confirm('Deseja reiniciar e limpar o sistema?')) return;
+  const statusEl = document.getElementById('status');
+  try {
+    const resp = await fetch('/api/clear', { method: 'POST' });
+    const data = await resp.json();
+    if (data.ok) {
+      statusEl.textContent = '✅ Sistema reiniciado. Voltando ao painel...';
+      statusEl.style.color = '#22c55e';
+      setTimeout(() => { window.location.href = '/professor'; }, 600);
+    } else {
+      statusEl.textContent = '❌ Erro ao reiniciar.';
+      statusEl.style.color = '#f97316';
     }
+  } catch (e) {
+    statusEl.textContent = '❌ Erro de rede ao reiniciar.';
+    statusEl.style.color = '#f97316';
+  }
+
 }
 
 function sair() {
-    window.location.href = "/login_central";
+  window.location.reload();
 }
 </script>
 </body>

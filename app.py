@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file
+from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for
 from datetime import datetime
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
@@ -21,10 +21,8 @@ last_alert_time = None
 # ================================
 @app.route("/")
 def home():
-    # Tela premium de apresentação do sistema
-    return render_template("home.html")
-
-
+    # Entrada padrão: vai direto para o Painel do Professor
+    return redirect(url_for("professor"))
 @app.route("/professor")
 def professor():
     return render_template("professor.html")
