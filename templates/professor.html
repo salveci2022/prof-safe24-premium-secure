@@ -443,14 +443,22 @@ function limparCampos() {
 }
 
 async function resetarSistema() {
+  const statusEl = document.getElementById('status');
+  if (!confirm('Deseja reiniciar e limpar o sistema?')) return;
   try {
-    await fetch('/api/clear', { method: 'POST' });
-    const statusEl = document.getElementById('status');
-    statusEl.textContent = '✅ Sistema reiniciado. Voltando ao painel do professor...';
-    statusEl.style.color = '#22c55e';
-    setTimeout(() => { window.location.href = '/professor'; }, 600);
-  } catch (e) {
-    alert('Erro ao reiniciar o sistema.');
+    const resp = await fetch('/api/clear', { method: 'POST' });
+    const data = await resp.json();
+    if (data.ok) {
+      statusEl.textContent = '✅ Sistema reiniciado. Voltando ao painel do professor...';
+      statusEl.style.color = '#22c55e';
+      setTimeout(() => { window.location.href = '/professor'; }, 600);
+    } else {
+      statusEl.textContent = '❌ Erro ao reiniciar.';
+      statusEl.style.color = '#f97316';
+    }
+  } catch(e) {
+    statusEl.textContent = '❌ Erro de rede ao reiniciar.';
+    statusEl.style.color = '#f97316';
   }
 });
         const statusEl = document.getElementById("status");
@@ -462,21 +470,20 @@ async function resetarSistema() {
 }
 
 function sair() {
-  // Professor: não sai para outras telas
+  // Volta apenas para o próprio painel do professor
   window.location.href = '/professor';
 }
 
-// 🔒 TRAVA: botão VOLTAR não sai do painel do professor
+// TRAVA NAVEGAÇÃO: professor não sai do próprio painel
 (function lockProfessor() {
   try {
-    history.replaceState(null, "", "/professor");
-    history.pushState(null, "", "/professor");
-    window.addEventListener("popstate", function () {
-      window.location.href = "/professor";
+    history.replaceState(null, '', '/professor');
+    history.pushState(null, '', '/professor');
+    window.addEventListener('popstate', function () {
+      window.location.href = '/professor';
     });
-  } catch (e) {}
+  } catch(e) {}
 })();
-
 </script>
 </body>
 </html>
