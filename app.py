@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for
+from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for, session
 from datetime import datetime
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
@@ -6,6 +6,22 @@ from reportlab.pdfgen import canvas
 import os
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'prof-safe24-premium-123')
+
+# ================================
+# CONTROLE DE ACESSO (ISOLAR PROFESSOR)
+# ================================
+def admin_logado():
+    return session.get('admin_ok') is True
+
+@app.before_request
+def bloquear_rotas_para_professor():
+    rota = request.path
+    # Se a sessão estiver marcada como professor, bloqueia telas administrativas
+    if session.get('role') == 'prof':
+        if rota in ['/', '/admin', '/central', '/login_central']:
+            return redirect('/professor')
+
 
 # ================================
 # "BANCO DE DADOS" EM MEMÓRIA
@@ -21,29 +37,33 @@ last_alert_time = None
 # ================================
 @app.route("/")
 def home():
-    # entrada padrão redirecionada
-    return redirect(url_for('professor'))
-
+    # Entrada padrão: professor isolado
+    return redirect("/professor")
 
 @app.route("/professor")
 def professor():
+    session["role"] = "prof"
     return render_template("professor.html")
-
-
 @app.route("/central")
 def central():
+    if not admin_logado():
+        return redirect(url_for("login_central"))
     return render_template("central.html")
+@app.route("/admin")
+def admin():
+    if not admin_logado():
+        return redirect(url_for("login_central"))
+    return render_template("admin.html")
 
 
 @app.route("/login_central", methods=["GET", "POST"])
 def login_central():
-    # Login simples (você pode depois colocar usuário/senha reais)
+    # Login simples (troque por validação real depois)
     if request.method == "POST":
-        # Aqui poderia validar credenciais
-        return render_template("central.html")
+        session["admin_ok"] = True
+        session["role"] = "admin"
+        return redirect("/central")
     return render_template("login_central.html")
-
-
 @app.route("/painel_publico")
 def painel_publico():
     # Painel público para TV / comunidade
@@ -246,3 +266,9 @@ def gerar_relatorio():
 if __name__ == "__main__":
     # Para testes locais
     app.run(host="0.0.0.0", port=5000, debug=True)
+
+
+@app.route("/logout_admin")
+def logout_admin():
+    session.clear()
+    return redirect("/login_central")

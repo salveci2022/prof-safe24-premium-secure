@@ -449,7 +449,7 @@ async function resetarSistema() {
     statusEl.textContent = '✅ Sistema reiniciado. Voltando ao painel do professor...';
     statusEl.style.color = '#22c55e';
     setTimeout(() => { window.location.href = '/professor'; }, 600);
-  } catch(e) {
+  } catch (e) {
     alert('Erro ao reiniciar o sistema.');
   }
 });
@@ -462,9 +462,21 @@ async function resetarSistema() {
 }
 
 function sair() {
-  // sair do professor volta apenas para o próprio painel
+  // Professor: não sai para outras telas
   window.location.href = '/professor';
 }
+
+// 🔒 TRAVA: botão VOLTAR não sai do painel do professor
+(function lockProfessor() {
+  try {
+    history.replaceState(null, "", "/professor");
+    history.pushState(null, "", "/professor");
+    window.addEventListener("popstate", function () {
+      window.location.href = "/professor";
+    });
+  } catch (e) {}
+})();
+
 </script>
 </body>
 </html>
