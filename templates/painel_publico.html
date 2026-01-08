@@ -1,100 +1,267 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<title>PROF-SAFE24 Premium – Painel Público</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PROF-SAFE24 Premium – Painel Público</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- PWA / Ícones -->
+  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#0a0014">
 
-<!-- PWA / MANIFEST -->
-<link rel="manifest" href="/static/manifest.json">
-<meta name="theme-color" content="#0a0014">
+  <link rel="icon" type="image/png" sizes="192x192" href="/static/icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/static/icons/icon-512.png">
 
-<!-- Ícones padrão -->
-<link rel="icon" type="image/png" sizes="192x192" href="/static/icons/icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/static/icons/icon-512.png">
+  <!-- iPhone / iPad (atalho) -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-<!-- Apple (iPhone / iPad) -->
-<link rel="apple-touch-icon" sizes="180x180" href="/static/icons/icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <style>
+    :root{
+      --bg0:#05000c;
+      --bg1:#0a0014;
+      --bg2:#140025;
+      --txt:#f6eaff;
+      --muted:#cdb7e6;
+      --line:rgba(255,255,255,.10);
+      --glass:rgba(255,255,255,.06);
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --hot:#ff4fc8;
+      --hot2:#a45cff;
+      --cyan:#2ee7ff;
+      --green:#24ff9e;
+      --amber:#ffb020;
+      --red:#ff3b3b;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--txt);
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(255,79,200,.30), transparent 55%),
+        radial-gradient(1000px 700px at 80% 25%, rgba(46,231,255,.20), transparent 55%),
+        radial-gradient(1200px 900px at 50% 95%, rgba(36,255,158,.16), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1) 45%, var(--bg2));
+      overflow-x:hidden;
+    }
+    .wrap{max-width:1180px;margin:0 auto;padding:28px 18px 48px}
+    .top{
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+      padding:18px 18px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .brand{display:flex; align-items:center; gap:12px; min-width:260px}
+    .dot{
+      width:12px;height:12px;border-radius:50%;
+      background:radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.2) 25%, transparent 50%),
+                 linear-gradient(135deg, var(--hot), var(--hot2));
+      box-shadow:0 0 0 3px rgba(255,79,200,.15), 0 0 28px rgba(255,79,200,.35);
+    }
+    .title{font-weight:800; letter-spacing:.5px}
+    .sub{color:var(--muted); font-size:13px; margin-top:2px}
+    .clockBox{
+      flex:1;
+      border:1px solid rgba(255,176,32,.35);
+      background:linear-gradient(180deg, rgba(0,0,0,.30), rgba(0,0,0,.12));
+      border-radius:16px;
+      padding:16px 14px;
+      text-align:center;
+    }
+    #clock{font-size:44px; font-weight:900; letter-spacing:2px; color:var(--amber); text-shadow:0 0 22px rgba(255,176,32,.25)}
+    .date{margin-top:6px;color:rgba(255,255,255,.75); font-size:13px}
+    .rightHint{min-width:260px; text-align:right}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      padding:10px 12px;
+      border-radius:999px;
+      color:rgba(255,255,255,.85);
+      font-size:13px;
+    }
+    .grid{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+    }
+    .card{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-radius:18px;
+      padding:16px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+      position:relative;
+      overflow:hidden;
+    }
+    .card:before{
+      content:"";
+      position:absolute; inset:-60px -80px auto auto;
+      width:220px; height:220px;
+      background:radial-gradient(circle, rgba(164,92,255,.22), transparent 60%);
+      transform:rotate(20deg);
+      pointer-events:none;
+    }
+    .k{font-size:12px; color:rgba(255,255,255,.78); display:flex; align-items:center; gap:8px; letter-spacing:.3px}
+    .v{margin-top:10px; font-size:28px; font-weight:900}
+    .v.mono{font-variant-numeric: tabular-nums; letter-spacing:1px}
+    .col-4{grid-column: span 4}
+    .col-6{grid-column: span 6}
+    .col-12{grid-column: span 12}
 
-<!-- Estilo -->
-<link rel="stylesheet" href="/static/style.css">
+    /* Status */
+    .status{
+      display:inline-flex; align-items:center; justify-content:center;
+      min-width:160px;
+      padding:10px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      font-weight:900;
+      letter-spacing:.8px;
+      text-transform:uppercase;
+      font-size:18px;
+    }
+    .status.normal{
+      background:rgba(36,255,158,.08);
+      border-color:rgba(36,255,158,.28);
+      color:var(--green);
+      box-shadow:0 0 30px rgba(36,255,158,.10);
+    }
+    .status.ativa{
+      background:rgba(255,59,59,.10);
+      border-color:rgba(255,59,59,.40);
+      color:var(--red);
+      box-shadow:0 0 36px rgba(255,59,59,.12);
+    }
+
+    /* Lista */
+    .list{
+      margin-top:12px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(0,0,0,.18);
+      border-radius:14px;
+      padding:12px;
+      max-height:320px;
+      overflow:auto;
+    }
+    .list div{
+      padding:10px 10px;
+      border-bottom:1px dashed rgba(255,255,255,.10);
+      color:rgba(255,255,255,.88);
+    }
+    .list div:last-child{border-bottom:none}
+    .muted{color:rgba(255,255,255,.65)}
+    @media (max-width: 980px){
+      .brand,.rightHint{min-width:auto}
+      #clock{font-size:36px}
+      .col-4{grid-column: span 12}
+      .col-6{grid-column: span 12}
+    }
+  </style>
 </head>
 
 <body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <span class="dot" aria-hidden="true"></span>
+        <div>
+          <div class="title">PROF-SAFE24 PREMIUM – PAINEL PÚBLICO</div>
+          <div class="sub">Monitoramento em tempo real (somente leitura)</div>
+        </div>
+      </div>
 
-<div class="container">
-  <div class="card">
-    <div class="header">
-      <div class="title">📢 PROF-SAFE24 PREMIUM – PAINEL PÚBLICO</div>
-      <div class="subtitle">Monitoramento em tempo real</div>
+      <div class="clockBox" aria-label="Relógio">
+        <div id="clock" class="v mono">--:--:--</div>
+        <div class="date" id="dateLine"></div>
+      </div>
+
+      <div class="rightHint">
+        <span class="pill">🟢 Online &nbsp;•&nbsp; atualiza a cada 3s</span>
+      </div>
     </div>
-
-    <div class="clock" id="clock">--:--:--</div>
 
     <div class="grid">
-      <div class="box">
-        <h3>Status da Sirene</h3>
-        <div id="statusSirene" class="status normal">NORMAL</div>
+      <div class="card col-4">
+        <div class="k">🔊 STATUS DA SIRENE</div>
+        <div style="margin-top:12px">
+          <span id="statusSirene" class="status normal">NORMAL</span>
+        </div>
+        <div class="sub" style="margin-top:10px">Mostra se a Central está com sirene ativa agora.</div>
       </div>
 
-      <div class="box">
-        <h3>Alertas Ativos</h3>
-        <div id="alertasAtivos">0</div>
+      <div class="card col-4">
+        <div class="k">⚠️ ALERTAS ATIVOS</div>
+        <div class="v mono" id="alertasAtivos">0</div>
+        <div class="sub">Alertas não resolvidos no momento.</div>
       </div>
 
-      <div class="box">
-        <h3>Total de Alertas</h3>
-        <div id="totalAlertas">0</div>
+      <div class="card col-4">
+        <div class="k">📌 TOTAL DE ALERTAS</div>
+        <div class="v mono" id="totalAlertas">0</div>
+        <div class="sub">Total registrado desde o início.</div>
       </div>
 
-      <div class="box">
-        <h3>Última Atualização</h3>
-        <div id="ultimaAtualizacao">--</div>
+      <div class="card col-6">
+        <div class="k">🕒 ÚLTIMA ATUALIZAÇÃO</div>
+        <div class="v mono" id="ultimaAtualizacao">--:--:--</div>
+        <div class="sub">Horário da última leitura do servidor.</div>
       </div>
-    </div>
 
-    <div class="log">
-      <h3>Últimos Alertas</h3>
-      <div id="listaAlertas">Aguardando alertas...</div>
+      <div class="card col-6">
+        <div class="k">📣 ÚLTIMOS ALERTAS</div>
+        <div class="list" id="listaAlertas"><span class="muted">Carregando alertas...</span></div>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-// Relógio
-setInterval(() => {
-  const agora = new Date();
-  document.getElementById("clock").innerText =
-    agora.toLocaleTimeString("pt-BR");
-}, 1000);
+  <script>
+    // Relógio (local)
+    function tickClock(){
+      const agora = new Date();
+      document.getElementById("clock").innerText = agora.toLocaleTimeString("pt-BR");
+      document.getElementById("dateLine").innerText = agora.toLocaleDateString("pt-BR");
+    }
+    tickClock();
+    setInterval(tickClock, 1000);
 
-// Atualização (simples, sem quebrar sistema)
-function atualizarPainel() {
-  fetch("/status")
-    .then(r => r.json())
-    .then(d => {
-      document.getElementById("statusSirene").innerText = d.sirene ? "ATIVA" : "NORMAL";
-      document.getElementById("statusSirene").className =
-        "status " + (d.sirene ? "ativa" : "normal");
+    // Atualização do painel (não quebra sistema)
+    function atualizarPainel() {
+      fetch("/status")
+        .then(r => r.json())
+        .then(d => {
+          const ativa = !!d.sirene;
 
-      document.getElementById("alertasAtivos").innerText = d.alertas_ativos || 0;
-      document.getElementById("totalAlertas").innerText = d.total_alertas || 0;
-      document.getElementById("ultimaAtualizacao").innerText =
-        new Date().toLocaleTimeString("pt-BR");
+          const el = document.getElementById("statusSirene");
+          el.innerText = ativa ? "ATIVA" : "NORMAL";
+          el.className = "status " + (ativa ? "ativa" : "normal");
 
-      document.getElementById("listaAlertas").innerHTML =
-        (d.logs && d.logs.length)
-        ? d.logs.map(l => `<div>🚨 ${l}</div>`).join("")
-        : "Nenhum alerta no momento.";
-    })
-    .catch(() => {});
-}
+          document.getElementById("alertasAtivos").innerText = d.alertas_ativos || 0;
+          document.getElementById("totalAlertas").innerText = d.total_alertas || 0;
+          document.getElementById("ultimaAtualizacao").innerText = new Date().toLocaleTimeString("pt-BR");
 
-setInterval(atualizarPainel, 3000);
-</script>
+          const lista = document.getElementById("listaAlertas");
+          if (d.logs && d.logs.length){
+            lista.innerHTML = d.logs.map(l => `<div>🚨 ${l}</div>`).join("");
+          } else {
+            lista.innerHTML = `<span class="muted">Nenhum alerta no momento.</span>`;
+          }
+        })
+        .catch(() => {
+          // silencioso, evita travar tela
+        });
+    }
 
+    atualizarPainel();
+    setInterval(atualizarPainel, 3000);
+  </script>
 </body>
 </html>
