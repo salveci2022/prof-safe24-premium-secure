@@ -2,6 +2,7 @@
   "name": "PROF-SAFE24 Premium",
   "short_name": "PROF-SAFE24",
   "start_url": "/professor",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0a0014",
   "theme_color": "#0a0014",
@@ -9,12 +10,14 @@
     {
       "src": "/static/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/static/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
