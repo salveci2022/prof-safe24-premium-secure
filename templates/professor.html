@@ -1,10 +1,16 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Painel do Professor – PROF-SAFE24 PREMIUM</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- (Opcional, mas recomendado) Ícones/PWA -->
+  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#0a0014">
+  <link rel="icon" type="image/png" sizes="192x192" href="/static/icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/static/icons/icon-512.png">
+  <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
 
   <style>
     body {
@@ -66,6 +72,7 @@
       color: #fee2e2;
       font-size: 18px; font-weight: 900; letter-spacing: 0.15em;
       text-align: center; text-shadow: 0 2px 8px rgba(0,0,0,.7);
+      -webkit-tap-highlight-color: transparent;
     }
     .panic-button span.small { display:block; font-size: 11px; letter-spacing: .08em; margin-top: 4px; }
     .panic-caption { font-size: 11px; color: #e5e7eb; margin-top: 8px; text-align: center; }
@@ -105,8 +112,19 @@
       padding: 7px 8px;
       cursor: pointer;
       text-align: center;
+      transition: transform .06s ease, border-color .12s ease, box-shadow .12s ease, background .12s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
     .btn-quick:hover { border-color: #f97316; }
+    .btn-quick:active { transform: scale(0.99); }
+
+    /* ✅ MARCAÇÃO VISUAL (selecionado) */
+    .btn-quick.selected {
+      border-color: #fb923c;
+      background: rgba(234, 88, 12, 0.15);
+      box-shadow: 0 0 0 2px rgba(251, 146, 60, 0.18) inset;
+    }
 
     .btn-row { display:flex; flex-wrap:wrap; gap: 8px; margin-top: 6px; }
     .btn {
@@ -121,6 +139,7 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
+      -webkit-tap-highlight-color: transparent;
     }
     .btn-main { background: linear-gradient(135deg, #fb923c, #ea580c); color: #111827; }
     .btn-blue { background: #1e3a8a; color: #e5e7eb; }
@@ -183,15 +202,15 @@
       <input id="room" placeholder="Ex.: 7º Ano B - Sala 12">
 
       <span class="label">Problemas rápidos (1 clique):</span>
-      <div class="quick-grid">
-        <button class="btn-quick" type="button" onclick="setDesc('Aluno passou mal em sala de aula')">🤒 Aluno passou mal</button>
-        <button class="btn-quick" type="button" onclick="setDesc('Briga entre alunos em sala ou corredor')">⚠️ Briga na sala/corredor</button>
-        <button class="btn-quick" type="button" onclick="setDesc('Possível invasão ou pessoa estranha na escola')">🚨 Invasão / pessoa estranha</button>
-        <button class="btn-quick" type="button" onclick="setDesc('Agressão verbal ou física contra professor(a)')">🚫 Agressão ao professor</button>
-        <button class="btn-quick" type="button" onclick="setDesc('Aluno portando objeto suspeito ou arma branca')">🔪 Objeto suspeito / arma</button>
-        <button class="btn-quick" type="button" onclick="setDesc('Tentativa de arrombamento ou dano ao patrimônio')">🛑 Tentativa de arrombamento</button>
-        <button class="btn-quick" type="button" onclick="setDesc('Risco próximo ao portão ou saída de alunos')">🚧 Risco no portão</button>
-        <button class="btn-quick" type="button" onclick="setDesc('Pessoa suspeita rondando o entorno da escola')">👤 Suspeito no entorno</button>
+      <div class="quick-grid" id="quickGrid">
+        <button class="btn-quick" type="button" onclick="setDesc('Aluno passou mal em sala de aula', this)">🤒 Aluno passou mal</button>
+        <button class="btn-quick" type="button" onclick="setDesc('Briga entre alunos em sala ou corredor', this)">⚠️ Briga na sala/corredor</button>
+        <button class="btn-quick" type="button" onclick="setDesc('Possível invasão ou pessoa estranha na escola', this)">🚨 Invasão / pessoa estranha</button>
+        <button class="btn-quick" type="button" onclick="setDesc('Agressão verbal ou física contra professor(a)', this)">🚫 Agressão ao professor</button>
+        <button class="btn-quick" type="button" onclick="setDesc('Aluno portando objeto suspeito ou arma branca', this)">🔪 Objeto suspeito / arma</button>
+        <button class="btn-quick" type="button" onclick="setDesc('Tentativa de arrombamento ou dano ao patrimônio', this)">🛑 Tentativa de arrombamento</button>
+        <button class="btn-quick" type="button" onclick="setDesc('Risco próximo ao portão ou saída de alunos', this)">🚧 Risco no portão</button>
+        <button class="btn-quick" type="button" onclick="setDesc('Pessoa suspeita rondando o entorno da escola', this)">👤 Suspeito no entorno</button>
       </div>
 
       <label class="label" for="description">Descrição (edite se quiser)</label>
@@ -219,8 +238,15 @@
   setInterval(atualizarRelogio, 1000);
   atualizarRelogio();
 
-  function setDesc(texto) {
+  // ✅ Marca visualmente o botão escolhido (selecionado)
+  function setDesc(texto, btn) {
     document.getElementById("description").value = texto;
+
+    // desmarca todos
+    document.querySelectorAll(".btn-quick").forEach(b => b.classList.remove("selected"));
+    // marca o clicado
+    if (btn) btn.classList.add("selected");
+
     const statusEl = document.getElementById("status");
     statusEl.textContent = "Problema selecionado: " + texto;
     statusEl.style.color = "#38bdf8";
@@ -270,7 +296,15 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-      const data = await resp.json();
+
+      // se a rota não existir / falhar
+      if (!resp.ok) {
+        statusEl.textContent = "❌ Erro: servidor respondeu " + resp.status + ".";
+        statusEl.style.color = "#f97316";
+        return;
+      }
+
+      const data = await resp.json().catch(() => ({}));
       if (data && data.ok) {
         statusEl.textContent = mensagemOk;
         statusEl.style.color = "#22c55e";
@@ -290,12 +324,15 @@
     document.getElementById("teacher").value = "";
     document.getElementById("room").value = "";
     document.getElementById("description").value = "";
+
+    // desmarca seleção visual
+    document.querySelectorAll(".btn-quick").forEach(b => b.classList.remove("selected"));
+
     const statusEl = document.getElementById("status");
     statusEl.textContent = "Campos limpos. Sistema pronto.";
     statusEl.style.color = "#38bdf8";
   }
 
-  // ✅ CORRIGIDO (sem travar): reinicia, limpa e volta pro /professor
   async function resetarSistema() {
     const statusEl = document.getElementById('status');
     statusEl.textContent = "Reiniciando sistema...";
@@ -303,10 +340,16 @@
 
     try {
       const resp = await fetch('/api/clear', { method: 'POST' });
-      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok) {
+        statusEl.textContent = '❌ Erro: /api/clear respondeu ' + resp.status + '.';
+        statusEl.style.color = '#f97316';
+        return;
+      }
 
+      const data = await resp.json().catch(() => ({}));
       if (data && data.ok) {
-        statusEl.textContent = '✅ Sistema reiniciado. Voltando ao painel do professor...';
+        limparCampos();
+        statusEl.textContent = '✅ Sistema reiniciado. Voltando ao painel...';
         statusEl.style.color = '#22c55e';
         setTimeout(() => { window.location.href = '/professor'; }, 600);
       } else {
@@ -320,20 +363,10 @@
     }
   }
 
+  // ✅ Sair sem cair no admin
   function sair() {
-    window.location.href = '/professor';
+    window.location.href = '/';
   }
-
-  // 🔒 trava o voltar
-  (function lockProfessor() {
-    try {
-      history.replaceState(null, "", "/professor");
-      history.pushState(null, "", "/professor");
-      window.addEventListener("popstate", function () {
-        window.location.href = "/professor";
-      });
-    } catch (e) {}
-  })();
 </script>
 
 </body>
