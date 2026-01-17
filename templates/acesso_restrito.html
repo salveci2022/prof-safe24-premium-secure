@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Área restrita - PROF-SAFE24</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <div class="title">🔒 Área restrita</div>
+      </div>
+      <p style="margin-top:10px;opacity:.9">Esta área é exclusiva para Direção/Coordenação (Central) ou Administrador.</p>
+      <div class="row" style="gap:10px;margin-top:14px;flex-wrap:wrap">
+        <a class="btn" href="/panel/login">🔐 Login Central</a>
+        <a class="btn" href="/admin/login">🛡️ Login Admin</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -416,7 +416,10 @@ atualizarRelogio();
 
 async function carregarStatus() {
     try {
-        const resp = await fetch("/api/status");
+        const params = new URLSearchParams(window.location.search);
+        const school = (params.get('school') || '').trim();
+        const url = school ? (`/api/status?school=${encodeURIComponent(school)}`) : "/api/status";
+        const resp = await fetch(url);
         const data = await resp.json();
 
         atualizarSireneVisual(data.siren_on, data.last_alert_time);
@@ -490,7 +493,10 @@ function preencherTabela(alertas) {
 }
 
 async function sireneManual() {
-    await fetch("/api/siren", {
+    const params = new URLSearchParams(window.location.search);
+    const school = (params.get('school') || '').trim();
+    const url = school ? (`/api/siren?school=${encodeURIComponent(school)}`) : "/api/siren";
+    await fetch(url, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({action: "on"})
@@ -502,7 +508,10 @@ async function testeSirene() {
 }
 
 async function pararSirene() {
-    await fetch("/api/siren", {
+    const params = new URLSearchParams(window.location.search);
+    const school = (params.get('school') || '').trim();
+    const url = school ? (`/api/siren?school=${encodeURIComponent(school)}`) : "/api/siren";
+    await fetch(url, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({action: "off"})
@@ -510,11 +519,17 @@ async function pararSirene() {
 }
 
 async function resolverAlertas() {
-    await fetch("/api/resolve", {method: "POST"});
+    const params = new URLSearchParams(window.location.search);
+    const school = (params.get('school') || '').trim();
+    const url = school ? (`/api/resolve?school=${encodeURIComponent(school)}`) : "/api/resolve";
+    await fetch(url, {method: "POST"});
 }
 
 async function limparFeed() {
-    await fetch("/api/clear", {method: "POST"});
+    const params = new URLSearchParams(window.location.search);
+    const school = (params.get('school') || '').trim();
+    const url = school ? (`/api/clear?school=${encodeURIComponent(school)}`) : "/api/clear";
+    await fetch(url, {method: "POST"});
 }
 
 function baixarPDF() {

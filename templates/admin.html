@@ -1,195 +1,378 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <title>PROF-SAFE24 PREMIUM - Admin</title>
 
-    <title>PROF-SAFE24 PREMIUM - Área Administrativa</title>
+  <!-- ÍCONE DA TELA INICIAL / ATALHO -->
+  <link rel="icon" type="image/png" href="/static/icon.png" />
+  <link rel="apple-touch-icon" href="/static/icon.png" />
+  <meta name="theme-color" content="#000000" />
 
-    <!-- ÍCONE DA TELA INICIAL / ATALHO -->
-    <link rel="icon" type="image/png" href="/static/icon.png">
-    <link rel="apple-touch-icon" href="/static/icon.png">
-    <meta name="theme-color" content="#000000">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root{
+      --premium-blue:#0066ff;
+      --electric-orange:#ff6a00;
+      --deep-purple:#7b42f6;
+      --vibrant-cyan:#00ffcc;
+      --premium-black:#0a0f1a;
+      --dark-card:#131a2a;
+      --line: rgba(0, 102, 255, 0.25);
+      --muted:#94a3b8;
+    }
+    *{box-sizing:border-box; margin:0; padding:0;}
+    body{
+      min-height:100vh;
+      font-family: Inter, 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, var(--premium-black) 0%, #0f172a 50%, #1e293b 100%);
+      color:#f1f5f9;
+    }
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(0,102,255,.10) 0%, transparent 40%),
+        radial-gradient(circle at 70% 80%, rgba(123,66,246,.10) 0%, transparent 40%);
+      pointer-events:none;
+      z-index:-1;
+    }
 
-    <style>
-        :root {
-            --premium-blue: #0066ff;
-            --electric-orange: #ff6a00;
-            --deep-purple: #7b42f6;
-            --vibrant-cyan: #00ffcc;
-            --premium-black: #0a0f1a;
-            --dark-card: #131a2a;
-        }
-        
-        * { box-sizing:border-box; margin:0; padding:0; }
-        
-        body {
-            margin:0;
-            min-height:100vh;
-            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, var(--premium-black) 0%, #0f172a 50%, #1e293b 100%);
-            color:#f1f5f9;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-        }
+    .wrap{max-width:1100px; margin:0 auto; padding:24px;}
+    .topbar{
+      display:flex; gap:16px; align-items:center; justify-content:space-between;
+      padding:18px 20px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background: rgba(10, 15, 26, 0.85);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 25px 50px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .brand{
+      display:flex; gap:12px; align-items:center;
+    }
+    .badge{
+      width:44px; height:44px;
+      border-radius:14px;
+      background: linear-gradient(135deg, var(--premium-blue), var(--deep-purple));
+      display:flex; align-items:center; justify-content:center;
+      box-shadow: 0 0 35px rgba(0, 102, 255, 0.45);
+      font-size:18px;
+    }
+    .title{
+      line-height:1.1;
+    }
+    .title h1{
+      font-size:18px;
+      letter-spacing:.6px;
+    }
+    .title p{font-size:12px; color: var(--muted); margin-top:3px;}
 
-        body::before {
-            content: "";
-            position: fixed;
-            top:0; left:0;
-            width:100%; height:100%;
-            background: 
-                radial-gradient(circle at 30% 20%, rgba(0, 102, 255, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 70% 80%, rgba(123, 66, 246, 0.1) 0%, transparent 40%);
-            pointer-events: none;
-            z-index: -1;
-        }
+    .actions{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      color:#fff;
+      background: rgba(15, 23, 42, 0.65);
+      border:1px solid rgba(255,255,255,.08);
+      transition: transform .12s ease;
+      text-decoration:none;
+      font-size:13px;
+    }
+    .btn:hover{transform: translateY(-1px);}
+    .btn.primary{background: linear-gradient(135deg, var(--premium-blue), var(--deep-purple));}
+    .btn.danger{background: linear-gradient(135deg, #ff2d2d, #ff6a00);}
+    .btn.cyan{background: linear-gradient(135deg, var(--vibrant-cyan), var(--premium-blue)); color:#00131a; font-weight:700;}
 
-        .admin-shell {
-            width:100%;
-            max-width:500px;
-            padding:30px;
-        }
+    .grid{display:grid; grid-template-columns: 1.05fr .95fr; gap:18px; margin-top:18px;}
+    @media(max-width: 980px){.grid{grid-template-columns:1fr;}}
 
-        .admin-card {
-            background: rgba(10, 15, 26, 0.9);
-            border-radius:24px;
-            padding:50px 40px 40px;
-            border: 1px solid rgba(0, 102, 255, 0.3);
-            box-shadow: 
-                0 25px 50px rgba(0, 0, 0, 0.6),
-                0 0 0 1px rgba(255, 255, 255, 0.05),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+    .card{
+      background: rgba(10, 15, 26, 0.85);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 18px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    .card h2{font-size:15px; margin-bottom:10px; letter-spacing:.4px;}
+    .sub{font-size:12px; color: var(--muted); margin-bottom:12px;}
 
-        .admin-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--premium-blue), var(--electric-orange), var(--vibrant-cyan));
-        }
+    .form{display:grid; grid-template-columns: 1fr 1fr; gap:10px;}
+    .form .full{grid-column:1 / -1;}
+    label{font-size:12px; color: var(--muted); display:block; margin-bottom:6px;}
+    input{
+      width:100%;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(15, 23, 42, 0.55);
+      color:#fff;
+      outline:none;
+    }
+    input::placeholder{color:#64748b;}
+    .hint{font-size:11px; color:#94a3b8; margin-top:8px; line-height:1.45;}
 
-        .logo-premium {
-            margin-bottom: 30px;
-        }
+    table{width:100%; border-collapse: collapse; margin-top:10px;}
+    th, td{padding:10px 10px; border-bottom: 1px solid rgba(255,255,255,.06); text-align:left; font-size:13px; vertical-align:top;}
+    th{font-size:12px; color:#cbd5e1; font-weight:700;}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(15, 23, 42, 0.5);
+      font-size:12px;
+    }
+    .row-actions{display:flex; gap:8px; flex-wrap:wrap;}
+    .small{padding:8px 10px; border-radius:10px; font-size:12px;}
 
-        .spynet-admin {
-            font-size: 3.5rem;
-            font-weight: 800;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            background: linear-gradient(135deg, var(--premium-blue), var(--electric-orange), var(--vibrant-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 
-                0 0 30px rgba(0, 102, 255, 0.5),
-                0 0 60px rgba(255, 106, 0, 0.3);
-            margin-bottom: 10px;
-        }
-
-        .admin-tagline {
-            font-size: 1.1rem;
-            color: var(--vibrant-cyan);
-            margin-bottom: 40px;
-            font-weight: 300;
-            letter-spacing: 2px;
-        }
-
-        .admin-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, var(--premium-blue), var(--deep-purple));
-            box-shadow: 0 0 40px rgba(0, 102, 255, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin: 0 auto 25px;
-            color: white;
-        }
-
-        .admin-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 15px;
-        }
-
-        .admin-subtitle {
-            font-size: 16px;
-            color: #94a3b8;
-            margin-bottom: 35px;
-            line-height: 1.6;
-        }
-
-        .admin-features {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 30px 0;
-        }
-
-        .feature-item {
-            background: rgba(15, 23, 42, 0.6);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 102, 255, 0.2);
-        }
-
-        .btn-admin {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 14px 28px;
-            border-radius: 15px;
-            color: white;
-            background: linear-gradient(135deg, var(--premium-blue), var(--deep-purple));
-            text-decoration: none;
-            margin-top: 20px;
-        }
-
-        .admin-footer {
-            margin-top: 40px;
-            font-size: 12px;
-            color: #64748b;
-            padding-top: 20px;
-            border-top: 1px solid rgba(0, 102, 255, 0.2);
-        }
-    </style>
+    .linksBox{
+      margin-top:12px;
+      border:1px dashed rgba(0, 255, 204, 0.35);
+      border-radius:14px;
+      padding:12px;
+      background: rgba(0,255,204,.04);
+      display:none;
+    }
+    .linksBox h3{font-size:13px; margin-bottom:10px;}
+    .linkItem{display:flex; gap:10px; align-items:center; margin:8px 0;}
+    .linkItem code{
+      flex:1;
+      display:block;
+      padding:10px 12px;
+      border-radius:12px;
+      background: rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.08);
+      overflow:auto;
+      font-size:12px;
+    }
+    .toast{
+      position:fixed; left:50%; bottom:16px; transform:translateX(-50%);
+      background: rgba(0,0,0,.75);
+      border:1px solid rgba(255,255,255,.10);
+      padding:10px 12px; border-radius:12px;
+      color:#fff; font-size:13px;
+      display:none;
+    }
+  </style>
 </head>
 
 <body>
-    <div class="admin-shell">
-        <div class="admin-card">
-            <div class="logo-premium">
-                <div class="spynet-admin">PROF-SAFE24 PREMIUM</div>
-                <div class="admin-tagline">SISTEMA ADMINISTRATIVO</div>
-            </div>
-
-            <div class="admin-icon">⚙️</div>
-
-            <div class="admin-title">Área Administrativa</div>
-            <div class="admin-subtitle">
-                Use esta área para configurações internas do sistema, 
-                gestão de usuários e parametrizações avançadas.
-            </div>
-
-            <a href="/" class="btn-admin">🏠 Voltar ao Início</a>
-
-            <div class="admin-footer">
-                PROF-SAFE24 PREMIUM System — Desenvolvido por <strong>PROF-SAFE24 PREMIUM</strong> © 2024
-            </div>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="badge">⚙️</div>
+        <div class="title">
+          <h1>PROF-SAFE24 PREMIUM — Admin</h1>
+          <p>Cadastro de escolas + geração de links (padrão CONDO-SAFE24)</p>
         </div>
+      </div>
+      <div class="actions">
+        <a class="btn" href="/">🏠 Início</a>
+        <a class="btn" href="/panel/login">🛡️ Central (login)</a>
+        <button class="btn cyan" onclick="refreshSchools()">🔄 Atualizar</button>
+      </div>
     </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Escolas cadastradas</h2>
+        <div class="sub">Clique em <strong>Links</strong> para gerar os links prontos (professor/central/público) sem mexer no painel do professor.</div>
+
+        <div class="linksBox" id="linksBox">
+          <h3 id="linksTitle">Links</h3>
+          <div id="linksList"></div>
+          <div class="hint">Dica: use sempre o mesmo <strong>school</strong> nos links do Professor e da Central para não misturar alertas.</div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>School ID</th>
+              <th>Nome</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="schoolsTbody">
+            <tr><td colspan="3" style="color:#94a3b8">Carregando…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Cadastrar / atualizar escola</h2>
+        <div class="sub">Use um <strong>school_id</strong> curto (ex.: <span class="pill">colegio_spynet</span>). Pode editar depois.</div>
+
+        <div class="form">
+          <div>
+            <label>School ID (obrigatório)</label>
+            <input id="school_id" placeholder="ex: colegio_spynet" />
+          </div>
+          <div>
+            <label>Nome da escola</label>
+            <input id="nome" placeholder="ex: Colégio Estadual SpyNet" />
+          </div>
+          <div class="full">
+            <label>Endereço</label>
+            <input id="endereco" placeholder="ex: Av. Principal, 456 - Centro" />
+          </div>
+          <div>
+            <label>Telefone</label>
+            <input id="telefone" placeholder="(61) 9xxxx-xxxx" />
+          </div>
+          <div>
+            <label>Diretor(a)</label>
+            <input id="diretor" placeholder="Nome do(a) Diretor(a)" />
+          </div>
+          <div class="full">
+            <label>Logo (opcional) — caminho</label>
+            <input id="logo" placeholder="/static/logos/minha_escola.png" />
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+          <button class="btn primary" onclick="saveSchool()">💾 Salvar</button>
+          <button class="btn" onclick="clearForm()">🧽 Limpar</button>
+        </div>
+
+        <div class="hint">
+          <strong>Importante:</strong> em Render (produção), o arquivo <code>schools.json</code> pode ser resetado em deploys.
+          Se você quiser persistência total, eu também posso colocar isso em um banco simples (SQLite/Redis) — mas sem isso você já consegue vender e operar.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function toast(msg){
+      const t = $('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      clearTimeout(window.__toast);
+      window.__toast = setTimeout(()=> t.style.display='none', 2400);
+    }
+
+    async function refreshSchools(){
+      $('linksBox').style.display = 'none';
+      const tb = $('schoolsTbody');
+      tb.innerHTML = '<tr><td colspan="3" style="color:#94a3b8">Carregando…</td></tr>';
+      const r = await fetch('/admin/api/schools');
+      const j = await r.json();
+      if(!j.ok){ tb.innerHTML = '<tr><td colspan="3" style="color:#fca5a5">Sem permissão. Faça login no /admin/login</td></tr>'; return; }
+
+      const schools = j.schools || {};
+      const ids = Object.keys(schools).sort();
+      if(ids.length === 0){
+        tb.innerHTML = '<tr><td colspan="3" style="color:#94a3b8">Nenhuma escola cadastrada ainda.</td></tr>';
+        return;
+      }
+
+      tb.innerHTML = ids.map((id)=>{
+        const s = schools[id] || {};
+        const nome = (s.nome || id).replace(/</g,'&lt;');
+        return `
+          <tr>
+            <td><span class="pill">${id}</span></td>
+            <td>${nome}</td>
+            <td>
+              <div class="row-actions">
+                <button class="btn small" onclick="fillForm('${id}')">✏️ Editar</button>
+                <button class="btn small cyan" onclick="showLinks('${id}')">🔗 Links</button>
+                <button class="btn small danger" onclick="deleteSchool('${id}')">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function fillForm(id){
+      const r = await fetch('/admin/api/schools');
+      const j = await r.json();
+      const s = (j.schools || {})[id] || {};
+      $('school_id').value = id;
+      $('nome').value = s.nome || '';
+      $('endereco').value = s.endereco || '';
+      $('telefone').value = s.telefone || '';
+      $('diretor').value = s.diretor || '';
+      $('logo').value = s.logo || '';
+      toast('Formulário preenchido.');
+    }
+
+    function clearForm(){
+      ['school_id','nome','endereco','telefone','diretor','logo'].forEach((k)=> $(k).value='');
+      toast('Limpo.');
+    }
+
+    async function saveSchool(){
+      const payload = {
+        school_id: $('school_id').value.trim(),
+        nome: $('nome').value.trim(),
+        endereco: $('endereco').value.trim(),
+        telefone: $('telefone').value.trim(),
+        diretor: $('diretor').value.trim(),
+        logo: $('logo').value.trim(),
+      };
+      if(!payload.school_id){ toast('Informe o School ID.'); return; }
+      const r = await fetch('/admin/api/schools', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const j = await r.json();
+      if(!j.ok){ toast(j.error || 'Erro ao salvar'); return; }
+      toast('Escola salva com sucesso.');
+      await refreshSchools();
+      await showLinks(j.school_id);
+    }
+
+    async function deleteSchool(id){
+      if(!confirm('Excluir a escola "'+id+'"?')) return;
+      const r = await fetch('/admin/api/schools/'+encodeURIComponent(id), {method:'DELETE'});
+      const j = await r.json();
+      if(!j.ok){ toast(j.error || 'Erro ao excluir'); return; }
+      toast('Excluída.');
+      await refreshSchools();
+      $('linksBox').style.display = 'none';
+    }
+
+    async function showLinks(id){
+      const r = await fetch('/admin/api/links/'+encodeURIComponent(id));
+      const j = await r.json();
+      if(!j.ok){ toast(j.error || 'Erro ao gerar links'); return; }
+
+      $('linksTitle').innerText = 'Links prontos — '+id;
+      const links = j.links || {};
+      const entries = Object.entries(links);
+      const list = entries.map(([k,v])=>{
+        return `
+          <div class="linkItem">
+            <button class="btn small" onclick="copyText('${v.replace(/'/g,"\\'")}')">📋 Copiar</button>
+            <code>${v}</code>
+          </div>
+        `;
+      }).join('');
+      $('linksList').innerHTML = list;
+      $('linksBox').style.display = 'block';
+    }
+
+    async function copyText(text){
+      try{
+        await navigator.clipboard.writeText(text);
+        toast('Copiado!');
+      }catch(e){
+        toast('Não consegui copiar. Copie manualmente.');
+      }
+    }
+
+    refreshSchools();
+  </script>
 </body>
 </html>

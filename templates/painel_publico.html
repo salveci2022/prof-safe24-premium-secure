@@ -478,7 +478,10 @@
         // Buscar status do servidor
         async function fetchStatus() {
             try {
-                const response = await fetch('/api/status');
+                const params = new URLSearchParams(window.location.search);
+                const school = (params.get('school') || '').trim();
+                const url = school ? (`/api/status?school=${encodeURIComponent(school)}`) : '/api/status';
+                const response = await fetch(url);
                 const data = await response.json();
                 
                 if (!data.ok) {

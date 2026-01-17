@@ -407,6 +407,11 @@ async function enviarAlertaDetalhado() {
 
 async function enviarAlerta(payload, statusEl, mensagemOk) {
     try {
+        // Multi-escolas: se o link tiver ?school=..., envia junto sem quebrar uso atual
+        const params = new URLSearchParams(window.location.search);
+        const school = (params.get('school') || '').trim();
+        if (school) payload.school = school;
+
         const resp = await fetch("/api/alert", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
@@ -437,14 +442,10 @@ function limparCampos() {
 }
 
 async function resetarSistema() {
-    try {
-        await fetch("/api/clear", {method: "POST"});
-        const statusEl = document.getElementById("status");
-        statusEl.textContent = "Sistema reiniciado. Nenhum alerta ativo.";
-        statusEl.style.color = "#38bdf8";
-    } catch (e) {
-        console.error(e);
-    }
+    // 🔒 Segurança: limpeza do sistema agora é SOMENTE pela Central/Admin.
+    const statusEl = document.getElementById("status");
+    statusEl.textContent = "Ação restrita: apenas a Central pode reiniciar/limpar o sistema.";
+    statusEl.style.color = "#f97316";
 }
 
 function sair(){
