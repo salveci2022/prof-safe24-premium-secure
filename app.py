@@ -26,6 +26,24 @@ app.config.update(
 if os.getenv("RENDER") or os.getenv("FLASK_ENV") == "production":
     app.config["SESSION_COOKIE_SECURE"] = True
 
+
+def _env_first(*keys: str) -> str:
+    """Lê variáveis de ambiente na ordem e retorna string limpa."""
+    for k in keys:
+        v = os.getenv(k)
+        if v is not None and str(v).strip() != "":
+            return str(v).strip()
+    return ""
+
+
+def _admin_password() -> str:
+    # Padrão recomendado: ADMIN_PASSWORD (mantém compatibilidade com ADMIN_PASS)
+    return _env_first("ADMIN_PASSWORD", "ADMIN_PASS")
+
+
+def _central_password() -> str:
+    return _env_first("CENTRAL_PASSWORD", "CENTRAL_PASS")
+
 # ================================
 # "BANCO DE DADOS" EM MEMÓRIA (por escola)
 # - Mantém compatibilidade com o uso atual (1 escola)
@@ -64,12 +82,19 @@ def _load_schools() -> dict:
 
 
 def _save_schools(data: dict) -> None:
+    """Salva de forma mais segura (evita arquivo corrompido em escrita parcial)."""
     try:
-        with open(SCHOOLS_FILE, "w", encoding="utf-8") as f:
+        tmp = SCHOOLS_FILE + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
+        os.replace(tmp, SCHOOLS_FILE)
     except Exception:
         # Se não conseguir salvar (ex.: filesystem restrito), não derruba o app
-        pass
+        try:
+            if os.path.exists(SCHOOLS_FILE + ".tmp"):
+                os.remove(SCHOOLS_FILE + ".tmp")
+        except Exception:
+            pass
 
 
 schools_db = _load_schools()
@@ -137,10 +162,18 @@ def require_login(role: str | None = None):
     def deco(fn):
         @wraps(fn)
         def wrapper(*args, **kwargs):
-            if not session.get("auth"):
+            # Compatibilidade: mantém auth/role e adiciona flags explícitas
+            is_admin = bool(session.get("admin_logged") or session.get("role") == "admin")
+            is_central = bool(session.get("central_logged") or session.get("role") == "central")
+            if not (session.get("auth") or is_admin or is_central):
                 return redirect(url_for("login_central"))
-            if role and session.get("role") not in (role, "admin"):
-                return jsonify({"ok": False, "error": "Sem permissão"}), 403
+
+            if role == "central":
+                if not (is_central or is_admin):
+                    return render_template("forbidden.html"), 403
+            elif role == "admin":
+                if not is_admin:
+                    return render_template("forbidden.html"), 403
             return fn(*args, **kwargs)
 
         return wrapper
@@ -167,6 +200,12 @@ def security_headers(resp):
 def home():
     # Tela premium de apresentação do sistema
     return render_template("home.html")
+
+
+# Health check para Render (evita reinícios por healthcheck incorreto)
+@app.route("/healthz")
+def healthz():
+    return "ok", 200
 
 
 @app.route("/professor")
@@ -203,18 +242,22 @@ def login_central():
         usuario = (request.form.get("usuario") or "").strip()[:80]
         senha = (request.form.get("senha") or "").strip()
 
-        central_pass = os.getenv("CENTRAL_PASSWORD", "").strip()
-        admin_pass = (os.getenv("ADMIN_PASSWORD") or os.getenv("ADMIN_PASS") or "").strip()
+        central_pass = _central_password()
+        admin_pass = _admin_password()
 
         # Regras: senha central ou senha admin
         if central_pass and senha == central_pass:
             session["auth"] = True
             session["role"] = "central"
+            session["central_logged"] = True
+            session["admin_logged"] = False
             session["user"] = usuario or "central"
             return redirect(url_for("central"))
         if admin_pass and senha == admin_pass:
             session["auth"] = True
             session["role"] = "admin"
+            session["admin_logged"] = True
+            session["central_logged"] = False
             session["user"] = usuario or "admin"
             return redirect(url_for("central"))
 
@@ -238,10 +281,12 @@ def login_admin():
         usuario = (request.form.get("usuario") or "").strip()[:80]
         senha = (request.form.get("senha") or "").strip()
 
-        admin_pass = (os.getenv("ADMIN_PASSWORD") or os.getenv("ADMIN_PASS") or "").strip()
+        admin_pass = _admin_password()
         if admin_pass and senha == admin_pass:
             session["auth"] = True
             session["role"] = "admin"
+            session["admin_logged"] = True
+            session["central_logged"] = False
             session["user"] = usuario or "admin"
             return redirect(url_for("admin"))
         return render_template("login_admin.html", error="Usuário ou senha inválidos.")
@@ -251,9 +296,9 @@ def login_admin():
 
 @app.route("/admin")
 def admin():
-    if not session.get("auth"):
+    if not (session.get("auth") or session.get("admin_logged")):
         return redirect(url_for("login_admin"))
-    if session.get("role") != "admin":
+    if not (session.get("role") == "admin" or session.get("admin_logged")):
         return render_template("forbidden.html"), 403
     return render_template("admin.html")
 
@@ -265,7 +310,7 @@ def admin():
 
 
 def _require_admin():
-    return session.get("auth") and session.get("role") == "admin"
+    return bool((session.get("auth") or session.get("admin_logged")) and (session.get("role") == "admin" or session.get("admin_logged")))
 
 
 @app.route("/admin/api/schools", methods=["GET"])
