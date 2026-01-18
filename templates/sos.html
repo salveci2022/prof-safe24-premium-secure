@@ -12,7 +12,6 @@
     <meta name="msapplication-TileImage" content="https://profsafe24.com.br/wp-content/uploads/2025/12/cropped-favicon-profsafe24-270x270.jpg" />
     <meta name="theme-color" content="#020617">
 
-
     <style>
         body {
             margin: 0;
@@ -154,7 +153,6 @@
         }
 
         /* Form + problemas rápidos */
-
         .section {
             background: rgba(15, 23, 42, 0.98);
             border-radius: 16px;
@@ -216,10 +214,18 @@
             padding: 7px 8px;
             cursor: pointer;
             text-align: center;
+            user-select: none;
         }
 
         .btn-quick:hover {
             border-color: #f97316;
+        }
+
+        /* ✅ Estado "fixo" (selecionado) */
+        .btn-quick.active {
+            border-color: #f97316;
+            background: #111827;
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.15) inset;
         }
 
         .btn-row {
@@ -292,7 +298,7 @@
 
         <div class="title">Botão de Pânico do Professor</div>
         <div class="subtitle">
-            Use o botão <b>SOS</b> ou selecione um problema rápido. A Central será acionada em tempo real.
+            Use o botão <b>SOS</b> ou selecione um ou mais problemas. A Central será acionada em tempo real.
         </div>
 
         <!-- Botão SOS -->
@@ -318,29 +324,21 @@
             <label class="label" for="room">Sala / Local</label>
             <input id="room" placeholder="Ex.: 7º Ano B - Sala 12">
 
-            <span class="label">Problemas rápidos (1 clique):</span>
+            <span class="label">Ocorrências rápidas (pode selecionar mais de uma):</span>
             <div class="quick-grid">
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Aluno passou mal em sala de aula')">🤒 Aluno passou mal</button>
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Briga entre alunos em sala ou corredor')">⚠️ Briga na sala/corredor</button>
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Possível invasão ou pessoa estranha na escola')">🚨 Invasão / pessoa estranha</button>
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Agressão verbal ou física contra professor(a)')">🚫 Agressão ao professor</button>
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Aluno portando objeto suspeito ou arma branca')">🔪 Objeto suspeito / arma</button>
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Tentativa de arrombamento ou dano ao patrimônio')">🛑 Tentativa de arrombamento</button>
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Risco próximo ao portão ou saída de alunos')">🚧 Risco no portão</button>
-                <button class="btn-quick" type="button"
-                        onclick="setDesc('Pessoa suspeita rondando o entorno da escola')">👤 Suspeito no entorno</button>
+                <button class="btn-quick" type="button" onclick="toggleProblem(this, 'Aluno passou mal em sala de aula')">🤒 Aluno passou mal</button>
+                <button class="btn-quick" type="button" onclick="toggleProblem(this, 'Briga entre alunos em sala ou corredor')">⚠️ Briga na sala/corredor</button>
+                <button class="btn-quick" type="button" onclick="toggleProblem(this, 'Possível invasão ou pessoa estranha na escola')">🚨 Invasão / pessoa estranha</button>
+                <button class="btn-quick" type="button" onclick="toggleProblem(this, 'Agressão verbal ou física contra professor(a)')">🚫 Agressão ao professor</button>
+                <button class="btn-quick" type="button" onclick="toggleProblem(this, 'Aluno portando objeto suspeito ou arma branca')">🔪 Objeto suspeito / arma</button>
+                <button class="btn-quick" type="button" onclick="toggleProblem(this, 'Tentativa de arrombamento ou dano ao patrimônio')">🛑 Tentativa de arrombamento</button>
+                <button class="btn-quick" type="button" onclick="toggleProblem(this, 'Risco próximo ao portão ou saída de alunos')">🚧 Risco no portão</button>
+                <button class="btn-quick" type="button" onclick="toggleProblem(this, 'Pessoa suspeita rondando o entorno da escola')">👤 Suspeito no entorno</button>
             </div>
 
-            <label class="label" for="description">Descrição (edite se quiser)</label>
+            <label class="label" for="description">Descrição (opcional — pode complementar)</label>
             <textarea id="description"
-                      placeholder="Você pode ajustar ou complementar a descrição do que está acontecendo."></textarea>
+                      placeholder="Opcional: complemente detalhes (ex.: aluno desmaiou, local exato, apoio necessário)."></textarea>
 
             <div class="btn-row">
                 <button class="btn btn-main" type="button" onclick="enviarAlertaDetalhado()">🚨 Enviar alerta</button>
@@ -355,6 +353,9 @@
 </div>
 
 <script>
+/* ✅ Ocorrências selecionadas (fica fixo e envia para a Central) */
+let selectedProblems = [];
+
 function atualizarRelogio() {
     const el = document.getElementById('clockProf');
     const now = new Date();
@@ -363,9 +364,31 @@ function atualizarRelogio() {
 setInterval(atualizarRelogio, 1000);
 atualizarRelogio();
 
-function setDesc(texto) {
-    document.getElementById("description").value = texto;
-    document.getElementById("status").textContent = "Problema selecionado: " + texto;
+/* ✅ Marca/desmarca e mantém “fixo” visualmente */
+function toggleProblem(btn, texto) {
+    const idx = selectedProblems.indexOf(texto);
+
+    if (idx === -1) {
+        selectedProblems.push(texto);
+        btn.classList.add('active');
+    } else {
+        selectedProblems.splice(idx, 1);
+        btn.classList.remove('active');
+    }
+
+    // Preenche a descrição automaticamente com as ocorrências (sem apagar o que a pessoa digitar depois)
+    const descEl = document.getElementById("description");
+    if (!descEl.value.trim()) {
+        descEl.value = selectedProblems.join(" | ");
+    } else {
+        // Se já existe texto, não sobrescreve — só atualiza status
+    }
+
+    const statusEl = document.getElementById("status");
+    statusEl.textContent = selectedProblems.length
+        ? "Ocorrências selecionadas: " + selectedProblems.join(", ")
+        : "Nenhuma ocorrência selecionada.";
+    statusEl.style.color = selectedProblems.length ? "#22c55e" : "#38bdf8";
 }
 
 async function enviarSOS() {
@@ -376,9 +399,11 @@ async function enviarSOS() {
     statusEl.textContent = "Enviando SOS...";
     statusEl.style.color = "#38bdf8";
 
+    // SOS: envia prioridade máxima (não depende das ocorrências)
     await enviarAlerta({
         teacher: teacher || "Professor(a)",
         room: room || "Local não informado",
+        problems: selectedProblems, // ✅ se tiver selecionadas, também envia
         description: "Alerta de pânico acionado (SOS rápido)."
     }, statusEl, "SOS enviado com sucesso! Central acionada.");
 }
@@ -389,8 +414,9 @@ async function enviarAlertaDetalhado() {
     const desc = document.getElementById('description').value.trim();
     const statusEl = document.getElementById('status');
 
-    if (!room || !desc) {
-        statusEl.textContent = "Preencha Sala/Local e selecione ou descreva o problema.";
+    // ✅ Regra: precisa ter Sala/Local e (ocorrência OU descrição)
+    if (!room || (!desc && selectedProblems.length === 0)) {
+        statusEl.textContent = "Preencha Sala/Local e selecione ao menos uma ocorrência (ou escreva a descrição).";
         statusEl.style.color = "#f97316";
         return;
     }
@@ -401,7 +427,8 @@ async function enviarAlertaDetalhado() {
     await enviarAlerta({
         teacher: teacher || "Professor(a)",
         room: room,
-        description: desc
+        problems: selectedProblems,       // ✅ ENVIA AS OCORRÊNCIAS
+        description: desc || selectedProblems.join(" | ") // ✅ fallback
     }, statusEl, "Alerta enviado com sucesso! Central notificada.");
 }
 
@@ -417,12 +444,13 @@ async function enviarAlerta(payload, statusEl, mensagemOk) {
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(payload)
         });
-        const data = await resp.json();
-        if (data.ok) {
+
+        const data = await resp.json().catch(() => ({}));
+        if (resp.ok && data.ok) {
             statusEl.textContent = mensagemOk;
             statusEl.style.color = "#22c55e";
         } else {
-            statusEl.textContent = "Erro ao enviar alerta.";
+            statusEl.textContent = (data && data.error) ? ("Erro: " + data.error) : "Erro ao enviar alerta.";
             statusEl.style.color = "#f97316";
         }
     } catch (e) {
@@ -436,6 +464,11 @@ function limparCampos() {
     document.getElementById("teacher").value = "";
     document.getElementById("room").value = "";
     document.getElementById("description").value = "";
+
+    // ✅ Limpa ocorrências selecionadas + visual “fixo”
+    selectedProblems = [];
+    document.querySelectorAll(".btn-quick.active").forEach(b => b.classList.remove("active"));
+
     const statusEl = document.getElementById("status");
     statusEl.textContent = "Campos limpos. Sistema pronto.";
     statusEl.style.color = "#38bdf8";
@@ -449,7 +482,6 @@ async function resetarSistema() {
 }
 
 function sair(){
-  // Professor isolado: sair volta para ele mesmo
   window.location.replace('/professor');
 }
 
