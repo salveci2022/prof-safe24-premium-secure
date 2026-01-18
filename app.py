@@ -410,9 +410,32 @@ def api_alert():
     sid = _get_school_id()
     data = request.get_json(silent=True) or {}
 
-    teacher = (data.get("teacher") or "Professor(a)")[:80]
-    room = (data.get("room") or "Sala / Local não informado")[:80]
-    desc = (data.get("description") or "Alerta de pânico acionado")[:220]
+    # Compatibilidade de chaves (caso algum front envie nomes diferentes)
+    teacher_raw = (data.get("teacher") or data.get("professor") or "Professor(a)")
+    room_raw = (data.get("room") or data.get("sala") or "Sala / Local não informado")
+
+    # Ocorrências podem vir como lista (problems/problemas) — queremos mostrar na Central
+    problems = data.get("problems") or data.get("problemas") or []
+    if isinstance(problems, str):
+        problems = [problems]
+    if not isinstance(problems, list):
+        problems = []
+    problems = [str(p).strip() for p in problems if str(p).strip()]
+
+    # Descrição pode vir por description/descricao
+    desc_in = (data.get("description") or data.get("descricao") or "").strip()
+
+    # Monta descrição final: prioriza ocorrências selecionadas
+    if problems:
+        desc_final = " | ".join(problems)
+        if desc_in and desc_in not in desc_final:
+            desc_final = f"{desc_final} | {desc_in}"
+    else:
+        desc_final = desc_in or "Alerta de pânico acionado"
+
+    teacher = str(teacher_raw)[:80]
+    room = str(room_raw)[:80]
+    desc = str(desc_final)[:220]
 
     alertas = alertas_by_school[sid]
     alerta = {

@@ -399,12 +399,18 @@ async function enviarSOS() {
     statusEl.textContent = "Enviando SOS...";
     statusEl.style.color = "#38bdf8";
 
-    // SOS: envia prioridade máxima (não depende das ocorrências)
+    // SOS: envia prioridade máxima. Se houver ocorrências selecionadas,
+    // elas vão junto (e também aparecem na descrição).
+    const base = "Alerta de pânico acionado (SOS rápido).";
+    const ocorr = (selectedProblems && selectedProblems.length)
+        ? (" | " + selectedProblems.join(" | "))
+        : "";
+
     await enviarAlerta({
         teacher: teacher || "Professor(a)",
         room: room || "Local não informado",
-        problems: selectedProblems, // ✅ se tiver selecionadas, também envia
-        description: "Alerta de pânico acionado (SOS rápido)."
+        problems: selectedProblems || [],
+        description: base + ocorr
     }, statusEl, "SOS enviado com sucesso! Central acionada.");
 }
 
