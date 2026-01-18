@@ -376,19 +376,16 @@ function toggleProblem(btn, texto) {
         btn.classList.remove('active');
     }
 
-    // Preenche a descrição automaticamente com as ocorrências (sem apagar o que a pessoa digitar depois)
-    const descEl = document.getElementById("description");
-    if (!descEl.value.trim()) {
-        descEl.value = selectedProblems.join(" | ");
-    } else {
-        // Se já existe texto, não sobrescreve — só atualiza status
-    }
-
+    // ✅ A descrição é apenas para observações extras.
+    // As ocorrências selecionadas são enviadas no campo problems (sem duplicar texto).
     const statusEl = document.getElementById("status");
     statusEl.textContent = selectedProblems.length
         ? "Ocorrências selecionadas: " + selectedProblems.join(", ")
         : "Nenhuma ocorrência selecionada.";
     statusEl.style.color = selectedProblems.length ? "#22c55e" : "#38bdf8";
+
+
+
 }
 
 async function enviarSOS() {
@@ -399,18 +396,12 @@ async function enviarSOS() {
     statusEl.textContent = "Enviando SOS...";
     statusEl.style.color = "#38bdf8";
 
-    // SOS: envia prioridade máxima. Se houver ocorrências selecionadas,
-    // elas vão junto (e também aparecem na descrição).
-    const base = "Alerta de pânico acionado (SOS rápido).";
-    const ocorr = (selectedProblems && selectedProblems.length)
-        ? (" | " + selectedProblems.join(" | "))
-        : "";
-
+    // SOS: envia prioridade máxima (não depende das ocorrências)
     await enviarAlerta({
         teacher: teacher || "Professor(a)",
         room: room || "Local não informado",
-        problems: selectedProblems || [],
-        description: base + ocorr
+        problems: selectedProblems, // ✅ se tiver selecionadas, também envia
+        description: "SOS rápido"
     }, statusEl, "SOS enviado com sucesso! Central acionada.");
 }
 
@@ -434,7 +425,7 @@ async function enviarAlertaDetalhado() {
         teacher: teacher || "Professor(a)",
         room: room,
         problems: selectedProblems,       // ✅ ENVIA AS OCORRÊNCIAS
-        description: desc || selectedProblems.join(" | ") // ✅ fallback
+        description: (desc || "") // ✅ fallback
     }, statusEl, "Alerta enviado com sucesso! Central notificada.");
 }
 
