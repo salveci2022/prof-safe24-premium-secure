@@ -189,12 +189,17 @@ def enviar_whatsapp(numero, mensagem):
         numero_limpo = "".join(filter(str.isdigit, numero))
         url     = f"https://api.z-api.io/instances/{ZAPI_INSTANCE}/token/{ZAPI_TOKEN}/send-text"
         payload = json.dumps({"phone": numero_limpo, "message": mensagem}).encode("utf-8")
-        req     = urllib.request.Request(url, data=payload,
-                    headers={"Content-Type": "application/json",
-                             "Client-Token": ZAPI_CLIENT_TKN},
-                    method="POST")
-        resp = urllib.request.urlopen(req, timeout=8)
-        print(f"[ZAPI] ✅ Enviado para {numero_limpo} — status {resp.status}")
+        headers = {
+            "Content-Type":  "application/json",
+            "Client-Token":  ZAPI_CLIENT_TKN,
+        }
+        print(f"[ZAPI] Enviando para {numero_limpo}...")
+        print(f"[ZAPI] Instance: {ZAPI_INSTANCE[:8]}...")
+        print(f"[ZAPI] Client-Token: {ZAPI_CLIENT_TKN[:8]}...")
+        req  = urllib.request.Request(url, data=payload, headers=headers, method="POST")
+        resp = urllib.request.urlopen(req, timeout=10)
+        body = resp.read().decode("utf-8")
+        print(f"[ZAPI] ✅ Resposta: {body}")
         return True
     except Exception as e:
         print(f"[ZAPI] ❌ Erro ao enviar para {numero}: {e}")
