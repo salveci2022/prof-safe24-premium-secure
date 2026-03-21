@@ -34,20 +34,11 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--dark);color:var
   box-shadow:0 0 8px #ef4444;animation:blink 1.2s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
 .logo-wrap{text-align:center;margin-bottom:8px;animation:fadeUp .7s ease forwards;}
-.logo-icon{width:72px;height:72px;border-radius:20px;margin:0 auto 16px;
-  background:linear-gradient(135deg,#e53e2f,#f97316);
-  box-shadow:0 0 40px rgba(229,62,47,.5),0 0 80px rgba(229,62,47,.15);
-  display:flex;align-items:center;justify-content:center;font-size:32px;
-  animation:pulse-icon 3s ease-in-out infinite;}
+.logo-icon{display:none;}
 @keyframes pulse-icon{0%,100%{box-shadow:0 0 40px rgba(229,62,47,.5),0 0 80px rgba(229,62,47,.15);}50%{box-shadow:0 0 60px rgba(229,62,47,.7),0 0 120px rgba(229,62,47,.25);}}
-.title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,10vw,88px);
-  letter-spacing:.06em;line-height:.95;
-  background:linear-gradient(135deg,#fff 0%,#f97316 50%,#e53e2f 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.title-sub{font-size:12px;font-weight:500;letter-spacing:.25em;
-  text-transform:uppercase;color:var(--muted);margin-top:6px;}
-.title-estado{font-size:14px;font-weight:700;letter-spacing:.15em;
-  text-transform:uppercase;color:var(--amber);margin-top:4px;}
+
+
+.title-estado{font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--amber);margin-top:4px;}
 .clock-wrap{margin:20px 0 28px;display:flex;align-items:center;gap:10px;
   animation:fadeUp .8s ease forwards;}
 .clock{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.1em;color:var(--orange);}
@@ -95,6 +86,49 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--dark);color:var
 .info b{color:var(--amber);}
 .divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:18px auto;}
 .footer{font-size:11px;color:rgba(123,141,176,.5);letter-spacing:.05em;}
+.title-premium{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(52px,11vw,96px);
+  letter-spacing:.08em;line-height:1;
+  margin-bottom:0px;
+  filter:drop-shadow(0 0 30px rgba(100,200,255,.15));
+}
+.tp-p{color:#4fc3f7;}
+.tp-r{color:#29b6f6;}
+.tp-o{color:#f97316;}
+.tp-f{color:#fb923c;}
+.tp-dash{color:#94a3b8;}
+.tp-s{color:#a78bfa;}
+.tp-a{color:#c084fc;}
+.tp-f2{color:#e879f9;}
+.tp-e{color:#f472b6;}
+.tp-space{display:inline-block;width:.3em;}
+.tp-2{color:#4ade80;}
+.tp-4{color:#34d399;}
+
+.title-premium2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(28px,6vw,52px);
+  letter-spacing:.35em;
+  background:linear-gradient(135deg,#f97316,#fbbf24,#f97316);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:shine 3s linear infinite;
+  margin-top:-4px;margin-bottom:8px;
+}
+@keyframes shine{0%{background-position:0%;}100%{background-position:200%;}}
+
+.title-sub-line{
+  display:flex;align-items:center;gap:12px;
+  justify-content:center;margin-bottom:8px;
+}
+.tsl-bar{flex:1;max-width:60px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(249,115,22,.5));}
+.tsl-bar:last-child{background:linear-gradient(90deg,rgba(249,115,22,.5),transparent);}
+.tsl-text{font-size:11px;font-weight:600;letter-spacing:.25em;
+  color:#94a3b8;text-transform:uppercase;white-space:nowrap;}
+
 .alert-banner{display:none;width:100%;max-width:480px;margin-bottom:16px;
   background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.4);
   border-radius:12px;padding:12px 16px;font-size:13px;font-weight:600;
@@ -115,9 +149,15 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--dark);color:var
   </div>
 
   <div class="logo-wrap">
-    <div class="logo-icon">🚨</div>
-    <div class="title">PROF-SAFE 24</div>
-    <div class="title-sub">Sistema de Segurança Escolar</div>
+    <div class="title-premium">
+      <span class="tp-p">P</span><span class="tp-r">R</span><span class="tp-o">O</span><span class="tp-f">F</span><span class="tp-dash">-</span><span class="tp-s">S</span><span class="tp-a">A</span><span class="tp-f2">F</span><span class="tp-e">E</span><span class="tp-space">&nbsp;</span><span class="tp-2">2</span><span class="tp-4">4</span>
+    </div>
+    <div class="title-premium2">PREMIUM</div>
+    <div class="title-sub-line">
+      <span class="tsl-bar"></span>
+      <span class="tsl-text">SEGURANÇA INTELIGENTE</span>
+      <span class="tsl-bar"></span>
+    </div>
     <div class="title-estado">Estado de Goiás</div>
   </div>
 
