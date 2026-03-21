@@ -1,0 +1,42 @@
+{
+  "escola_001": {
+    "id": "escola_001",
+    "nome": "Colégio Estadual Noroeste",
+    "cidade": "São Miguel do Araguaia",
+    "regiao": "Noroeste",
+    "endereco": "Av. Brasil, 100 – São Miguel do Araguaia/GO",
+    "telefone": "(62) 99999-0001",
+    "diretor": "Prof. Carlos Souza",
+    "ativo": true
+  },
+  "escola_002": {
+    "id": "escola_002",
+    "nome": "Colégio Estadual Centro-Oeste",
+    "cidade": "Goiânia",
+    "regiao": "Central",
+    "endereco": "Rua das Flores, 200 – Goiânia/GO",
+    "telefone": "(62) 99999-0002",
+    "diretor": "Profa. Ana Lima",
+    "ativo": true
+  },
+  "escola_003": {
+    "id": "escola_003",
+    "nome": "Colégio Estadual Sul Goiano",
+    "cidade": "Itumbiara",
+    "regiao": "Sul",
+    "endereco": "Av. Goiás, 300 – Itumbiara/GO",
+    "telefone": "(64) 99999-0003",
+    "diretor": "Prof. João Alves",
+    "ativo": true
+  },
+  "escola_004": {
+    "id": "escola_004",
+    "nome": "Colégio Santa Maria",
+    "cidade": "Santa Maria, Brasília - DF",
+    "regiao": "Noroeste",
+    "endereco": "CL 218 Lote D - Santa Maria, Brasília - DF, 72548-224",
+    "telefone": "(61) 3394-2174",
+    "diretor": "Ilma",
+    "ativo": true
+  }
+}

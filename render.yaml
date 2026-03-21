@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: profsafe24
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 2 --bind 0.0.0.0:$PORT
+    envVars:
+      - key: SECRET_KEY
+        value: profsafe24-estadual-goias-2026-ultra-secure
+      - key: ADMIN_USER
+        value: admin
+      - key: ADMIN_PASS
+        value: admin2026
+      - key: ZAPI_INSTANCE
+        value: ""
+      - key: ZAPI_TOKEN
+        value: ""
+      - key: ZAPI_CLIENT_TOKEN
+        value: ""
+      - key: GMAIL_USER
+        value: ""
+      - key: GMAIL_APP_PASS
+        value: ""
+      - key: WHATS_ESTADUAL
+        value: ""
+      - key: EMAIL_ESTADUAL
+        value: ""
+      - key: WHATS_SECEDUC
+        value: ""
+      - key: EMAIL_SECEDUC
+        value: ""
+      - key: WHATS_DIRETOR1
+        value: ""

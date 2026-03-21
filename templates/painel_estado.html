@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Painel Estadual — PROF-SAFE 24 — Goiás</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter','Segoe UI',Arial,sans-serif;
+  background:radial-gradient(circle at top,#020617 0,#020617 55%,#000 100%);
+  color:#e5e7eb;min-height:100vh;}
+.topbar{background:#020617;padding:14px 28px;display:flex;justify-content:space-between;
+  align-items:center;border-bottom:2px solid rgba(245,158,11,.6);}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-icon{width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,#f97316,#b91c1c);
+  display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;}
+.brand-main{font-size:18px;font-weight:800;letter-spacing:.1em;color:#fbbf24;}
+.brand-sub{font-size:10px;text-transform:uppercase;color:#64748b;letter-spacing:.2em;}
+.top-right{display:flex;align-items:center;gap:12px;}
+.clock{font-size:14px;color:#f97316;font-weight:600;}
+.pill{font-size:11px;padding:5px 10px;border-radius:999px;
+  background:rgba(21,128,61,.16);border:1px solid rgba(34,197,94,.7);color:#bbf7d0;}
+.pill-alert{background:rgba(185,28,28,.2);border-color:rgba(248,113,113,.7);color:#fecaca;}
+.btn-sair{font-size:11px;padding:5px 12px;border-radius:999px;
+  background:rgba(185,28,28,.2);border:1px solid rgba(248,113,113,.4);
+  color:#fecaca;cursor:pointer;text-decoration:none;}
+
+.page{padding:20px 28px 32px;}
+
+/* Stats topo */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:24px;}
+.stat-card{background:#020617;border-radius:16px;border:1px solid rgba(245,158,11,.3);
+  padding:16px;text-align:center;}
+.stat-card.alerta{border-color:rgba(248,113,113,.5);animation:pulse-card 2s infinite;}
+@keyframes pulse-card{0%,100%{border-color:rgba(248,113,113,.5);}50%{border-color:rgba(248,113,113,.9);}}
+.stat-v{font-size:30px;font-weight:800;color:#f97316;}
+.stat-v.red{color:#f87171;}
+.stat-l{font-size:11px;color:#9ca3af;margin-top:4px;}
+
+/* Mapa / escolas */
+.section-title{font-size:16px;font-weight:700;margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;}
+.escolas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:28px;}
+.escola-card{background:#020617;border-radius:16px;border:1px solid rgba(30,64,175,.5);
+  padding:16px;cursor:pointer;transition:border-color .2s;}
+.escola-card:hover{border-color:rgba(245,158,11,.6);}
+.escola-card.tem-alerta{border-color:rgba(248,113,113,.7);animation:pulse-card 2s infinite;}
+.escola-nome{font-size:14px;font-weight:700;margin-bottom:4px;}
+.escola-info{font-size:11px;color:#9ca3af;margin-bottom:10px;}
+.escola-stats{display:flex;gap:12px;}
+.e-stat{font-size:11px;background:rgba(15,23,42,.8);padding:4px 10px;border-radius:999px;
+  border:1px solid rgba(55,65,81,.6);}
+.e-stat.red{border-color:rgba(248,113,113,.5);color:#f87171;}
+.e-stat.green{border-color:rgba(34,197,94,.4);color:#86efac;}
+.escola-actions{display:flex;gap:6px;margin-top:10px;padding-top:10px;
+  border-top:1px solid rgba(30,64,175,.2);}
+.btn-card{padding:4px 10px;border-radius:999px;border:none;font-size:10px;
+  font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-card-blue{background:rgba(37,99,235,.2);color:#93c5fd;border:1px solid rgba(37,99,235,.3);}
+.btn-card-blue:hover{background:rgba(37,99,235,.4);}
+.btn-card-red{background:rgba(185,28,28,.2);color:#fca5a5;border:1px solid rgba(185,28,28,.3);}
+.btn-card-red:hover{background:rgba(185,28,28,.4);}
+.btn-card-slate{background:rgba(30,41,59,.6);color:#94a3b8;border:1px solid rgba(51,65,85,.4);}
+.btn-card-slate:hover{background:rgba(30,41,59,.9);}
+
+/* Feed alertas */
+.feed{background:#020617;border-radius:20px;border:1px solid rgba(30,64,175,.5);padding:20px;}
+.feed-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.btn-sm{padding:6px 14px;border-radius:999px;border:none;font-size:12px;font-weight:600;cursor:pointer;}
+.btn-red{background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fee2e2;}
+.btn-blue{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#e0f2fe;}
+.btn-slate{background:#0f172a;color:#e5e7eb;border:1px solid rgba(51,65,85,.9);}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th,td{padding:8px 10px;text-align:left;}
+th{color:#9ca3af;font-weight:600;border-bottom:1px solid rgba(30,64,175,.5);}
+tbody tr:nth-child(odd){background:rgba(15,23,42,.9);}
+tbody tr:nth-child(even){background:rgba(15,23,42,.8);}
+.badge-ativo{color:#f87171;font-weight:700;}
+.badge-resolvido{color:#4ade80;}
+.empty-row{text-align:center;color:#6b7280;padding:20px;}
+.regiao-badge{font-size:10px;padding:2px 8px;border-radius:999px;
+  background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.4);color:#fde68a;}
+
+audio{display:none;}
+@media(max-width:700px){.page{padding:14px;}.topbar{padding:10px 14px;}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-icon">PS</div>
+    <div>
+      <div class="brand-main">PROF-SAFE 24 — ESTADO DE GOIÁS</div>
+      <div class="brand-sub">Responsável Segurança Escolar Estadual</div>
+    </div>
+  </div>
+  <div class="top-right">
+    <div class="pill" id="topPill">Sistema Normal</div>
+    <div class="clock" id="clock"></div>
+    <a href="/logout" class="btn-sair">⏻ Sair</a>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card" id="card-total"><div class="stat-v" id="s-total">0</div><div class="stat-l">Total de Alertas</div></div>
+    <div class="stat-card" id="card-ativos"><div class="stat-v red" id="s-ativos">0</div><div class="stat-l">Alertas Ativos Agora</div></div>
+    <div class="stat-card"><div class="stat-v" id="s-escolas">{{ escolas|length }}</div><div class="stat-l">Escolas Monitoradas</div></div>
+    <div class="stat-card"><div class="stat-v" id="s-ultimo">–</div><div class="stat-l">Último Alerta</div></div>
+  </div>
+
+  <!-- Escolas -->
+  <div class="section-title">🏫 Escolas Monitoradas — Goiás</div>
+  <div class="escolas-grid" id="escolasGrid">
+    {% for escola in escolas %}
+    <div class="escola-card" id="card-{{ escola.id }}" onclick="filtrarEscola('{{ escola.id }}')">
+      <div class="escola-nome">{{ escola.nome }}</div>
+      <div class="escola-info">
+        <span class="regiao-badge">{{ escola.regiao }}</span>
+        &nbsp;{{ escola.cidade }}/GO
+      </div>
+      <div class="escola-stats">
+        <span class="e-stat red" id="ativos-{{ escola.id }}">0 ativos</span>
+        <span class="e-stat green" id="total-{{ escola.id }}">0 total</span>
+      </div>
+      <div class="escola-actions" onclick="event.stopPropagation()">
+        <button class="btn-card btn-card-blue"
+                onclick="filtrarEscola('{{ escola.id }}')">🔍 Ver alertas</button>
+        <button class="btn-card btn-card-slate"
+                onclick="limparEscola('{{ escola.id }}','{{ escola.nome }}')">🧹 Limpar</button>
+        <button class="btn-card btn-card-red"
+                onclick="excluirEscola('{{ escola.id }}','{{ escola.nome }}')">🗑️ Excluir</button>
+      </div>
+    </div>
+    {% else %}
+    <div style="color:#64748b;padding:20px;">Nenhuma escola cadastrada.</div>
+    {% endfor %}
+  </div>
+
+  <!-- Feed de alertas -->
+  <div class="feed">
+    <div class="feed-header">
+      <div style="font-size:14px;font-weight:700;" id="feedTitle">🚨 Feed de Alertas — Todas as Escolas</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-sm btn-blue" onclick="filtrarEscola('')">Todas</button>
+        <button class="btn-sm btn-red" onclick="pararSirene()">Parar Sirene</button>
+        <button class="btn-sm btn-slate" onclick="resolverTodos()">Resolver Todos</button>
+        <button class="btn-sm btn-slate" onclick="baixarPDF()">📄 PDF</button>
+      </div>
+    </div>
+    <table>
+      <thead><tr>
+        <th>#</th><th>Escola</th><th>Região</th>
+        <th>Professor(a)</th><th>Sala</th><th>Ocorrência</th>
+        <th>Hora</th><th>Status</th>
+      </tr></thead>
+      <tbody id="tbody">
+        <tr><td colspan="8" class="empty-row">Nenhum alerta registrado ainda…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<audio id="siren" loop><source src="/static/siren.mp3" type="audio/mpeg"></audio>
+
+<script>
+let escolaFiltro = '';
+function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR',{hour12:false});}
+setInterval(tick,1000);tick();
+
+function filtrarEscola(id){
+  escolaFiltro=id;
+  document.getElementById('feedTitle').textContent = id
+    ? '🚨 Alertas — '+document.querySelector('#card-'+id+' .escola-nome')?.textContent
+    : '🚨 Feed de Alertas — Todas as Escolas';
+}
+
+async function atualizar(){
+  try{
+    const url='/api/status'+(escolaFiltro?'?escola='+escolaFiltro:'');
+    const d=await(await fetch(url)).json();
+    const alertas=d.alertas||[];
+
+    // Stats gerais
+    document.getElementById('s-total').textContent=alertas.length;
+    document.getElementById('s-ativos').textContent=d.total_ativos||0;
+    document.getElementById('s-ultimo').textContent=d.last_alert_time?d.last_alert_time.split(' ')[1]:'–';
+
+    // Sirene
+    const siren=document.getElementById('siren');
+    const pill=document.getElementById('topPill');
+    if(d.siren_on){
+      siren.play().catch(()=>{});
+      pill.textContent='⚠️ ALERTA ATIVO';pill.className='pill pill-alert';
+      document.getElementById('card-ativos').classList.add('alerta');
+    }else{
+      siren.pause();siren.currentTime=0;
+      pill.textContent='Sistema Normal';pill.className='pill';
+      document.getElementById('card-ativos').classList.remove('alerta');
+    }
+
+    // Contadores por escola
+    const allD=await(await fetch('/api/status')).json();
+    const allAlertas=allD.alertas||[];
+    document.querySelectorAll('[id^="ativos-"]').forEach(el=>{
+      const eid=el.id.replace('ativos-','');
+      const at=allAlertas.filter(a=>a.escola_id===eid&&a.status==='Ativo').length;
+      el.textContent=at+' ativo'+(at!==1?'s':'');
+      document.querySelector('#card-'+eid)?.classList.toggle('tem-alerta',at>0);
+    });
+    document.querySelectorAll('[id^="total-"]').forEach(el=>{
+      const eid=el.id.replace('total-','');
+      const tot=allAlertas.filter(a=>a.escola_id===eid).length;
+      el.textContent=tot+' total';
+    });
+
+    // Tabela
+    const tbody=document.getElementById('tbody');
+    tbody.innerHTML='';
+    if(!alertas.length){
+      tbody.innerHTML='<tr><td colspan="8" class="empty-row">Nenhum alerta registrado ainda…</td></tr>';
+      return;
+    }
+    alertas.forEach(a=>{
+      const cls=a.status==='Ativo'?'badge-ativo':'badge-resolvido';
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${a.id}</td><td>${a.escola_nome||'–'}</td>
+        <td><span class="regiao-badge">${a.escola_regiao||'–'}</span></td>
+        <td>${a.teacher}</td><td>${a.room}</td><td>${a.description}</td>
+        <td>${a.time}</td><td class="${cls}">${a.status}</td>`;
+      tbody.appendChild(tr);
+    });
+  }catch(e){console.error(e);}
+}
+setInterval(atualizar,2000);atualizar();
+
+async function pararSirene(){
+  await fetch('/api/siren',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'off'})});
+  document.getElementById('siren').pause();
+  document.getElementById('siren').currentTime=0;
+  document.getElementById('topPill').textContent='Sistema Normal';
+  document.getElementById('topPill').className='pill';
+}
+async function resolverTodos(){await fetch('/api/resolve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({escola_id:escolaFiltro})});}
+function baixarPDF(){window.open('/report.pdf'+(escolaFiltro?'?escola='+escolaFiltro:''),'_blank');}
+
+async function limparEscola(id, nome){
+  if(!confirm('Limpar todos os alertas de '+nome+'?')) return;
+  await fetch('/api/clear',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({escola_id:id})
+  });
+  atualizar();
+}
+
+async function excluirEscola(id, nome){
+  if(!confirm('EXCLUIR a escola '+nome+'?\n\nTodos os alertas desta escola serão removidos.')) return;
+  const r = await fetch('/admin/escola/delete/'+id, {method:'POST'});
+  if(r.ok || r.redirected){
+    // Remove card da tela imediatamente
+    const card = document.getElementById('card-'+id);
+    if(card) card.remove();
+    atualizar();
+  }
+}
+</script>
+</body>
+</html>

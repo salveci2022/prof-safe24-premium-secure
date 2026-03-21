@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Painel do Professor — PROF-SAFE 24</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/static/manifest.json">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter','Segoe UI',Arial,sans-serif;
+  background:radial-gradient(circle at top,#1f2937 0,#020617 50%,#000 100%);
+  color:#e5e7eb;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;}
+.shell{width:100%;max-width:480px;padding:18px;}
+.card{background:rgba(15,23,42,.96);border-radius:24px;
+  border:1px solid rgba(148,163,184,.3);
+  box-shadow:0 20px 50px rgba(15,23,42,.95);padding:18px 18px 16px;}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-icon{width:40px;height:40px;border-radius:14px;
+  background:radial-gradient(circle at 0 0,#facc15,#ea580c);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#020617;font-size:14px;box-shadow:0 0 22px rgba(234,88,12,.7);}
+.brand-title{font-size:17px;font-weight:800;
+  background:linear-gradient(120deg,#facc15,#f97316,#facc15);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.brand-sub{font-size:10px;color:#9ca3af;text-transform:uppercase;letter-spacing:.14em;}
+.clock{font-size:13px;color:#f97316;font-weight:600;}
+.title{font-size:15px;font-weight:700;margin-bottom:3px;}
+.subtitle{font-size:11px;color:#9ca3af;margin-bottom:14px;}
+
+/* Escola selecionada */
+.escola-banner{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);
+  border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:12px;}
+.escola-banner b{color:#fbbf24;display:block;font-size:13px;margin-bottom:2px;}
+.escola-banner span{color:#9ca3af;}
+
+/* Botão SOS */
+.panic-zone{display:flex;flex-direction:column;align-items:center;margin-bottom:16px;}
+.panic-ring{width:210px;height:210px;border-radius:999px;
+  background:radial-gradient(circle at 30% 0,rgba(248,113,113,.35),transparent 60%);
+  display:flex;align-items:center;justify-content:center;}
+.panic-button{width:170px;height:170px;border-radius:999px;border:none;cursor:pointer;
+  background:radial-gradient(circle at 30% 0,#ef4444,#b91c1c);
+  box-shadow:0 0 40px rgba(248,113,113,.85),0 18px 40px rgba(15,23,42,.95);
+  color:#fee2e2;font-size:18px;font-weight:900;letter-spacing:.14em;text-align:center;
+  text-shadow:0 2px 8px rgba(0,0,0,.7);transition:transform .15s;}
+.panic-button:active{transform:scale(.96);}
+.panic-button span.small{display:block;font-size:10px;letter-spacing:.06em;margin-top:4px;opacity:.85;}
+.panic-caption{font-size:11px;color:#e5e7eb;margin-top:8px;text-align:center;}
+
+.section{background:rgba(15,23,42,.98);border-radius:16px;
+  border:1px solid rgba(30,64,175,.7);padding:12px 12px 10px;margin-bottom:10px;}
+.section-title{font-size:13px;font-weight:600;margin-bottom:6px;}
+.label{font-size:11px;color:#9ca3af;margin-bottom:3px;display:block;}
+input,textarea,select{width:100%;border-radius:10px;border:1px solid rgba(55,65,81,.9);
+  background:#020617;color:#e5e7eb;font-size:12px;padding:8px 10px;margin-bottom:8px;box-sizing:border-box;}
+select option{background:#020617;}
+input::placeholder,textarea::placeholder{color:#6b7280;}
+textarea{resize:vertical;min-height:48px;max-height:110px;}
+.quick-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+.btn-quick{flex:1 1 48%;border-radius:999px;border:1px solid rgba(55,65,81,.9);
+  background:#020617;font-size:11px;color:#e5e7eb;padding:7px 8px;cursor:pointer;text-align:center;}
+.btn-quick:hover{border-color:#f97316;}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.btn{flex:1;min-width:90px;border-radius:999px;border:none;padding:9px 10px;
+  font-size:12px;font-weight:600;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;}
+.btn-main{background:linear-gradient(135deg,#fb923c,#ea580c);color:#111827;}
+.btn-blue{background:#1e3a8a;color:#e5e7eb;}
+.btn-red{background:#b91c1c;color:#fee2e2;}
+#status{margin-top:8px;font-size:11px;padding:8px 9px;border-radius:10px;
+  background:#020617;border:1px solid rgba(30,64,175,.7);color:#38bdf8;}
+@media(max-width:480px){.panic-ring{width:190px;height:190px;}.panic-button{width:150px;height:150px;font-size:16px;}}
+</style>
+</head>
+<body>
+<div class="shell">
+<div class="card">
+  <div class="header">
+    <div class="brand">
+      <div class="brand-icon">PS</div>
+      <div><div class="brand-title">PROF-SAFE 24</div><div class="brand-sub">PAINEL DO PROFESSOR</div></div>
+    </div>
+    <div class="clock" id="clockProf"></div>
+  </div>
+
+  <div class="title">Botão de Pânico — Professor</div>
+  <div class="subtitle">
+    Use o botão <b>SOS</b> em emergência. A Central e o Responsável Estadual serão acionados imediatamente.
+  </div>
+
+  <!-- Banner da escola -->
+  <div class="escola-banner">
+    <b id="escolaNome">{{ escola.nome or 'Selecione sua escola' }}</b>
+    <span id="escolaInfo">{{ escola.cidade or '' }}{% if escola.regiao %} — Região {{ escola.regiao }}{% endif %}</span>
+  </div>
+
+  <!-- Botão SOS -->
+  <div class="panic-zone">
+    <div class="panic-ring">
+      <button class="panic-button" type="button" onclick="enviarSOS()">
+        SOS
+        <span class="small">PRESSIONE EM EMERGÊNCIA</span>
+      </button>
+    </div>
+    <div class="panic-caption">
+      🔴 Alerta enviado imediatamente para a Central e Responsável Estadual.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Identificação e ocorrência</div>
+
+    <label class="label" for="escola_sel">Sua escola</label>
+    <select id="escola_sel" onchange="mudarEscola(this.value)">
+      {% for e in escolas %}
+      <option value="{{ e.id }}" {% if e.id == escola_id %}selected{% endif %}>{{ e.nome }} — {{ e.cidade }}</option>
+      {% endfor %}
+    </select>
+
+    <label class="label" for="teacher">Seu nome (opcional)</label>
+    <input id="teacher" placeholder="Ex.: Prof. Ana Paula">
+
+    <label class="label" for="room">Sala / Local</label>
+    <input id="room" placeholder="Ex.: 7º Ano B - Sala 12">
+
+    <span class="label">Selecione a ocorrência:</span>
+    <div class="quick-grid">
+      <button class="btn-quick" type="button" onclick="setDesc('Aluno passou mal em sala de aula')">🤒 Aluno passou mal</button>
+      <button class="btn-quick" type="button" onclick="setDesc('Briga entre alunos em sala ou corredor')">⚠️ Briga na sala</button>
+      <button class="btn-quick" type="button" onclick="setDesc('Possível invasão ou pessoa estranha na escola')">🚨 Invasão / estranho</button>
+      <button class="btn-quick" type="button" onclick="setDesc('Agressão verbal ou física contra professor(a)')">🚫 Agressão ao prof.</button>
+      <button class="btn-quick" type="button" onclick="setDesc('Aluno portando objeto suspeito ou arma branca')">🔪 Objeto suspeito</button>
+      <button class="btn-quick" type="button" onclick="setDesc('Tentativa de arrombamento ou dano ao patrimônio')">🛑 Arrombamento</button>
+      <button class="btn-quick" type="button" onclick="setDesc('Risco próximo ao portão ou saída de alunos')">🚧 Risco no portão</button>
+      <button class="btn-quick" type="button" onclick="setDesc('Pessoa suspeita rondando o entorno da escola')">👤 Suspeito no entorno</button>
+    </div>
+
+    <label class="label" for="description">Descrição (edite se quiser)</label>
+    <textarea id="description" placeholder="Descreva o que está acontecendo."></textarea>
+
+    <div class="btn-row">
+      <button class="btn btn-main" type="button" onclick="enviarAlertaDetalhado()">🚨 Enviar Alerta</button>
+      <button class="btn btn-blue" type="button" onclick="limparCampos()">🧹 Limpar</button>
+      <button class="btn btn-red"  type="button" onclick="sair()">⏻ Início</button>
+    </div>
+    <div id="status">Pronto para uso.</div>
+  </div>
+</div>
+</div>
+<script>
+let escolaId = '{{ escola_id or "escola_001" }}';
+
+function tick(){document.getElementById('clockProf').textContent=new Date().toLocaleTimeString('pt-BR',{hour12:false});}
+setInterval(tick,1000);tick();
+
+function mudarEscola(id){
+  escolaId=id;
+  // Busca nome da escola pelo option
+  const sel=document.getElementById('escola_sel');
+  const txt=sel.options[sel.selectedIndex].text.split(' — ');
+  document.getElementById('escolaNome').textContent=txt[0]||id;
+  document.getElementById('escolaInfo').textContent=txt[1]||'';
+}
+
+function setDesc(texto){
+  document.getElementById('description').value=texto;
+  const s=document.getElementById('status');
+  s.textContent='Selecionado: '+texto;s.style.color='#38bdf8';
+}
+
+async function enviarSOS(){
+  const s=document.getElementById('status');
+  s.textContent='Enviando SOS...';s.style.color='#f97316';
+  // Usa a ocorrência selecionada se existir, senão usa mensagem padrão
+  const descSelecionada = document.getElementById('description').value.trim();
+  const desc = descSelecionada || '🚨 ALERTA DE PÂNICO — SOS acionado pelo(a) professor(a).';
+  await enviarAlerta({
+    teacher:     document.getElementById('teacher').value.trim()||'Professor(a)',
+    room:        document.getElementById('room').value.trim()||'Local não informado',
+    description: desc,
+    escola_id:   escolaId
+  },s,'✅ SOS enviado! Central e Responsável Estadual acionados.');
+}
+
+async function enviarAlertaDetalhado(){
+  const room=document.getElementById('room').value.trim();
+  const desc=document.getElementById('description').value.trim();
+  const s=document.getElementById('status');
+  if(!room||!desc){s.textContent='Preencha Sala/Local e a ocorrência.';s.style.color='#f97316';return;}
+  s.textContent='Enviando alerta...';s.style.color='#38bdf8';
+  await enviarAlerta({
+    teacher:     document.getElementById('teacher').value.trim()||'Professor(a)',
+    room,description:desc,escola_id:escolaId
+  },s,'✅ Alerta enviado! Central notificada.');
+}
+
+async function enviarAlerta(payload,statusEl,msgOk){
+  try{
+    const r=await fetch('/api/alert',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const d=await r.json();
+    if(d.ok){statusEl.textContent=msgOk;statusEl.style.color='#22c55e';}
+    else{statusEl.textContent='Erro ao enviar.';statusEl.style.color='#f97316';}
+  }catch(e){statusEl.textContent='Falha de comunicação.';statusEl.style.color='#f97316';}
+}
+
+function limparCampos(){
+  ['teacher','room','description'].forEach(id=>document.getElementById(id).value='');
+  const s=document.getElementById('status');s.textContent='Campos limpos.';s.style.color='#38bdf8';
+}
+function sair(){window.location.href='/';}
+</script>
+</body>
+</html>

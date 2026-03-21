@@ -1,573 +1,104 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>PROF-SAFE24 PREMIUM - Sistema de Segurança Premium</title>
-    <style>
-        :root {
-            --premium-blue: #0066ff;
-            --electric-orange: #ff6a00;
-            --deep-purple: #7b42f6;
-            --vibrant-cyan: #00ffcc;
-            --premium-black: #0a0f1a;
-            --dark-card: #131a2a;
-        }
-        
-        * { box-sizing:border-box; margin:0; padding:0; }
-        
-        body {
-            margin:0;
-            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, var(--premium-black) 0%, #0f172a 50%, #1e293b 100%);
-            color:#f1f5f9;
-            min-height:100vh;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            top:0; left:0;
-            width:100%; height:100%;
-            background: 
-                radial-gradient(circle at 10% 20%, rgba(0, 102, 255, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(255, 106, 0, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 50% 50%, rgba(123, 66, 246, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-            animation: lightMove 20s ease-in-out infinite;
-        }
-
-        @keyframes lightMove {
-            0%, 100% { opacity: 0.8; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
-
-        .premium-shell {
-            width:100%;
-            max-width:920px;
-            background: rgba(10, 15, 26, 0.85);
-            border-radius:24px;
-            border: 1px solid rgba(0, 102, 255, 0.3);
-            box-shadow: 
-                0 25px 50px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(255, 255, 255, 0.05),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            padding:30px 32px 32px;
-            position:relative;
-            overflow:hidden;
-            backdrop-filter: blur(20px);
-            margin: 20px auto;
-        }
-
-        .premium-logo {
-            text-align: center;
-            margin: 20px 0 30px;
-        }
-
-        .spynet-premium {
-            font-size: 4rem;
-            font-weight: 800;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            background: linear-gradient(135deg, var(--premium-blue), var(--electric-orange), var(--vibrant-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 
-                0 0 30px rgba(0, 102, 255, 0.5),
-                0 0 60px rgba(255, 106, 0, 0.3);
-            position: relative;
-            display: inline-block;
-        }
-
-        .spynet-premium::after {
-            content: "";
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--vibrant-cyan), transparent);
-            border-radius: 2px;
-        }
-
-        .premium-tagline {
-            text-align: center;
-            font-size: 1.3rem;
-            color: var(--vibrant-cyan);
-            margin-top: 15px;
-            font-weight: 300;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            opacity: 0.9;
-        }
-
-        .premium-header {
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:25px;
-            padding: 20px;
-            background: rgba(19, 26, 42, 0.6);
-            border-radius: 18px;
-            border: 1px solid rgba(0, 102, 255, 0.2);
-            backdrop-filter: blur(10px);
-        }
-
-        .brand-premium {
-            display:flex;
-            align-items:center;
-            gap:12px;
-        }
-
-        .brand-icon-premium {
-            width:44px;
-            height:44px;
-            border-radius:12px;
-            background: linear-gradient(135deg, var(--premium-blue), var(--deep-purple));
-            box-shadow: 0 0 30px rgba(0, 102, 255, 0.5);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:14px;
-            font-weight:bold;
-            color:white;
-            letter-spacing:1px;
-        }
-
-        .brand-text-premium {
-            font-size:18px;
-            font-weight:700;
-            letter-spacing:1px;
-            background: linear-gradient(135deg, var(--premium-blue), var(--vibrant-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .brand-sub-premium {
-            font-size:12px;
-            color:#94a3b8;
-            letter-spacing:0.5px;
-        }
-
-        .status-premium {
-            display:flex;
-            flex-direction:column;
-            align-items:flex-end;
-            gap:8px;
-        }
-
-        .pill-premium {
-            font-size:12px;
-            padding:6px 14px;
-            border-radius:20px;
-            border:1px solid var(--vibrant-cyan);
-            color:white;
-            background:rgba(0, 255, 204, 0.1);
-            display:inline-flex;
-            align-items:center;
-            gap:6px;
-            backdrop-filter: blur(10px);
-        }
-
-        .pill-premium span{
-            font-size:14px;
-            color: var(--vibrant-cyan);
-            animation: pulse 2s infinite;
-        }
-
-        .clock-premium {
-            font-size:14px;
-            color: var(--electric-orange);
-            font-weight:600;
-            letter-spacing:1px;
-        }
-
-        .grid-premium {
-            display:grid;
-            grid-template-columns: 1.3fr 1fr;
-            gap:25px;
-            align-items:start;
-        }
-
-        .card-premium {
-            background: linear-gradient(135deg, var(--dark-card), #1a243f);
-            border-radius:20px;
-            border: 1px solid rgba(0, 102, 255, 0.3);
-            padding:25px;
-            box-shadow: 
-                0 15px 35px rgba(0, 0, 0, 0.4),
-                0 0 0 1px rgba(255, 255, 255, 0.05);
-            position:relative;
-            overflow:hidden;
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card-premium:hover {
-            transform: translateY(-5px);
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.5),
-                0 0 30px rgba(0, 102, 255, 0.2);
-        }
-
-        .card-premium::before {
-            content:"";
-            position:absolute;
-            top:0; left:0;
-            right:0;
-            height:2px;
-            background: linear-gradient(90deg, var(--premium-blue), var(--electric-orange));
-        }
-
-        .card-title-premium {
-            font-size:16px;
-            font-weight:700;
-            color:white;
-            margin-bottom:8px;
-            letter-spacing:0.5px;
-        }
-
-        .card-sub-premium {
-            font-size:13px;
-            color:#94a3b8;
-            margin-bottom:20px;
-            line-height:1.5;
-        }
-
-        .tags-premium {
-            display:flex;
-            gap:10px;
-            flex-wrap:wrap;
-            margin-bottom:20px;
-        }
-
-        .tag-premium {
-            font-size:11px;
-            padding:6px 12px;
-            border-radius:15px;
-            border:1px solid rgba(123, 66, 246, 0.5);
-            color:#e2e8f0;
-            background: rgba(123, 66, 246, 0.1);
-            backdrop-filter: blur(5px);
-            font-weight:500;
-        }
-
-        .btn-premium {
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:8px;
-            background: linear-gradient(135deg, var(--premium-blue), var(--deep-purple));
-            color:white;
-            border:none;
-            border-radius:15px;
-            padding:12px 24px;
-            font-size:14px;
-            font-weight:600;
-            letter-spacing:0.5px;
-            cursor:pointer;
-            box-shadow: 
-                0 10px 25px rgba(0, 102, 255, 0.4),
-                0 0 20px rgba(123, 66, 246, 0.3);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 10px;
-            width: 100%;
-        }
-
-        .btn-premium::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn-premium:hover::before {
-            left: 100%;
-        }
-
-        .btn-premium:hover {
-            transform: translateY(-2px);
-            box-shadow: 
-                0 15px 35px rgba(0, 102, 255, 0.6),
-                0 0 30px rgba(123, 66, 246, 0.5);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, var(--deep-purple), #a855f7);
-        }
-
-        .btn-alert {
-            background: linear-gradient(135deg, #ff4757, var(--electric-orange));
-        }
-
-        .features-premium {
-            margin-top:20px;
-            font-size:12px;
-            color:#cbd5e1;
-        }
-
-        .features-premium li {
-            margin-bottom:8px;
-            padding-left:15px;
-            position: relative;
-        }
-
-        .features-premium li::before {
-            content: "▸";
-            position: absolute;
-            left: 0;
-            color: var(--vibrant-cyan);
-        }
-
-        .timeline-premium {
-            margin-top:20px;
-            border-top:1px solid rgba(0, 102, 255, 0.3);
-            padding-top:15px;
-            font-size:12px;
-            color:#94a3b8;
-        }
-
-        .timeline-premium strong { 
-            color:white;
-            font-weight:600;
-        }
-
-        .highlight-premium {
-            background: linear-gradient(135deg, var(--electric-orange), var(--vibrant-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight:700;
-        }
-
-        .sidebar-premium {
-            display:flex;
-            flex-direction:column;
-            gap:20px;
-        }
-
-        .block-premium {
-            background: linear-gradient(135deg, var(--dark-card), #162036);
-            border-radius:18px;
-            border: 1px solid rgba(0, 255, 204, 0.2);
-            padding:20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .block-title-premium {
-            font-size:14px;
-            font-weight:700;
-            margin-bottom:12px;
-            color:white;
-            letter-spacing:0.5px;
-        }
-
-        .pills-container {
-            display:flex;
-            flex-wrap:wrap;
-            gap:8px;
-            margin:12px 0;
-        }
-
-        .pill-small {
-            display:inline-flex;
-            align-items:center;
-            gap:5px;
-            padding:5px 10px;
-            border-radius:12px;
-            border:1px solid rgba(0, 102, 255, 0.4);
-            font-size:10px;
-            color:#e2e8f0;
-            background: rgba(0, 102, 255, 0.1);
-            font-weight:500;
-        }
-
-        .footer-premium {
-            margin-top:30px;
-            font-size:11px;
-            color:#64748b;
-            text-align:center;
-            padding: 15px;
-            border-top: 1px solid rgba(0, 102, 255, 0.2);
-        }
-
-        .developer-premium {
-            color: var(--vibrant-cyan);
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-
-        @media (max-width:780px){
-            .premium-shell{
-                margin:15px;
-                padding:20px;
-            }
-            .premium-header{
-                flex-direction:column;
-                align-items:flex-start;
-                gap:10px;
-            }
-            .status-premium{
-                align-items:flex-start;
-            }
-            .grid-premium{
-                grid-template-columns:1fr;
-            }
-            .card-premium{
-                padding:20px;
-            }
-            .spynet-premium {
-                font-size: 2.8rem;
-            }
-            .btn-premium {
-                width: 100%;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<title>PROF-SAFE 24 — Sistema Estadual de Segurança Escolar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/static/manifest.json">
+<style>
+:root{--blue:#0066ff;--orange:#ff6a00;--purple:#7b42f6;--cyan:#00ffcc;--black:#0a0f1a;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{min-height:100vh;font-family:'Inter','Segoe UI',Arial,sans-serif;
+  background:linear-gradient(135deg,var(--black) 0%,#0f172a 50%,#1e293b 100%);
+  color:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+body::before{content:"";position:fixed;inset:0;
+  background:radial-gradient(circle at 20% 30%,rgba(0,102,255,.12) 0%,transparent 40%),
+             radial-gradient(circle at 80% 70%,rgba(255,106,0,.10) 0%,transparent 40%);
+  pointer-events:none;z-index:0;}
+.shell{width:100%;max-width:520px;position:relative;z-index:1;}
+.card{background:rgba(10,15,26,.95);border-radius:24px;padding:40px 36px 36px;
+  border:1px solid rgba(0,102,255,.3);box-shadow:0 25px 60px rgba(0,0,0,.7);
+  backdrop-filter:blur(20px);position:relative;overflow:hidden;}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--blue),var(--orange),var(--cyan));}
+.brand-icon{width:68px;height:68px;border-radius:18px;
+  background:linear-gradient(135deg,#f97316,#b91c1c);
+  box-shadow:0 0 35px rgba(249,115,22,.5);
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;margin:0 auto 16px;}
+.brand-name{font-size:34px;font-weight:800;letter-spacing:3px;text-align:center;
+  background:linear-gradient(135deg,#f97316,#fbbf24);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;}
+.brand-sub{font-size:12px;color:#94a3b8;letter-spacing:2px;text-align:center;margin-bottom:6px;}
+.brand-estado{font-size:14px;color:#fbbf24;font-weight:700;text-align:center;margin-bottom:32px;letter-spacing:1px;}
+.clock{text-align:center;font-size:13px;color:#f97316;font-weight:600;margin-bottom:28px;}
+.btn-group{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:15px 20px;border-radius:14px;border:none;cursor:pointer;
+  font-size:15px;font-weight:600;text-decoration:none;transition:all .3s;}
+.btn:hover{transform:translateY(-2px);}
+.btn-red{background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fee2e2;
+  box-shadow:0 8px 20px rgba(239,68,68,.35);}
+.btn-amber{background:linear-gradient(135deg,#f59e0b,#d97706);color:#1c1917;
+  box-shadow:0 8px 20px rgba(245,158,11,.35);}
+.btn-blue{background:linear-gradient(135deg,var(--blue),var(--purple));color:white;
+  box-shadow:0 8px 20px rgba(0,102,255,.35);}
+.btn-teal{background:linear-gradient(135deg,#0d9488,#0f766e);color:white;
+  box-shadow:0 8px 20px rgba(13,148,136,.3);}
+.btn-slate{background:rgba(15,23,42,.8);color:#e2e8f0;border:1px solid rgba(0,102,255,.25);}
+.divider{height:1px;background:rgba(0,102,255,.2);margin:20px 0;}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;}
+.stat{background:rgba(15,23,42,.6);border-radius:12px;padding:12px;text-align:center;
+  border:1px solid rgba(0,102,255,.15);}
+.stat-v{font-size:22px;font-weight:800;color:#f97316;}
+.stat-l{font-size:10px;color:#64748b;margin-top:2px;}
+.footer{font-size:11px;color:#334155;text-align:center;margin-top:16px;}
+@media(max-width:480px){.card{padding:30px 20px 28px;}.brand-name{font-size:26px;}}
+</style>
 </head>
 <body>
-    <div class="premium-shell">
-        <div class="premium-logo">
-            <div class="spynet-premium">PROF-SAFE24 PREMIUM</div>
-            <div class="premium-tagline">SEGURANÇA INTELIGENTE</div>
-        </div>
-        
-        <div class="premium-header">
-            <div class="brand-premium">
-                <div class="brand-icon-premium">SN</div>
-                <div>
-                    <div class="brand-text-premium">PROF-SAFE24 PREMIUM</div>
-                    <div class="brand-sub-premium">Sistema de Proteção Avançado</div>
-                </div>
-            </div>
-            <div class="status-premium">
-                <div class="pill-premium"><span>●</span> Sistema Online</div>
-                <div class="clock-premium" id="clockHome"></div>
-            </div>
-        </div>
+<div class="shell">
+<div class="card">
+  <div class="brand-icon">🚨</div>
+  <div class="brand-name">PROF-SAFE 24</div>
+  <div class="brand-sub">SISTEMA DE SEGURANÇA ESCOLAR</div>
+  <div class="brand-estado">ESTADO DE GOIÁS</div>
+  <div class="clock" id="clock"></div>
 
-        <div class="grid-premium">
-            <div class="card-premium">
-                <div class="card-title-premium">Botão de Pânico do Professor</div>
-                <div class="card-sub-premium">Acesso rápido e discreto para situações de emergência na escola.</div>
+  <div class="stats">
+    <div class="stat"><div class="stat-v" id="s-escolas">–</div><div class="stat-l">Escolas</div></div>
+    <div class="stat"><div class="stat-v" id="s-ativos">–</div><div class="stat-l">Alertas Ativos</div></div>
+    <div class="stat"><div class="stat-v" id="s-total">–</div><div class="stat-l">Total Hoje</div></div>
+  </div>
 
-                <div class="tags-premium">
-                    <div class="tag-premium">📱 Sem instalação</div>
-                    <div class="tag-premium">⚡ Tempo real</div>
-                    <div class="tag-premium">🔒 Seguro</div>
-                </div>
+  <div class="btn-group">
+    <a href="/professor" class="btn btn-red">🚨 Botão SOS — Professor</a>
+    <a href="/painel_estado" class="btn btn-amber">🗺️ Painel Estadual — Goiás</a>
+    <a href="/login" class="btn btn-blue">🔐 Acesso Restrito (Diretor / Secretaria)</a>
+    <a href="/painel_publico" class="btn btn-teal">📺 Painel Público</a>
+  </div>
 
-                <!-- BOTÃO PRINCIPAL - APP DO PROFESSOR -->
-                <button class="btn-premium btn-alert" onclick="irProfessor()">
-                    <span class="icon">🚨</span>
-                    ACIONAR BOTÃO DE PÂNICO
-                </button>
-
-                <!-- NOVO BOTÃO - PAINEL PÚBLICO -->
-                <button class="btn-premium btn-secondary" onclick="irPainelPublico()">
-                    <span class="icon">👁️</span>
-                    VER PAINEL PÚBLICO
-                </button>
-
-                <ul class="features-premium">
-                    <li>Envio imediato de alertas para a central</li>
-                    <li>Registro completo de data, hora e localização</li>
-                    <li>Compatível com todos os dispositivos móveis</li>
-                    <li>Acompanhamento em tempo real dos alertas</li>
-                </ul>
-
-                <div class="timeline-premium">
-                    <strong>Fluxo de Emergência:</strong><br>
-                    Professor aciona → Central notificada → 
-                    <span class="highlight-premium">Resposta imediata da equipe</span>
-                </div>
-            </div>
-
-            <div class="sidebar-premium">
-                <div class="block-premium">
-                    <div class="block-title-premium">Painel de Controle</div>
-                    <p style="margin:8px 0 15px; font-size:12px; color:#94a3b8; line-height:1.5;">
-                        Monitoramento em tempo real com interface avançada para gestão de emergências.
-                    </p>
-                    <div class="pills-container">
-                        <span class="pill-small"><span class="icon">👁️</span> Monitoramento</span>
-                        <span class="pill-small"><span class="icon">📊</span> Relatórios</span>
-                        <span class="pill-small"><span class="icon">🚨</span> Alertas</span>
-                        <span class="pill-small"><span class="icon">⚙️</span> Controles</span>
-                    </div>
-                    <button class="btn-premium" style="padding:10px; font-size:13px; margin-top:10px;" onclick="irCentral()">
-                        <span class="icon">🛡️</span>
-                        Acessar Painel Central
-                    </button>
-                </div>
-
-                <div class="block-premium">
-                    <div class="block-title-premium">Recursos Avançados</div>
-                    <ul class="features-premium">
-                        <li>Relatórios detalhados em PDF</li>
-                        <li>Histórico completo de incidentes</li>
-                        <li>Interface responsiva e intuitiva</li>
-                        <li>Suporte 24/7</li>
-                        <li>Painel público para acompanhamento</li>
-                    </ul>
-                </div>
-
-                <div class="block-premium">
-                    <div class="block-title-premium">📊 Painel Público</div>
-                    <p style="margin:4px 0 8px; font-size:12px; color:#94a3b8; line-height:1.5;">
-                        Acompanhe em tempo real todos os alertas e situações da escola sem necessidade de login.
-                    </p>
-                    <div class="pills-container">
-                        <span class="pill-small"><span class="icon">📈</span> Estatísticas</span>
-                        <span class="pill-small"><span class="icon">🔄</span> Tempo Real</span>
-                        <span class="pill-small"><span class="icon">👥</span> Acesso Livre</span>
-                        <span class="pill-small"><span class="icon">📱</span> Responsivo</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer-premium">
-            PROF-SAFE24 PREMIUM System &mdash; Desenvolvido por <span class="developer-premium">PROF-SAFE24 PREMIUM</span> &copy; 2024
-        </div>
-    </div>
-
-    <script>
-    function irProfessor(){
-        window.location.href = "/professor";
-    }
-
-    function irCentral(){
-        window.location.href = "/login_central";
-    }
-
-    // NOVA FUNÇÃO PARA O PAINEL PÚBLICO
-    function irPainelPublico(){
-        window.location.href = "/painel_publico";
-    }
-
-    function updateClockHome(){
-        const el = document.getElementById('clockHome');
-        const now = new Date();
-        el.textContent = now.toLocaleTimeString('pt-BR',{hour12:false});
-    }
-    setInterval(updateClockHome,1000);
-    updateClockHome();
-    </script>
+  <div class="divider"></div>
+  <div style="font-size:12px;color:#475569;text-align:center;line-height:1.7;">
+    Sistema de alerta silencioso para professores.<br>
+    Em situação de risco, pressione <b style="color:#fbbf24">SOS</b>.<br>
+    A central e o responsável estadual serão notificados em segundos.
+  </div>
+  <div class="footer">PROF-SAFE 24 &mdash; Único no Brasil &copy; 2024</div>
+</div>
+</div>
+<script>
+function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR',{hour12:false});}
+setInterval(tick,1000);tick();
+async function loadStats(){
+  try{
+    const r=await fetch('/api/status');const d=await r.json();
+    document.getElementById('s-escolas').textContent=d.total_escolas||'–';
+    document.getElementById('s-ativos').textContent=d.total_ativos||'0';
+    document.getElementById('s-total').textContent=d.alertas?.length||'0';
+  }catch(e){}
+}
+setInterval(loadStats,5000);loadStats();
+</script>
 </body>
 </html>

@@ -1,11 +1,13 @@
 {
-  "name": "PROF-SAFE24 Premium",
-  "short_name": "PROF-SAFE24",
+  "name": "PROF-SAFE 24",
+  "short_name": "PROF-SAFE",
+  "description": "Sistema de Segurança Escolar — Estado de Goiás",
   "start_url": "/professor",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#0a0014",
-  "theme_color": "#0a0014",
+  "orientation": "portrait",
+  "background_color": "#020617",
+  "theme_color": "#f97316",
   "icons": [
     {
       "src": "/static/icons/icon-192.png",
@@ -18,6 +20,20 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Botão SOS",
+      "short_name": "SOS",
+      "url": "/professor",
+      "icons": [{"src": "/static/icons/icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Painel Estadual",
+      "short_name": "Estadual",
+      "url": "/painel_estado",
+      "icons": [{"src": "/static/icons/icon-192.png", "sizes": "192x192"}]
     }
   ]
 }

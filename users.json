@@ -1,0 +1,50 @@
+{
+  "admin": {
+    "nome": "Administrador",
+    "senha": "admin2026",
+    "perfil": "admin",
+    "escola_id": null,
+    "whatsapp": "",
+    "email": ""
+  },
+  "estadual": {
+    "nome": "Responsável Segurança Estadual",
+    "senha": "estadual2026",
+    "perfil": "estadual",
+    "escola_id": null,
+    "whatsapp": "",
+    "email": ""
+  },
+  "secretaria": {
+    "nome": "Secretaria de Educação",
+    "senha": "seceduc2026",
+    "perfil": "secretaria",
+    "escola_id": null,
+    "whatsapp": "",
+    "email": ""
+  },
+  "diretor001": {
+    "nome": "Prof. Carlos Souza",
+    "senha": "diretor001",
+    "perfil": "diretor",
+    "escola_id": "escola_001",
+    "whatsapp": "",
+    "email": ""
+  },
+  "coord001": {
+    "nome": "Coordenadora Silva",
+    "senha": "coord001",
+    "perfil": "coordenador",
+    "escola_id": "escola_001",
+    "whatsapp": "",
+    "email": ""
+  },
+  "Mauro-01A2026": {
+    "nome": "Mauro Vilela",
+    "senha": "36092745",
+    "perfil": "secretaria",
+    "escola_id": "escola_001",
+    "whatsapp": "62996314093",
+    "email": "salvecidossantos454@gmail.com"
+  }
+}

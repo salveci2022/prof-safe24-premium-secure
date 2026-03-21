@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>PROF-SAFE 24 — Acesso ao Sistema</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{--blue:#0066ff;--orange:#ff6a00;--purple:#7b42f6;--cyan:#00ffcc;--black:#0a0f1a;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{margin:0;min-height:100vh;font-family:'Inter','Segoe UI',Arial,sans-serif;
+  background:linear-gradient(135deg,var(--black) 0%,#0f172a 50%,#1e293b 100%);
+  color:#f1f5f9;display:flex;align-items:center;justify-content:center;}
+body::before{content:"";position:fixed;inset:0;
+  background:radial-gradient(circle at 20% 30%,rgba(0,102,255,.15) 0%,transparent 40%),
+             radial-gradient(circle at 80% 70%,rgba(255,106,0,.10) 0%,transparent 40%);
+  pointer-events:none;z-index:-1;animation:float 15s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+.shell{width:100%;max-width:480px;padding:28px 22px;}
+.card{background:rgba(10,15,26,.92);border-radius:24px;padding:40px 34px 36px;
+  border:1px solid rgba(0,102,255,.3);
+  box-shadow:0 25px 60px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.08);
+  backdrop-filter:blur(20px);position:relative;overflow:hidden;}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--blue),var(--orange),var(--cyan));}
+.brand-icon{width:56px;height:56px;border-radius:14px;
+  background:linear-gradient(135deg,#f97316,#b91c1c);
+  box-shadow:0 0 30px rgba(249,115,22,.5);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin:0 auto 14px;}
+.brand-name{font-size:30px;font-weight:800;letter-spacing:2px;text-align:center;
+  background:linear-gradient(135deg,#f97316,#fbbf24);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.brand-sub{font-size:12px;color:#94a3b8;letter-spacing:1.5px;text-align:center;margin:4px 0 6px;}
+.brand-estado{font-size:13px;color:#fbbf24;font-weight:700;text-align:center;margin-bottom:28px;}
+.login-title{font-size:22px;font-weight:700;color:white;margin-bottom:6px;text-align:center;}
+.login-sub{font-size:13px;color:#94a3b8;margin-bottom:28px;text-align:center;line-height:1.5;}
+label{display:block;font-size:13px;margin-bottom:7px;color:#e2e8f0;font-weight:500;}
+input{width:100%;padding:13px 15px;border-radius:12px;
+  background:rgba(15,23,42,.6);border:1px solid rgba(0,102,255,.3);
+  color:#f1f5f9;font-size:15px;margin-bottom:18px;transition:all .3s;}
+input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 2px rgba(0,102,255,.3);}
+input::placeholder{color:#64748b;}
+.btn-login{display:flex;justify-content:center;align-items:center;
+  padding:14px 28px;border-radius:14px;border:none;cursor:pointer;
+  font-weight:600;font-size:15px;color:white;width:100%;
+  background:linear-gradient(135deg,#f97316,#ea580c);
+  box-shadow:0 10px 25px rgba(249,115,22,.4);transition:all .3s;margin-bottom:12px;}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(249,115,22,.55);}
+.btn-voltar{display:flex;justify-content:center;align-items:center;
+  padding:12px;border-radius:12px;border:1px solid rgba(100,116,139,.3);
+  background:transparent;color:#94a3b8;font-size:14px;cursor:pointer;
+  text-decoration:none;transition:all .2s;}
+.btn-voltar:hover{background:rgba(15,23,42,.6);}
+.error-box{font-size:13px;color:#ff6b6b;margin-bottom:14px;padding:11px;
+  border-radius:10px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);
+  text-align:center;}
+.clock{font-size:13px;color:var(--orange);font-weight:600;text-align:center;margin-bottom:8px;}
+.perfis{margin-top:24px;padding:14px;border-radius:12px;
+  background:rgba(15,23,42,.4);border:1px solid rgba(0,102,255,.15);}
+.perfis-title{font-size:11px;color:#64748b;margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;}
+.perfil-row{display:flex;justify-content:space-between;font-size:11px;padding:4px 0;
+  border-bottom:1px solid rgba(30,64,175,.15);}
+.perfil-row:last-child{border-bottom:none;}
+.perfil-name{color:#94a3b8;}
+.perfil-badge{font-size:10px;padding:2px 8px;border-radius:999px;}
+.pb-estadual{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.4);color:#fde68a;}
+.pb-diretor{background:rgba(37,99,235,.15);border:1px solid rgba(37,99,235,.4);color:#93c5fd;}
+.pb-secretaria{background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.4);color:#5eead4;}
+.pb-admin{background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.4);color:#c4b5fd;}
+@media(max-width:480px){.shell{padding:20px 14px;}.card{padding:30px 22px 28px;}.brand-name{font-size:24px;}}
+</style>
+</head>
+<body>
+<div class="shell">
+<div class="card">
+  <div class="brand-icon">🚨</div>
+  <div class="brand-name">PROF-SAFE 24</div>
+  <div class="brand-sub">SISTEMA DE SEGURANÇA ESCOLAR</div>
+  <div class="brand-estado">ESTADO DE GOIÁS</div>
+  <div class="clock" id="clock"></div>
+
+  <div class="login-title">Acesso ao Sistema</div>
+  <div class="login-sub">Área restrita — equipe gestora, secretaria e segurança</div>
+
+  <form method="post">
+    <label for="usuario">Usuário</label>
+    <input id="usuario" name="usuario" autocomplete="username" required placeholder="Digite seu usuário">
+    <label for="senha">Senha</label>
+    <input id="senha" name="senha" type="password" autocomplete="current-password" required placeholder="Digite sua senha">
+    {% if error %}<div class="error-box">{{ error }}</div>{% endif %}
+    <button type="submit" class="btn-login">🔐 Entrar no Sistema</button>
+    <a href="/" class="btn-voltar">← Voltar ao Início</a>
+  </form>
+
+  <div class="perfis">
+    <div class="perfis-title">Perfis de Acesso</div>
+    <div class="perfil-row">
+      <span class="perfil-name">Responsável Estadual</span>
+      <span class="perfil-badge pb-estadual">Goiás Completo</span>
+    </div>
+    <div class="perfil-row">
+      <span class="perfil-name">Secretaria de Educação</span>
+      <span class="perfil-badge pb-secretaria">Regional</span>
+    </div>
+    <div class="perfil-row">
+      <span class="perfil-name">Diretor / Coordenador</span>
+      <span class="perfil-badge pb-diretor">Escola</span>
+    </div>
+    <div class="perfil-row">
+      <span class="perfil-name">Administrador</span>
+      <span class="perfil-badge pb-admin">Total</span>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR',{hour12:false});}
+setInterval(tick,1000);tick();
+</script>
+</body>
+</html>
