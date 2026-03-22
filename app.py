@@ -151,6 +151,31 @@ def seed_demo_data():
 
 seed_demo_data()
 _check_notif_config()
+
+# FIX: Sempre atualiza WhatsApp/Email dos perfis globais com variáveis de ambiente
+def _sync_notif_contacts():
+    users = load_users()
+    changed = False
+    whats_est  = os.environ.get("WHATS_ESTADUAL", "")
+    email_est  = os.environ.get("EMAIL_ESTADUAL", "")
+    whats_sec  = os.environ.get("WHATS_SECEDUC", "")
+    email_sec  = os.environ.get("EMAIL_SECEDUC", "")
+    for uname, info in users.items():
+        if info.get("perfil") == "estadual":
+            if whats_est and info.get("whatsapp") != whats_est:
+                info["whatsapp"] = whats_est; changed = True
+            if email_est and info.get("email") != email_est:
+                info["email"] = email_est; changed = True
+        if info.get("perfil") == "secretaria" and uname == "secretaria":
+            if whats_sec and info.get("whatsapp") != whats_sec:
+                info["whatsapp"] = whats_sec; changed = True
+            if email_sec and info.get("email") != email_sec:
+                info["email"] = email_sec; changed = True
+    if changed:
+        save_users(users)
+        print("✅ Contatos de notificação sincronizados com variáveis de ambiente")
+
+_sync_notif_contacts()
 _check_notif_config()
 
 # ============================================================
