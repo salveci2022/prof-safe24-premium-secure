@@ -496,11 +496,15 @@ def api_alert():
     save_alertas(alertas)
     save_state(st)
 
-    # Notifica WhatsApp e Email em background
+    # Notifica WhatsApp e Email — síncrono com log completo
     try:
+        print(f"[ALERTA] Notificando escola_id={escola_id} teacher={alerta['teacher']}")
         notificar_alerta(alerta, escola)
+        print(f"[ALERTA] Notificação concluída")
     except Exception as e:
-        print(f"[Notificação] Erro: {e}")
+        import traceback
+        print(f"[ALERTA] ERRO na notificação: {e}")
+        traceback.print_exc()
 
     return jsonify({"ok": True, "alerta": alerta})
 
