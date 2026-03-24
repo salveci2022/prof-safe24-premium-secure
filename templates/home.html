@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>PROF-SAFE 24 — Sistema Estadual de Segurança Escolar</title>
+<title>{{ SISTEMA_TITULO }} — Sistema Estadual de Segurança Escolar</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="/static/manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -158,7 +158,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--dark);color:var
       <span class="tsl-text">SEGURANÇA INTELIGENTE</span>
       <span class="tsl-bar"></span>
     </div>
-    <div class="title-estado">Estado de Goiás</div>
+    <div class="title-estado">Estado de {{ ESTADO_NOME }} — {{ ESTADO_SIGLA }}</div>
   </div>
 
   <div class="clock-wrap">
@@ -175,7 +175,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--dark);color:var
 
   <div class="btns">
     <a href="/professor" class="btn btn-sos">🚨 &nbsp;Botão SOS — Professor</a>
-    <a href="/painel_estado" class="btn btn-estadual">🗺️ &nbsp;Painel Estadual — Goiás</a>
+    <a href="/painel_estado" class="btn btn-estadual">🗺️ &nbsp;Painel Estadual — {{ ESTADO_NOME }}</a>
     <a href="/login" class="btn btn-restrito">🔐 &nbsp;Acesso Restrito (Diretor / Secretaria)</a>
     <a href="/painel_publico" class="btn btn-publico">📺 &nbsp;Painel Público</a>
   </div>
@@ -185,7 +185,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--dark);color:var
     Em situação de risco, pressione <b>SOS</b>.<br>
     A central e o responsável estadual são notificados em segundos.
     <div class="divider"></div>
-    <div class="footer">PROF-SAFE 24 — Único no Brasil &copy; 2024</div>
+    <div class="footer">{{ SISTEMA_TITULO }} — Único no Brasil &copy; 2025 | <span style="color:#f97316;">SPYNET Security</span> — Tecnologia Forense & Soluções Digitais</div>
   </div>
 </div>
 

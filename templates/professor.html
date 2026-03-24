@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel do Professor — PROF-SAFE 24</title>
+<title>Painel do Professor — {{ SISTEMA_TITULO }}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="/static/manifest.json">
 <style>
@@ -79,7 +79,7 @@ textarea{resize:vertical;min-height:48px;max-height:110px;}
   <div class="header">
     <div class="brand">
       <div class="brand-icon">PS</div>
-      <div><div class="brand-title">PROF-SAFE 24</div><div class="brand-sub">PAINEL DO PROFESSOR</div></div>
+      <div><div class="brand-title">{{ SISTEMA_TITULO }}</div><div class="brand-sub">PAINEL DO PROFESSOR</div></div>
     </div>
     <div class="clock" id="clockProf"></div>
   </div>
@@ -151,7 +151,10 @@ textarea{resize:vertical;min-height:48px;max-height:110px;}
 <script>
 let escolaId = '{{ escola_id or "escola_001" }}';
 
-function tick(){document.getElementById('clockProf').textContent=new Date().toLocaleTimeString('pt-BR',{hour12:false});}
+function tick(){
+  const el = document.getElementById('clockProf');
+  if(el) el.textContent=new Date().toLocaleTimeString('pt-BR',{hour12:false});
+}
 setInterval(tick,1000);tick();
 
 function mudarEscola(id){

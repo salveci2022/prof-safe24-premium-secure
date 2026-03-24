@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>PROF-SAFE 24 — Acesso ao Sistema</title>
+<title>{{ SISTEMA_TITULO }} — Acesso ao Sistema</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 :root{--blue:#0066ff;--orange:#ff6a00;--purple:#7b42f6;--cyan:#00ffcc;--black:#0a0f1a;}
@@ -74,9 +74,9 @@ input::placeholder{color:#64748b;}
 <div class="shell">
 <div class="card">
   <div class="brand-icon">🚨</div>
-  <div class="brand-name">PROF-SAFE 24</div>
+  <div class="brand-name">{{ SISTEMA_TITULO }}</div>
   <div class="brand-sub">SISTEMA DE SEGURANÇA ESCOLAR</div>
-  <div class="brand-estado">ESTADO DE GOIÁS</div>
+  <div class="brand-estado">ESTADO DE {{ ESTADO_NOME|upper }}</div>
   <div class="clock" id="clock"></div>
 
   <div class="login-title">Acesso ao Sistema</div>
@@ -96,7 +96,7 @@ input::placeholder{color:#64748b;}
     <div class="perfis-title">Perfis de Acesso</div>
     <div class="perfil-row">
       <span class="perfil-name">Responsável Estadual</span>
-      <span class="perfil-badge pb-estadual">Goiás Completo</span>
+      <span class="perfil-badge pb-estadual">{{ ESTADO_NOME }} Completo</span>
     </div>
     <div class="perfil-row">
       <span class="perfil-name">Secretaria de Educação</span>
@@ -114,7 +114,10 @@ input::placeholder{color:#64748b;}
 </div>
 </div>
 <script>
-function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR',{hour12:false});}
+function tick(){
+  const el=document.getElementById('clock');
+  if(el) el.textContent=new Date().toLocaleTimeString('pt-BR',{hour12:false});
+}
 setInterval(tick,1000);tick();
 </script>
 </body>

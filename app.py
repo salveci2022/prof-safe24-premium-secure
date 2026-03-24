@@ -12,7 +12,25 @@ from functools import wraps
 import json, os, urllib.request, urllib.parse, smtplib, ssl
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "profsafe24-estadual-goias-2026")
+app.secret_key = os.environ.get("SECRET_KEY", "profsafe24-seguranca-escolar-2026")
+
+# ============================================================
+# CONFIGURAÇÃO DO ESTADO — MUDE APENAS NO RENDER (ENV VARS)
+# ============================================================
+ESTADO_NOME    = os.environ.get("ESTADO_NOME",    "Goiás")
+ESTADO_SIGLA   = os.environ.get("ESTADO_SIGLA",   "GO")
+ESTADO_CIDADE  = os.environ.get("ESTADO_CIDADE",  "Goiânia")
+SISTEMA_TITULO = os.environ.get("SISTEMA_TITULO", "PROF-SAFE 24")
+
+@app.context_processor
+def inject_estado():
+    """Injeta variáveis de estado em TODOS os templates automaticamente."""
+    return dict(
+        ESTADO_NOME=ESTADO_NOME,
+        ESTADO_SIGLA=ESTADO_SIGLA,
+        ESTADO_CIDADE=ESTADO_CIDADE,
+        SISTEMA_TITULO=SISTEMA_TITULO,
+    )
 
 BASE_DIR     = Path(__file__).resolve().parent
 USERS_FILE   = BASE_DIR / "users.json"
@@ -91,24 +109,27 @@ def seed_demo_data():
     if not escolas:
         escolas = {
             "escola_001": {
-                "id": "escola_001", "nome": "Colégio Estadual Noroeste",
-                "cidade": "São Miguel do Araguaia", "regiao": "Noroeste",
-                "endereco": "Av. Brasil, 100 – São Miguel do Araguaia/GO",
-                "telefone": "(62) 99999-0001", "diretor": "Prof. Carlos Souza",
+                "id": "escola_001",
+                "nome": f"Escola Estadual {ESTADO_NOME} 001",
+                "cidade": ESTADO_CIDADE, "regiao": "Região 01",
+                "endereco": f"Av. Principal, 100 – {ESTADO_CIDADE}/{ESTADO_SIGLA}",
+                "telefone": "(00) 99999-0001", "diretor": "Prof. Diretor(a) 01",
                 "ativo": True
             },
             "escola_002": {
-                "id": "escola_002", "nome": "Colégio Estadual Centro-Oeste",
-                "cidade": "Goiânia", "regiao": "Central",
-                "endereco": "Rua das Flores, 200 – Goiânia/GO",
-                "telefone": "(62) 99999-0002", "diretor": "Profa. Ana Lima",
+                "id": "escola_002",
+                "nome": f"Escola Estadual {ESTADO_NOME} 002",
+                "cidade": ESTADO_CIDADE, "regiao": "Região 02",
+                "endereco": f"Rua das Flores, 200 – {ESTADO_CIDADE}/{ESTADO_SIGLA}",
+                "telefone": "(00) 99999-0002", "diretor": "Prof. Diretor(a) 02",
                 "ativo": True
             },
             "escola_003": {
-                "id": "escola_003", "nome": "Colégio Estadual Sul Goiano",
-                "cidade": "Itumbiara", "regiao": "Sul",
-                "endereco": "Av. Goiás, 300 – Itumbiara/GO",
-                "telefone": "(64) 99999-0003", "diretor": "Prof. João Alves",
+                "id": "escola_003",
+                "nome": f"Escola Estadual {ESTADO_NOME} 003",
+                "cidade": ESTADO_CIDADE, "regiao": "Região 03",
+                "endereco": f"Av. Central, 300 – {ESTADO_CIDADE}/{ESTADO_SIGLA}",
+                "telefone": "(00) 99999-0003", "diretor": "Prof. Diretor(a) 03",
                 "ativo": True
             }
         }
@@ -271,7 +292,7 @@ def notificar_alerta(alerta, escola):
         f"🚪 Sala/Local: {sala}\n"
         f"⚠️ Ocorrência: {desc}\n"
         f"⏰ Hora: {hora}\n\n"
-        f"Acesse o painel: https://profsafe24.com.br/painel_estado"
+        f"Acesse o painel: https://prof-safe24-premium-secure-pd90.onrender.com/painel_estado"
     )
 
     assunto = f"🚨 ALERTA PROF-SAFE 24 — {nome_escola} — {desc[:40]}"
@@ -412,7 +433,18 @@ def admin():
 @role_required("admin")
 def admin_add_escola():
     escolas = load_escolas()
-    escola_id = f"escola_{len(escolas)+1:03d}"
+    # Gera ID único mesmo se houver buracos na sequência
+    existing_nums = []
+    for k in escolas:
+        try:
+            existing_nums.append(int(k.replace("escola_", "")))
+        except Exception:
+            pass
+    next_num = max(existing_nums, default=0) + 1
+    escola_id = f"escola_{next_num:03d}"
+    while escola_id in escolas:
+        next_num += 1
+        escola_id = f"escola_{next_num:03d}"
     escolas[escola_id] = {
         "id":       escola_id,
         "nome":     request.form.get("nome", "").strip(),
@@ -594,11 +626,11 @@ def gerar_relatorio():
     pdf    = pdf_canvas.Canvas(buffer, pagesize=A4)
     larg, alt = A4
 
-    pdf.setTitle("Relatório — PROF-SAFE 24")
+    pdf.setTitle(f"Relatório — {SISTEMA_TITULO}")
     pdf.setFont("Helvetica-Bold", 18)
-    pdf.drawString(50, alt - 50, "PROF-SAFE 24")
+    pdf.drawString(50, alt - 50, SISTEMA_TITULO)
     pdf.setFont("Helvetica-Bold", 13)
-    pdf.drawString(50, alt - 72, "Sistema Estadual de Segurança Escolar — Goiás")
+    pdf.drawString(50, alt - 72, f"Sistema Estadual de Segurança Escolar — {ESTADO_NOME}/{ESTADO_SIGLA}")
     pdf.setFont("Helvetica", 10)
     pdf.drawString(50, alt - 90, f"Gerado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     if escola_id:
@@ -641,8 +673,8 @@ def tocar_sirene():
 # ============================================================
 if __name__ == "__main__":
     print("=" * 62)
-    print("🚨  PROF-SAFE 24 — Sistema Estadual de Segurança Escolar")
-    print("    Estado de Goiás")
+    print(f"🚨  {SISTEMA_TITULO} — Sistema Estadual de Segurança Escolar")
+    print(f"    Estado de {ESTADO_NOME} / {ESTADO_SIGLA}")
     print("=" * 62)
     print("🔐  Logins de demonstração:")
     print("    admin      / admin2026      → Administrador")

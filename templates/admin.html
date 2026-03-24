@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Admin — PROF-SAFE 24</title>
+<title>Admin — {{ SISTEMA_TITULO }}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 :root{--blue:#0066ff;--orange:#ff6a00;--purple:#7b42f6;--black:#0a0f1a;}
@@ -64,8 +64,8 @@ tbody tr:hover{background:rgba(30,58,138,.15);}
 <body>
 <div class="header">
   <div>
-    <div class="brand-name">PROF-SAFE 24 — ADMIN</div>
-    <div class="brand-sub">Estado de Goiás — Painel Administrativo</div>
+    <div class="brand-name">{{ SISTEMA_TITULO }} — ADMIN</div>
+    <div class="brand-sub">Estado de {{ ESTADO_NOME }} — Painel Administrativo</div>
   </div>
   <a href="/logout" class="btn-sair">⏻ Sair</a>
 </div>
@@ -83,7 +83,7 @@ tbody tr:hover{background:rgba(30,58,138,.15);}
       <input name="nome" id="e_nome" required placeholder="Ex.: Colégio Estadual Noroeste">
       <label>Cidade</label>
       <input name="cidade" id="e_cidade" required placeholder="Ex.: São Miguel do Araguaia">
-      <label>Região de Goiás</label>
+      <label>Região de {{ ESTADO_NOME }}</label>
       <select name="regiao" id="e_regiao">
         <option>Noroeste</option><option>Norte</option><option>Nordeste</option>
         <option>Central</option><option>Sul</option><option>Sudeste</option>
@@ -130,7 +130,7 @@ tbody tr:hover{background:rgba(30,58,138,.15);}
       <label>WhatsApp (com DDI: 5562...)</label>
       <input name="whatsapp" id="u_whats" placeholder="5562999990000">
       <label>Email</label>
-      <input name="email" id="u_email" type="email" placeholder="diretor@escola.go.gov.br">
+      <input name="email" id="u_email" type="email" placeholder="diretor@escola.gov.br">
       <div class="btn-row">
         <button type="button" class="btn btn-slate" onclick="limparUser()">🧹 Limpar</button>
         <button type="submit" class="btn btn-blue">👤 Cadastrar</button>

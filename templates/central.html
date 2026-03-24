@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel Central — PROF-SAFE 24</title>
+<title>Painel Central — {{ SISTEMA_TITULO }}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -76,7 +76,7 @@ audio{display:none;}
 <div class="topbar">
   <div class="brand">
     <div class="brand-icon">PS</div>
-    <div><div class="brand-main">PROF-SAFE 24</div><div class="brand-sub">Painel da Escola</div></div>
+    <div><div class="brand-main">{{ SISTEMA_TITULO }}</div><div class="brand-sub">Painel da Escola</div></div>
   </div>
   <div class="top-right">
     <div class="pill" id="topPill">Pronto</div>
@@ -137,7 +137,10 @@ audio{display:none;}
 </div>
 <script>
 const ESCOLA_ID='{{ escola_id or "" }}';
-function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR',{hour12:false});}
+function tick(){
+  const el=document.getElementById('clock');
+  if(el) el.textContent=new Date().toLocaleTimeString('pt-BR',{hour12:false});
+}
 setInterval(tick,1000);tick();
 
 async function atualizar(){
@@ -188,9 +191,7 @@ async function chamarSirene(action){
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({action:action})
   });
-  const d = await r.json();
-  // Atualiza visual imediatamente sem esperar o polling
-  atualizarSireneVisual(d.siren_on, document.getElementById('ultimaAtual').textContent);
+  await atualizar();
 }
 
 async function sireneManual(){

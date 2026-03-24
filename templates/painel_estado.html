@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel Estadual — PROF-SAFE 24 — Goiás</title>
+<title>Painel Estadual — {{ SISTEMA_TITULO }} — {{ ESTADO_NOME }}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -91,8 +91,8 @@ audio{display:none;}
   <div class="brand">
     <div class="brand-icon">PS</div>
     <div>
-      <div class="brand-main">PROF-SAFE 24 — ESTADO DE GOIÁS</div>
-      <div class="brand-sub">Responsável Segurança Escolar Estadual</div>
+      <div class="brand-main">{{ SISTEMA_TITULO }} — ESTADO DE {{ ESTADO_NOME|upper }}</div>
+      <div class="brand-sub">Responsável Segurança Escolar · {{ ESTADO_NOME }}/{{ ESTADO_SIGLA }} · SPYNET Security</div>
     </div>
   </div>
   <div class="top-right">
@@ -113,7 +113,7 @@ audio{display:none;}
   </div>
 
   <!-- Escolas -->
-  <div class="section-title">🏫 Escolas Monitoradas — Goiás</div>
+  <div class="section-title">🏫 Escolas Monitoradas — {{ ESTADO_NOME }}</div>
   <div class="escolas-grid" id="escolasGrid">
     {% for escola in escolas %}
     <div class="escola-card" id="card-{{ escola.id }}" onclick="filtrarEscola('{{ escola.id }}')">

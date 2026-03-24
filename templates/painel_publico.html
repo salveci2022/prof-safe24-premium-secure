@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel Público — PROF-SAFE 24</title>
+<title>Painel Público — {{ SISTEMA_TITULO }}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -51,7 +51,7 @@ tbody tr:nth-child(odd){background:rgba(15,23,42,.9);}
 <body>
 <div class="topbar">
   <div>
-    <div class="brand-main">PROF-SAFE 24</div>
+    <div class="brand-main">{{ SISTEMA_TITULO }}</div>
     <div class="brand-sub">Painel Público — Somente Leitura</div>
   </div>
   <div class="clock" id="clock"></div>
@@ -81,7 +81,10 @@ tbody tr:nth-child(odd){background:rgba(15,23,42,.9);}
   </div>
 </div>
 <script>
-function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR',{hour12:false});}
+function tick(){
+  const el=document.getElementById('clock');
+  if(el) el.textContent=new Date().toLocaleTimeString('pt-BR',{hour12:false});
+}
 setInterval(tick,1000);tick();
 async function atualizar(){
   try{
