@@ -315,11 +315,29 @@ def notificar_alerta(alerta, escola):
             if email:
                 enviar_email(email, assunto, msg.replace("*",""))
 
+def api_login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get("logged_in"):
+            return jsonify({"ok": False, "error": "Acesso negado. Faça login."}), 401
+        return f(*args, **kwargs)
+    return decorated
+
 # ============================================================
 # PÁGINAS PÚBLICAS
 # ============================================================
 @app.route("/")
 def home():
+    if session.get("logged_in"):
+        perfil = session.get("perfil", "")
+        if perfil == "admin":
+            return redirect("/admin")
+        elif perfil == "estadual":
+            return redirect("/painel_estado")
+        elif perfil == "secretaria":
+            return redirect("/painel_secretaria")
+        elif perfil in ("diretor", "coordenador"):
+            return redirect("/central")
     return render_template("home.html")
 
 @app.route("/acesso_negado")
@@ -545,9 +563,11 @@ def api_alert():
 # ============================================================
 @app.route("/api/status")
 def api_status():
-    st      = load_state()
-    alertas = load_alertas()
+    st        = load_state()
+    alertas   = load_alertas()
     escola_id = request.args.get("escola", "")
+    logado    = session.get("logged_in", False)
+    perfil    = session.get("perfil", "")
 
     if escola_id:
         alertas_filtrados = [a for a in alertas if a.get("escola_id") == escola_id]
@@ -556,6 +576,17 @@ def api_status():
         alertas_filtrados = alertas
         siren = st.get("siren_on", False)
 
+    # Usuários NÃO logados vêem apenas totais — sem detalhes de ocorrências
+    if not logado:
+        return jsonify({
+            "alertas":         [],
+            "siren_on":        siren,
+            "last_alert_time": None,
+            "total_escolas":   len(load_escolas()),
+            "total_ativos":    sum(1 for a in alertas if a.get("status") == "Ativo")
+        })
+
+    # Usuários logados vêem dados completos conforme perfil
     return jsonify({
         "alertas":         alertas_filtrados,
         "siren_on":        siren,
@@ -568,6 +599,7 @@ def api_status():
 # API — SIRENE
 # ============================================================
 @app.route("/api/siren", methods=["POST"])
+@api_login_required
 def api_siren():
     st     = load_state()
     action = (request.get_json() or {}).get("action")
@@ -580,6 +612,7 @@ def api_siren():
 # API — RESOLVER / LIMPAR
 # ============================================================
 @app.route("/api/resolve", methods=["POST"])
+@api_login_required
 def api_resolve():
     st      = load_state()
     alertas = load_alertas()
@@ -593,6 +626,7 @@ def api_resolve():
     return jsonify({"ok": True})
 
 @app.route("/api/clear", methods=["POST"])
+@api_login_required
 def api_clear():
     st = load_state()
     escola_id = (request.get_json() or {}).get("escola_id", "")
@@ -609,6 +643,7 @@ def api_clear():
 # API — LISTA DE ESCOLAS
 # ============================================================
 @app.route("/api/escolas")
+@api_login_required
 def api_escolas():
     return jsonify(list(load_escolas().values()))
 
