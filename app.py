@@ -694,6 +694,67 @@ def gerar_relatorio():
     return send_file(buffer, as_attachment=True, download_name=fname, mimetype="application/pdf")
 
 # ============================================================
+# BEM-ESTAR EMOCIONAL DO PROFESSOR
+# ============================================================
+@app.route("/bem-estar")
+def bem_estar():
+    return render_template("bem_estar_prof.html")
+
+@app.route("/api/bem-estar", methods=["POST"])
+def api_bem_estar():
+    data     = request.get_json(silent=True) or {}
+    messages = data.get("messages", [])
+    if not messages:
+        return jsonify({"error": "No messages"}), 400
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    if not api_key:
+        return jsonify({"reply": "Serviço indisponível no momento. Em crise, ligue CVV 188 (24h, gratuito). 💜"}), 200
+
+    SYSTEM = (
+        "Você é um assistente virtual de apoio emocional para professores que acabaram de passar "
+        "por situações difíceis em sala de aula — como desrespeito, agressão verbal, conflitos com alunos "
+        "ou momentos de extremo estresse. Seu papel é oferecer acolhimento, escuta ativa e técnicas "
+        "rápidas de regulação emocional. "
+        "Diretrizes: "
+        "1. Valide sempre o sentimento do professor sem minimizar. "
+        "2. Use linguagem simples, calorosa e direta. "
+        "3. Quando a pessoa desabafar, ouça antes de dar conselhos. "
+        "4. Ofereça técnicas práticas quando oportuno: respiração, grounding (5 coisas que você vê), "
+        "movimento, escrever o que sente. "
+        "5. Se mencionar pensamentos de se machucar, redirecione gentilmente ao CVV (188). "
+        "6. Não dê diagnósticos nem substitua profissionais de saúde mental. "
+        "7. Respostas curtas — máximo 3 parágrafos — em português do Brasil. "
+        "8. Encerre sempre com uma frase de encorajamento genuína."
+    )
+
+    import json as _json
+    payload = _json.dumps({
+        "model":      "claude-haiku-4-5-20251001",
+        "max_tokens": 500,
+        "system":     SYSTEM,
+        "messages":   messages[-20:]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type":      "application/json",
+            "x-api-key":         api_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            result = _json.loads(resp.read().decode("utf-8"))
+            return jsonify({"reply": result["content"][0]["text"]})
+    except Exception as e:
+        print(f"❌ Bem-estar API error: {e}")
+        return jsonify({"reply": "Sem conexão agora. Você não está sozinho(a). CVV 188 se precisar. 💜"}), 200
+
+# ============================================================
 # ÁUDIO
 # ============================================================
 @app.route("/tocar_sirene")

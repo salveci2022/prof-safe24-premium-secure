@@ -145,6 +145,13 @@ textarea{resize:vertical;min-height:48px;max-height:110px;}
       <button class="btn btn-red"  type="button" onclick="sair()">⏻ Início</button>
     </div>
     <div id="status">Pronto para uso.</div>
+    <div id="bemEstarLink" style="display:none;margin-top:8px;">
+      <a href="/bem-estar" style="display:block;padding:9px;border-radius:10px;
+        background:rgba(124,58,237,.15);border:1px solid rgba(139,92,246,.4);
+        color:#a78bfa;font-size:11px;font-weight:600;text-align:center;text-decoration:none;">
+        💜 Como você está? Acesse o espaço de bem-estar
+      </a>
+    </div>
   </div>
 </div>
 </div>
@@ -202,7 +209,10 @@ async function enviarAlerta(payload,statusEl,msgOk){
   try{
     const r=await fetch('/api/alert',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const d=await r.json();
-    if(d.ok){statusEl.textContent=msgOk;statusEl.style.color='#22c55e';}
+    if(d.ok){
+      statusEl.textContent=msgOk;statusEl.style.color='#22c55e';
+      document.getElementById('bemEstarLink').style.display='block';
+    }
     else{statusEl.textContent='Erro ao enviar.';statusEl.style.color='#f97316';}
   }catch(e){statusEl.textContent='Falha de comunicação.';statusEl.style.color='#f97316';}
 }

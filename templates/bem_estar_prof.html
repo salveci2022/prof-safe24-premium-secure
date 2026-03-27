@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Bem-Estar — {{ SISTEMA_TITULO }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter','Segoe UI',Arial,sans-serif;
+  background:radial-gradient(circle at top,#020617 0,#020617 55%,#000 100%);
+  color:#e5e7eb;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;}
+.shell{width:100%;max-width:480px;padding:18px;}
+.card{background:rgba(15,23,42,.96);border-radius:24px;
+  border:1px solid rgba(148,163,184,.3);
+  box-shadow:0 20px 50px rgba(15,23,42,.95);padding:18px 18px 16px;}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-icon{width:40px;height:40px;border-radius:14px;
+  background:radial-gradient(circle at 0 0,#a78bfa,#7c3aed);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;box-shadow:0 0 22px rgba(124,58,237,.6);}
+.brand-title{font-size:17px;font-weight:800;
+  background:linear-gradient(120deg,#a78bfa,#7c3aed,#a78bfa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.brand-sub{font-size:10px;color:#9ca3af;text-transform:uppercase;letter-spacing:.14em;}
+.clock{font-size:13px;color:#f97316;font-weight:600;}
+
+.section{background:rgba(15,23,42,.98);border-radius:16px;
+  border:1px solid rgba(30,64,175,.7);padding:12px 12px 10px;margin-bottom:10px;}
+.section-title{font-size:13px;font-weight:600;margin-bottom:8px;color:#e5e7eb;}
+.sub{font-size:11px;color:#9ca3af;margin-bottom:14px;text-align:center;}
+
+/* Humor */
+.humor-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:4px;}
+.humor-btn{padding:10px 4px;border-radius:12px;border:1px solid rgba(55,65,81,.9);
+  background:#020617;cursor:pointer;text-align:center;font-size:20px;transition:all .15s;}
+.humor-btn:hover,.humor-btn.selected{background:rgba(124,58,237,.2);border-color:rgba(139,92,246,.6);}
+.humor-label{font-size:9px;color:#9ca3af;margin-top:2px;}
+
+/* Respiração */
+.resp-box{text-align:center;padding:10px 0;}
+.resp-circle{width:88px;height:88px;border-radius:50%;
+  background:radial-gradient(circle at 40% 40%,rgba(139,92,246,.45),rgba(30,64,175,.2));
+  border:2px solid rgba(139,92,246,.4);
+  margin:10px auto;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#e5e7eb;cursor:pointer;transition:transform .5s ease;}
+.resp-circle.expand{animation:resp-expand 4s ease-in-out;}
+.resp-circle.shrink{animation:resp-shrink 4s ease-in-out;}
+@keyframes resp-expand{from{transform:scale(1);}to{transform:scale(1.4);}}
+@keyframes resp-shrink{from{transform:scale(1.4);}to{transform:scale(1);}}
+.resp-inst{font-size:11px;color:#9ca3af;margin-top:4px;}
+
+/* Chat */
+.chat-box{display:flex;flex-direction:column;gap:8px;
+  max-height:340px;overflow-y:auto;margin:8px 0;padding-right:2px;scroll-behavior:smooth;}
+.chat-box::-webkit-scrollbar{width:3px;}
+.chat-box::-webkit-scrollbar-thumb{background:rgba(139,92,246,.4);border-radius:99px;}
+.msg{max-width:88%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.55;word-break:break-word;}
+.msg.ia{align-self:flex-start;background:rgba(15,23,42,.9);
+  border:1px solid rgba(30,64,175,.5);border-bottom-left-radius:3px;color:#e5e7eb;}
+.msg.user{align-self:flex-end;
+  background:linear-gradient(135deg,rgba(124,58,237,.3),rgba(30,64,175,.2));
+  border:1px solid rgba(139,92,246,.4);border-bottom-right-radius:3px;color:#e5e7eb;}
+.msg.ia .msg-name{font-size:9px;font-weight:700;color:#a78bfa;margin-bottom:3px;letter-spacing:.06em;}
+.typing{align-self:flex-start;display:flex;gap:4px;padding:10px 12px;
+  background:rgba(15,23,42,.9);border:1px solid rgba(30,64,175,.5);
+  border-radius:14px;border-bottom-left-radius:3px;}
+.dot{width:6px;height:6px;border-radius:50%;background:#a78bfa;animation:bounce 1.2s infinite;}
+.dot:nth-child(2){animation-delay:.2s;}
+.dot:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-5px);opacity:1;}}
+
+/* Quick chips */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;}
+.chip{padding:5px 10px;border-radius:999px;font-size:10px;
+  border:1px solid rgba(30,64,175,.5);background:#020617;color:#e5e7eb;
+  cursor:pointer;transition:all .15s;}
+.chip:hover{background:rgba(30,64,175,.25);border-color:rgba(139,92,246,.5);}
+
+/* Input */
+.input-row{display:flex;gap:6px;margin-top:6px;align-items:flex-end;}
+.input-row textarea{flex:1;min-height:40px;max-height:100px;resize:none;
+  border-radius:10px;padding:9px 11px;
+  border:1px solid rgba(55,65,81,.9);background:#020617;
+  color:#e5e7eb;font-size:12px;font-family:inherit;line-height:1.4;}
+.input-row textarea::placeholder{color:#6b7280;}
+.send-btn{width:40px;height:40px;border-radius:10px;border:none;flex-shrink:0;
+  background:linear-gradient(135deg,#7c3aed,#1d4ed8);color:white;
+  font-size:17px;cursor:pointer;display:grid;place-items:center;font-weight:900;}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+.divider{text-align:center;font-size:10px;color:#6b7280;margin:4px 0;letter-spacing:.08em;}
+.info-box{background:rgba(15,23,42,.8);border-radius:12px;
+  border:1px solid rgba(30,64,175,.4);padding:10px 12px;font-size:11px;color:#9ca3af;margin-top:8px;}
+.info-box b{color:#a78bfa;}
+.btn-back{display:block;width:100%;padding:10px;border-radius:10px;border:none;
+  background:rgba(30,41,59,.8);color:#9ca3af;font-size:12px;font-weight:600;
+  cursor:pointer;text-align:center;text-decoration:none;margin-top:8px;
+  border:1px solid rgba(51,65,85,.6);}
+.btn-back:hover{background:rgba(30,41,59,.99);}
+</style>
+</head>
+<body>
+<div class="shell">
+<div class="card">
+  <div class="header">
+    <div class="brand">
+      <div class="brand-icon">💜</div>
+      <div>
+        <div class="brand-title">{{ SISTEMA_TITULO }}</div>
+        <div class="brand-sub">BEM-ESTAR DO PROFESSOR</div>
+      </div>
+    </div>
+    <div class="clock" id="clock"></div>
+  </div>
+
+  <div class="sub">Este espaço é seu. Aqui ninguém te julga. 💜</div>
+
+  <!-- HUMOR -->
+  <div class="section">
+    <div class="section-title">🌡️ Como você está agora?</div>
+    <div class="humor-grid">
+      <div class="humor-btn" onclick="selecionarHumor(this,'Muito mal')">😞<div class="humor-label">Muito mal</div></div>
+      <div class="humor-btn" onclick="selecionarHumor(this,'Mal')">😔<div class="humor-label">Mal</div></div>
+      <div class="humor-btn" onclick="selecionarHumor(this,'Regular')">😐<div class="humor-label">Regular</div></div>
+      <div class="humor-btn" onclick="selecionarHumor(this,'Bem')">🙂<div class="humor-label">Bem</div></div>
+      <div class="humor-btn" onclick="selecionarHumor(this,'Ótimo')">😊<div class="humor-label">Ótimo</div></div>
+    </div>
+  </div>
+
+  <!-- RESPIRAÇÃO -->
+  <div class="section">
+    <div class="section-title">🫁 Respiração rápida</div>
+    <div class="resp-box">
+      <div class="resp-circle" id="respCircle" onclick="iniciarRespiracao()">TOQUE</div>
+      <div class="resp-inst" id="respInst">4s inspire · 4s expire</div>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="section">
+    <div class="section-title">💬 Desabafe aqui</div>
+    <div class="chips" id="quickChips">
+      <div class="chip" onclick="sendQuick(this)">Preciso desabafar</div>
+      <div class="chip" onclick="sendQuick(this)">Fui desrespeitado(a)</div>
+      <div class="chip" onclick="sendQuick(this)">Estou exausto(a)</div>
+      <div class="chip" onclick="sendQuick(this)">Não aguento mais</div>
+      <div class="chip" onclick="sendQuick(this)">Me dá uma dica rápida</div>
+      <div class="chip" onclick="sendQuick(this)">Preciso de calma agora</div>
+    </div>
+    <div class="chat-box" id="chatBox">
+      <div class="msg ia">
+        <div class="msg-name">💜 PROF-SAFE · APOIO</div>
+        Olá! Sei que às vezes o dia pesa muito. Estou aqui para te ouvir sem julgamentos. O que aconteceu? Pode falar. 💜
+      </div>
+    </div>
+    <div class="divider">— conversa privada e segura —</div>
+    <div class="input-row">
+      <textarea id="userInput" placeholder="Como foi o seu dia?" rows="1"
+        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+
+  <div class="info-box">
+    💜 <b>Lembre-se:</b> Você faz diferença. Cuidar de si é essencial.<br>
+    🆘 Em crise grave: CVV <b>188</b> (24h, gratuito, sigiloso).
+  </div>
+
+  <a href="/central" class="btn-back">← Voltar ao Painel</a>
+</div>
+</div>
+
+<script>
+const chatBox=document.getElementById('chatBox');
+const userInput=document.getElementById('userInput');
+const sendBtn=document.getElementById('sendBtn');
+const history=[];
+
+function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR',{hour12:false});}
+setInterval(tick,1000);tick();
+
+// HUMOR
+function selecionarHumor(el,valor){
+  document.querySelectorAll('.humor-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  userInput.value='Meu humor agora: '+valor;
+  sendMessage();
+}
+
+// RESPIRAÇÃO
+let respAtiva=false,respTimer=null,respFase='inhale';
+function iniciarRespiracao(){
+  const c=document.getElementById('respCircle');
+  const i=document.getElementById('respInst');
+  if(respAtiva){
+    clearTimeout(respTimer);respAtiva=false;
+    c.className='resp-circle';c.textContent='TOQUE';
+    i.textContent='4s inspire · 4s expire';return;
+  }
+  respAtiva=true;cicloResp();
+}
+function cicloResp(){
+  if(!respAtiva)return;
+  const c=document.getElementById('respCircle');
+  const i=document.getElementById('respInst');
+  if(respFase==='inhale'){
+    c.className='resp-circle expand';c.textContent='INSPIRE';
+    i.textContent='🌬️ Inspire lentamente...';respFase='exhale';
+  }else{
+    c.className='resp-circle shrink';c.textContent='EXPIRE';
+    i.textContent='😮‍💨 Expire devagar...';respFase='inhale';
+  }
+  respTimer=setTimeout(cicloResp,4000);
+}
+
+// CHAT
+function scrollDown(){chatBox.scrollTop=chatBox.scrollHeight;}
+function addMsg(text,role){
+  const d=document.createElement('div');
+  d.className='msg '+role;
+  if(role==='ia')d.innerHTML='<div class="msg-name">💜 PROF-SAFE · APOIO</div>'+text.replace(/\n/g,'<br>');
+  else d.textContent=text;
+  chatBox.appendChild(d);scrollDown();
+}
+function showTyping(){
+  const d=document.createElement('div');
+  d.className='typing';d.id='typing';
+  d.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+  chatBox.appendChild(d);scrollDown();
+}
+function removeTyping(){const t=document.getElementById('typing');if(t)t.remove();}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+function sendQuick(el){
+  userInput.value=el.textContent;
+  document.getElementById('quickChips').style.display='none';
+  sendMessage();
+}
+async function sendMessage(){
+  const text=userInput.value.trim();if(!text)return;
+  userInput.value='';userInput.style.height='auto';sendBtn.disabled=true;
+  addMsg(text,'user');history.push({role:'user',content:text});
+  showTyping();
+  try{
+    const r=await fetch('/api/bem-estar',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:history})});
+    const data=await r.json();removeTyping();
+    if(data.reply){
+      addMsg(data.reply,'ia');history.push({role:'assistant',content:data.reply});
+      if(history.length>20)history.splice(0,2);
+    }else{addMsg('Tive um problema. Tente novamente. 💜','ia');}
+  }catch(e){
+    removeTyping();
+    addMsg('Sem conexão agora. Em crise, ligue CVV 188. 💜','ia');
+  }
+  sendBtn.disabled=false;userInput.focus();
+}
+</script>
+</body>
+</html>
