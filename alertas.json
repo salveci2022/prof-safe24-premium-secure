@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "id": 45,
+    "teacher": "Professor(a)",
+    "room": "Local não informado",
+    "description": "🚨 ALERTA DE PÂNICO — SOS acionado pelo(a) professor(a).",
+    "escola_id": "escola_001",
+    "escola_nome": "Colégio Estadual Noroeste",
+    "escola_cidade": "São Miguel do Araguaia",
+    "escola_regiao": "Noroeste",
+    "time": "27/03/2026 22:57:51",
+    "status": "Ativo"
+  },
+  {
+    "id": 44,
+    "teacher": "Professor(a)",
+    "room": "Local não informado",
+    "description": "🚨 ALERTA DE PÂNICO — SOS acionado pelo(a) professor(a).",
+    "escola_id": "escola_001",
+    "escola_nome": "Colégio Estadual Noroeste",
+    "escola_cidade": "São Miguel do Araguaia",
+    "escola_regiao": "Noroeste",
+    "time": "27/03/2026 22:57:11",
+    "status": "Ativo"
+  },
+  {
+    "id": 43,
+    "teacher": "Professor(a)",
+    "room": "Local não informado",
+    "description": "🚨 ALERTA DE PÂNICO — SOS acionado pelo(a) professor(a).",
+    "escola_id": "escola_001",
+    "escola_nome": "Colégio Estadual Noroeste",
+    "escola_cidade": "São Miguel do Araguaia",
+    "escola_regiao": "Noroeste",
+    "time": "27/03/2026 22:56:40",
+    "status": "Ativo"
+  }
+]
