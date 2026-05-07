@@ -15,6 +15,26 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "profsafe24-seguranca-escolar-2026")
 
 # ============================================================
+# [FIX] CONFIGURAÇÃO DE SESSÃO — CRÍTICO PARA RENDER.COM
+# O Render.com usa proxy reverso (HTTPS). Sem estas configs,
+# os cookies de sessão não são enviados pelo browser nas
+# requisições fetch(), causando alertas=[] nos painéis.
+# ============================================================
+# Permite que cookies funcionem atrás de proxy reverso (Render, Nginx, etc.)
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+# Em produção (HTTPS no Render), cookies devem ser Secure
+app.config["SESSION_COOKIE_SECURE"] = os.environ.get("RENDER", "") != ""
+# HttpOnly protege o cookie de acesso via JavaScript
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+# [FIX] ProxyFix: faz o Flask reconhecer headers do proxy reverso do Render.com
+# Sem isso, session/cookies podem falhar em ambiente de produção
+try:
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+except ImportError:
+    pass  # werkzeug não instalado — ignora sem quebrar
+
+# ============================================================
 # CONFIGURAÇÃO DO ESTADO — MUDE APENAS NO RENDER (ENV VARS)
 # ============================================================
 ESTADO_NOME    = os.environ.get("ESTADO_NOME",    "Goiás")

@@ -178,11 +178,43 @@ function filtrarEscola(id){
     : '🚨 Feed de Alertas — Todas as Escolas';
 }
 
+// [FIX] Controle de sirene: respeita política de autoplay dos browsers
+let _sireneLiberada = false;
+let _sireneDeveTocar = false;
+
+document.addEventListener('click', function _liberarSirene(){
+  _sireneLiberada = true;
+  if(_sireneDeveTocar){
+    document.getElementById('siren').play().catch(()=>{});
+  }
+  document.removeEventListener('click', _liberarSirene);
+}, {once: true});
+
+function _tocarSirene(){
+  const siren = document.getElementById('siren');
+  if(_sireneLiberada){ siren.play().catch(()=>{}); }
+  else { _sireneDeveTocar = true; }
+}
+function _pararSireneAudio(){
+  _sireneDeveTocar = false;
+  const siren = document.getElementById('siren');
+  siren.pause(); siren.currentTime = 0;
+}
+
 async function atualizar(){
   try{
+    // [FIX] credentials:'include' envia cookies de sessão Flask obrigatoriamente
     const url='/api/status'+(escolaFiltro?'?escola='+escolaFiltro:'');
-    const d=await(await fetch(url)).json();
+    const d=await(await fetch(url, {credentials:'include'})).json();
+
+    // [FIX] Uma única chamada para /api/status sem filtro para dados globais
+    // Evita dupla requisição que causava rate limiting no Render.com free tier
+    const allD = escolaFiltro
+      ? await(await fetch('/api/status', {credentials:'include'})).json()
+      : d;  // [FIX] Reusa a mesma resposta se não há filtro — elimina chamada duplicada
+
     const alertas=d.alertas||[];
+    const allAlertas=allD.alertas||[];
 
     // Stats gerais
     document.getElementById('s-total').textContent=alertas.length;
@@ -190,21 +222,19 @@ async function atualizar(){
     document.getElementById('s-ultimo').textContent=d.last_alert_time?d.last_alert_time.split(' ')[1]:'–';
 
     // Sirene
-    const siren=document.getElementById('siren');
     const pill=document.getElementById('topPill');
     if(d.siren_on){
-      siren.play().catch(()=>{});
+      // [FIX] Usa função controlada para respeitar política de autoplay
+      _tocarSirene();
       pill.textContent='⚠️ ALERTA ATIVO';pill.className='pill pill-alert';
       document.getElementById('card-ativos').classList.add('alerta');
     }else{
-      siren.pause();siren.currentTime=0;
+      _pararSireneAudio();
       pill.textContent='Sistema Normal';pill.className='pill';
       document.getElementById('card-ativos').classList.remove('alerta');
     }
 
     // Contadores por escola
-    const allD=await(await fetch('/api/status')).json();
-    const allAlertas=allD.alertas||[];
     document.querySelectorAll('[id^="ativos-"]').forEach(el=>{
       const eid=el.id.replace('ativos-','');
       const at=allAlertas.filter(a=>a.escola_id===eid&&a.status==='Ativo').length;
@@ -238,20 +268,26 @@ async function atualizar(){
 setInterval(atualizar,2000);atualizar();
 
 async function pararSirene(){
-  await fetch('/api/siren',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'off'})});
-  document.getElementById('siren').pause();
-  document.getElementById('siren').currentTime=0;
+  // [FIX] credentials:'include'
+  await fetch('/api/siren',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({action:'off'})});
+  _pararSireneAudio();
   document.getElementById('topPill').textContent='Sistema Normal';
   document.getElementById('topPill').className='pill';
 }
-async function resolverTodos(){await fetch('/api/resolve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({escola_id:escolaFiltro})});}
+async function resolverTodos(){
+  // [FIX] credentials:'include'
+  await fetch('/api/resolve',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({escola_id:escolaFiltro})});
+  await atualizar();
+}
 function baixarPDF(){window.open('/report.pdf'+(escolaFiltro?'?escola='+escolaFiltro:''),'_blank');}
 
 async function limparEscola(id, nome){
   if(!confirm('Limpar todos os alertas de '+nome+'?')) return;
+  // [FIX] credentials:'include'
   await fetch('/api/clear',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
+    credentials:'include',
     body:JSON.stringify({escola_id:id})
   });
   atualizar();
@@ -259,9 +295,9 @@ async function limparEscola(id, nome){
 
 async function excluirEscola(id, nome){
   if(!confirm('EXCLUIR a escola '+nome+'?\n\nTodos os alertas desta escola serão removidos.')) return;
-  const r = await fetch('/admin/escola/delete/'+id, {method:'POST'});
+  // [FIX] credentials:'include'
+  const r = await fetch('/admin/escola/delete/'+id, {method:'POST', credentials:'include'});
   if(r.ok || r.redirected){
-    // Remove card da tela imediatamente
     const card = document.getElementById('card-'+id);
     if(card) card.remove();
     atualizar();

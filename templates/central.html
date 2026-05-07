@@ -143,24 +143,55 @@ function tick(){
 }
 setInterval(tick,1000);tick();
 
+// [FIX] Controle de sirene: só toca após interação do usuário (política de autoplay dos browsers)
+let _sireneLiberada = false;
+let _sireneDeveTocar = false;
+
+document.addEventListener('click', function _liberarSirene(){
+  _sireneLiberada = true;
+  // Se havia alerta pendente de tocar, toca agora
+  if(_sireneDeveTocar){
+    document.getElementById('siren').play().catch(()=>{});
+  }
+  document.removeEventListener('click', _liberarSirene);
+}, {once: true});
+
+function _tocarSirene(){
+  const audio = document.getElementById('siren');
+  if(_sireneLiberada){
+    audio.play().catch(()=>{});
+  } else {
+    // [FIX] Marca para tocar assim que usuário interagir
+    _sireneDeveTocar = true;
+  }
+}
+
+function _pararSireneAudio(){
+  _sireneDeveTocar = false;
+  const audio = document.getElementById('siren');
+  audio.pause();
+  audio.currentTime = 0;
+}
+
 async function atualizar(){
   try{
     const url='/api/status'+(ESCOLA_ID?'?escola='+ESCOLA_ID:'');
-    const d=await(await fetch(url)).json();
+    // [FIX] credentials:'include' envia cookies de sessão — sem isso o Flask retorna alertas:[]
+    const d=await(await fetch(url, {credentials:'include'})).json();
     const alertas=d.alertas||[];
-    const audio=document.getElementById('siren');
     const sphere=document.getElementById('sphere');
     const pill=document.getElementById('topPill');
 
     if(d.siren_on){
-      audio.play().catch(()=>{});
+      // [FIX] Usa função controlada para respeitar política de autoplay
+      _tocarSirene();
       document.getElementById('statusSirene').textContent='Ligada';
       document.getElementById('statusSirene').classList.remove('off');
       sphere.className='sphere sphere-alerta';sphere.textContent='ALERTA';
       document.getElementById('sphereCaption').textContent='Alerta ativo! Verifique imediatamente.';
       pill.textContent='⚠️ Alerta Ativo';pill.className='pill pill-alert';
     }else{
-      audio.pause();audio.currentTime=0;
+      _pararSireneAudio();
       document.getElementById('statusSirene').textContent='Desligada';
       document.getElementById('statusSirene').classList.add('off');
       sphere.className='sphere sphere-normal';sphere.textContent='NORMAL';
@@ -186,19 +217,21 @@ async function atualizar(){
 setInterval(atualizar,1500);atualizar();
 
 async function chamarSirene(action){
-  const r = await fetch('/api/siren',{
+  // [FIX] credentials:'include' nos POSTs de controle
+  await fetch('/api/siren',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
+    credentials:'include',
     body:JSON.stringify({action:action})
   });
   await atualizar();
 }
 
 async function sireneManual(){
+  // Toca áudio direto (este clique já libera o autoplay)
+  _sireneLiberada = true;
+  document.getElementById('siren').play().catch(e => console.warn('Audio:', e));
   await chamarSirene('on');
-  // Toca o áudio diretamente no clique (exige gesto do usuário)
-  const audio = document.getElementById('siren');
-  audio.play().catch(e => console.warn('Audio:', e));
 }
 
 async function testeSirene(){
@@ -207,17 +240,17 @@ async function testeSirene(){
 
 async function pararSirene(){
   await chamarSirene('off');
-  const audio = document.getElementById('siren');
-  audio.pause();
-  audio.currentTime = 0;
+  _pararSireneAudio();
 }
 
 async function resolverAlertas(){
-  await fetch('/api/resolve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({escola_id:ESCOLA_ID})});
+  // [FIX] credentials:'include'
+  await fetch('/api/resolve',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({escola_id:ESCOLA_ID})});
   await atualizar();
 }
 async function limparFeed(){
-  await fetch('/api/clear',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({escola_id:ESCOLA_ID})});
+  // [FIX] credentials:'include'
+  await fetch('/api/clear',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({escola_id:ESCOLA_ID})});
   await atualizar();
 }
 function baixarPDF(){window.open('/report.pdf'+(ESCOLA_ID?'?escola='+ESCOLA_ID:''),'_blank');}
